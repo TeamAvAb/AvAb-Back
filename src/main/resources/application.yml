@@ -4,6 +4,11 @@ spring:
     name: avab-dev
   profiles:
     active: dev
+springdoc:
+  swagger-ui:
+    tags-sorter: alpha
+    operations-sorter: alpha
+  use-fqn: true
 ---
 # ?? ????
 spring:
