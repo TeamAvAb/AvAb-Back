@@ -11,8 +11,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
-import com.avab.avab.apiPayload.exception.S3.S3ObjectException;
-import com.avab.avab.apiPayload.exception.S3.S3UploadException;
+import com.avab.avab.apiPayload.exception.S3.S3Exception;
 import com.avab.avab.config.AmazonConfig;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class AmazonS3Manager {
     private final AmazonS3 amazonS3;
     private final AmazonConfig amazonConfig;
 
-    public String uploadFile(String keyName, MultipartFile file) throws IOException {
+    public String uploadFile(String keyName, MultipartFile file) throws S3Exception {
         try {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
@@ -34,11 +33,11 @@ public class AmazonS3Manager {
 
             return amazonS3.getUrl(amazonConfig.getBucket(), keyName).toString();
         } catch (IOException e) {
-            throw new S3UploadException(ErrorStatus.S3_UPLOAD_FAIL);
+            throw new S3Exception(ErrorStatus.S3_UPLOAD_FAIL);
         }
     }
 
-    public void deleteFile(String keyName) throws IOException {
+    public void deleteFile(String keyName) throws S3Exception {
         try {
             if (amazonS3.doesObjectExist(amazonConfig.getBucket(), keyName)) {
                 amazonS3.deleteObject(amazonConfig.getBucket(), keyName);
@@ -46,7 +45,7 @@ public class AmazonS3Manager {
                 throw new IOException();
             }
         } catch (Exception e) {
-            throw new S3ObjectException(ErrorStatus.S3_OBJECT_NOT_FOUND);
+            throw new S3Exception(ErrorStatus.S3_OBJECT_NOT_FOUND);
         }
     }
 
