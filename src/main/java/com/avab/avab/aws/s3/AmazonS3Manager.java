@@ -11,6 +11,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
+import com.avab.avab.apiPayload.exception.S3.S3ObjectException;
+import com.avab.avab.apiPayload.exception.S3.S3UploadException;
 import com.avab.avab.config.AmazonConfig;
 
 import lombok.RequiredArgsConstructor;
@@ -32,7 +34,7 @@ public class AmazonS3Manager {
 
             return amazonS3.getUrl(amazonConfig.getBucket(), keyName).toString();
         } catch (IOException e) {
-            throw new IOException(ErrorStatus.S3_UPLOAD_FAIL.getReason().getMessage());
+            throw new S3UploadException(ErrorStatus.S3_UPLOAD_FAIL);
         }
     }
 
@@ -44,7 +46,7 @@ public class AmazonS3Manager {
                 throw new IOException();
             }
         } catch (Exception e) {
-            throw new IOException(ErrorStatus.S3_OBJECT_NOT_FOUND.getReason().getMessage());
+            throw new S3ObjectException(ErrorStatus.S3_OBJECT_NOT_FOUND);
         }
     }
 
