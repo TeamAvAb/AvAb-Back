@@ -49,10 +49,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext()
                             .setAuthentication(usernamePasswordAuthenticationToken);
                 } else {
-                    throw new AuthException(ErrorStatus._USER_NOT_FOUND);
+                    throw new AuthException(ErrorStatus.USER_NOT_FOUND);
                 }
             } else {
-                throw new AuthException(ErrorStatus._AUTH_INVALID_TOKEN);
+                throw new AuthException(ErrorStatus.AUTH_INVALID_TOKEN);
             }
         }
         filterChain.doFilter(request, response);

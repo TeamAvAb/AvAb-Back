@@ -21,12 +21,12 @@ public enum ErrorStatus implements BaseErrorCode {
     S3_UPLOAD_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "S3_002", "S3 업로드 실패"),
 
     // user 관련
-    _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_001", "없는 유저 입니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_001", "없는 유저 입니다."),
 
     // Auth 관련
-    _AUTH_EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_001", "토큰이 만료되었습니다."),
-    _AUTH_INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_002", "토큰이 유효하지 않습니다."),
-    _INVALID_LOGIN_REQUEST(HttpStatus.UNAUTHORIZED, "AUTH_003", "올바른 이메일이나 패스워드가 아닙니다.");
+    AUTH_EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_001", "토큰이 만료되었습니다."),
+    AUTH_INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_002", "토큰이 유효하지 않습니다."),
+    INVALID_LOGIN_REQUEST(HttpStatus.UNAUTHORIZED, "AUTH_003", "올바른 이메일이나 패스워드가 아닙니다.");
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;

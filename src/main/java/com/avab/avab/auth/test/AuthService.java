@@ -18,18 +18,12 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public LoginResponse login(String email, String password) {
+    public LoginResponse login(String email) {
 
         User user = userRepository.findByEmail(email);
 
-        //        if ((!bCryptPasswordEncoder.matches(password, user.getPassword())) || user ==
-        // null) {
-        //            throw new AuthException(ErrorStatus._INVALID_LOGIN_REQUEST);
-        //        }
-
         String accessToken = jwtTokenProvider.createAccessToken(user.getId());
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
 
-        return LoginResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+        return LoginResponse.builder().accessToken(accessToken).build();
     }
 }

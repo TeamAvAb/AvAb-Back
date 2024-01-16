@@ -27,7 +27,7 @@ public class PrincipalDetailsService implements UserDetailsService {
                         .orElseThrow(
                                 () ->
                                         new UsernameNotFoundException(
-                                                ErrorStatus._USER_NOT_FOUND.getMessage()));
+                                                ErrorStatus.USER_NOT_FOUND.getMessage()));
 
         return new PrincipalDetails(user);
     }

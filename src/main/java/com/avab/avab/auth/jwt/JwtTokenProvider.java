@@ -65,12 +65,12 @@ public class JwtTokenProvider {
             Date now = new Date();
             return expiredDate.after(now);
         } catch (ExpiredJwtException e) {
-            throw new AuthException(ErrorStatus._AUTH_EXPIRED_TOKEN);
+            throw new AuthException(ErrorStatus.AUTH_EXPIRED_TOKEN);
         } catch (SecurityException
                 | MalformedJwtException
                 | UnsupportedJwtException
                 | IllegalArgumentException e) {
-            throw new AuthException(ErrorStatus._AUTH_INVALID_TOKEN);
+            throw new AuthException(ErrorStatus.AUTH_INVALID_TOKEN);
         }
     }
 
