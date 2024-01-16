@@ -1,8 +1,8 @@
 package com.avab.avab.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.avab.avab.domain.common.BaseEntity;
+import com.avab.avab.domain.mapping.RecreationFavorite;
+import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,14 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
-import com.avab.avab.domain.common.BaseEntity;
-import com.avab.avab.domain.mapping.RecreationFavorite;
-import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
-
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,8 +24,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @Getter
-@DynamicInsert
-@DynamicUpdate
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Recreation extends BaseEntity {

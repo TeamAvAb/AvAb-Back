@@ -1,8 +1,7 @@
 package com.avab.avab.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.avab.avab.domain.common.BaseEntity;
+import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,13 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-
-import com.avab.avab.domain.common.BaseEntity;
-import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
-
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,8 +23,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Builder
 @Getter
-@DynamicInsert
-@DynamicUpdate
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecreationReview extends BaseEntity {
@@ -58,5 +50,5 @@ public class RecreationReview extends BaseEntity {
 
     @OneToMany(mappedBy = "recreationReview", cascade = CascadeType.ALL)
     private List<RecreationReviewRecommendation> recreationReviewRecommendationList =
-            new ArrayList<>();
+        new ArrayList<>();
 }
