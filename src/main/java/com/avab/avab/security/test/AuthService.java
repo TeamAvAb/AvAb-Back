@@ -1,10 +1,10 @@
-package com.avab.avab.auth.test;
+package com.avab.avab.security.test;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.avab.avab.auth.jwt.JwtTokenProvider;
-import com.avab.avab.auth.test.dto.LoginResponse;
+import com.avab.avab.security.provider.JwtTokenProvider;
+import com.avab.avab.security.test.dto.LoginResponse;
 import com.avab.avab.domain.User;
 import com.avab.avab.repository.UserRepository;
 

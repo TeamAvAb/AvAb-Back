@@ -1,4 +1,4 @@
-package com.avab.avab.auth.principal;
+package com.avab.avab.security.principal;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

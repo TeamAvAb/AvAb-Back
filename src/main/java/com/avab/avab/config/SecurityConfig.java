@@ -12,7 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.avab.avab.auth.filter.JwtRequestFilter;
+import com.avab.avab.security.filter.JwtRequestFilter;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,4 +1,4 @@
-package com.avab.avab.auth.principal;
+package com.avab.avab.security.principal;
 
 import java.util.ArrayList;
 import java.util.Collection;

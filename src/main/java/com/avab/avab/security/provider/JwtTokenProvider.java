@@ -1,4 +1,4 @@
-package com.avab.avab.auth.jwt;
+package com.avab.avab.security.provider;
 
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;

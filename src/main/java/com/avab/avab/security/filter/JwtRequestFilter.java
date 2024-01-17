@@ -1,4 +1,4 @@
-package com.avab.avab.auth.filter;
+package com.avab.avab.security.filter;
 
 import java.io.IOException;
 
@@ -15,8 +15,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.auth.AuthException;
-import com.avab.avab.auth.jwt.JwtTokenProvider;
-import com.avab.avab.auth.principal.PrincipalDetailsService;
+import com.avab.avab.security.provider.JwtTokenProvider;
+import com.avab.avab.security.principal.PrincipalDetailsService;
 
 import lombok.RequiredArgsConstructor;
 

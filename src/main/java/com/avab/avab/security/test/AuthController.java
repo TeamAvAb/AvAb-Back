@@ -1,10 +1,10 @@
-package com.avab.avab.auth.test;
+package com.avab.avab.security.test;
 
 import org.springframework.web.bind.annotation.*;
 
 import com.avab.avab.apiPayload.ApiResponse;
-import com.avab.avab.auth.test.dto.LoginRequest;
-import com.avab.avab.auth.test.dto.LoginResponse;
+import com.avab.avab.security.test.dto.LoginRequest;
+import com.avab.avab.security.test.dto.LoginResponse;
 
 import lombok.RequiredArgsConstructor;
 
