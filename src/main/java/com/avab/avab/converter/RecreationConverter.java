@@ -3,7 +3,13 @@ package com.avab.avab.converter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.avab.avab.domain.*;
+import com.avab.avab.domain.Recreation;
+import com.avab.avab.domain.RecreationHashtag;
+import com.avab.avab.domain.RecreationKeyword;
+import com.avab.avab.domain.RecreationAge;
+import com.avab.avab.domain.RecreationPreparation;
+import com.avab.avab.domain.RecreationWay;
+import com.avab.avab.domain.RecreationGender;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
