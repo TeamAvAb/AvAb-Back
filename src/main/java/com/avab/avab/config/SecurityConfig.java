@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,18 +22,14 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtRequestFilter jwtRequestFilter;
-    private final String[] securityAllowArray = {"/api/login", "/health"};
-
-    @Bean
-    public WebSecurityCustomizer configure() {
-        return web ->
-                web.ignoring()
-                        .requestMatchers(
-                                "/error",
-                                "/swagger-ui/**",
-                                "/swagger-resources/**",
-                                "/v3/api-docs/**");
-    }
+    private final String[] securityAllowArray = {
+        "/api/login",
+        "/health",
+        "/error",
+        "/swagger-ui/**",
+        "/swagger-resources/**",
+        "/v3/api-docs/**"
+    };
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
