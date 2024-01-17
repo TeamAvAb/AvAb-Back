@@ -28,7 +28,8 @@ public class SecurityConfig {
         "/error",
         "/swagger-ui/**",
         "/swagger-resources/**",
-        "/v3/api-docs/**"
+        "/v3/api-docs/**",
+        "/api/recreations/popular"
     };
 
     @Bean

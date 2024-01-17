@@ -52,6 +52,8 @@ public class Recreation extends BaseEntity {
 
     private Integer playTime;
 
+    private Long viewCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;
