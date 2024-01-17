@@ -48,6 +48,8 @@ public class SecurityConfig {
                         authorize
                                 .requestMatchers("api/login")
                                 .permitAll()
+                                .requestMatchers("/health")
+                                .permitAll()
                                 .anyRequest()
                                 .hasAnyAuthority("ROLE_USER"));
 
