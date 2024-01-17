@@ -1,8 +1,8 @@
 package com.avab.avab.domain;
 
-import com.avab.avab.domain.common.BaseEntity;
-import com.avab.avab.domain.mapping.RecreationFavorite;
-import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,8 +13,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
+
+import com.avab.avab.domain.common.BaseEntity;
+import com.avab.avab.domain.mapping.RecreationFavorite;
+import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
