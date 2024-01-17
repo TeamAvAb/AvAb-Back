@@ -22,6 +22,15 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtRequestFilter jwtRequestFilter;
+    private final String[] securityAllowArray = {
+        "/api/login",
+        "/health",
+        "/error",
+        "/swagger-ui/**",
+        "/swagger-resources/**",
+        "/v3/api-docs/**",
+        "/api/recreations/popular"
+    };
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -46,7 +55,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(
                 (authorize) ->
                         authorize
-                                .requestMatchers("api/login")
+                                .requestMatchers(securityAllowArray)
                                 .permitAll()
                                 .anyRequest()
                                 .hasAnyAuthority("ROLE_USER"));
