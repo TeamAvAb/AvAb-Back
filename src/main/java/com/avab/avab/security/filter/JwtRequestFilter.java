@@ -14,9 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
-import com.avab.avab.apiPayload.exception.auth.AuthException;
-import com.avab.avab.security.provider.JwtTokenProvider;
+import com.avab.avab.apiPayload.exception.AuthException;
 import com.avab.avab.security.principal.PrincipalDetailsService;
+import com.avab.avab.security.provider.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
 
@@ -49,7 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext()
                             .setAuthentication(usernamePasswordAuthenticationToken);
                 } else {
-                    throw new AuthException(ErrorStatus.AUTH_USER_NOT_FOUND);
+                    throw new AuthException(ErrorStatus.USER_NOT_FOUND);
                 }
             } else {
                 throw new AuthException(ErrorStatus.AUTH_INVALID_TOKEN);
