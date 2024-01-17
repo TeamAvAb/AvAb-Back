@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
-import com.avab.avab.apiPayload.exception.auth.AuthException;
+import com.avab.avab.apiPayload.exception.AuthException;
 import com.avab.avab.domain.User;
 import com.avab.avab.repository.UserRepository;
 
@@ -25,7 +25,7 @@ public class PrincipalDetailsService implements UserDetailsService {
         User user =
                 userRepository
                         .findById(Long.parseLong(userId))
-                        .orElseThrow(() -> new AuthException(ErrorStatus.AUTH_USER_NOT_FOUND));
+                        .orElseThrow(() -> new AuthException(ErrorStatus.USER_NOT_FOUND));
 
         return new PrincipalDetails(user);
     }

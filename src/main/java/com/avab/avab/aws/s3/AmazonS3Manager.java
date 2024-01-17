@@ -11,7 +11,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
-import com.avab.avab.apiPayload.exception.S3.S3Exception;
+import com.avab.avab.apiPayload.exception.S3Exception;
 import com.avab.avab.config.AmazonConfig;
 
 import lombok.RequiredArgsConstructor;

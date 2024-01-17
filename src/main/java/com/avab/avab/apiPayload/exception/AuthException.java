@@ -1,7 +1,6 @@
-package com.avab.avab.apiPayload.exception.auth;
+package com.avab.avab.apiPayload.exception;
 
 import com.avab.avab.apiPayload.code.BaseErrorCode;
-import com.avab.avab.apiPayload.exception.GeneralException;
 
 public class AuthException extends GeneralException {
 
