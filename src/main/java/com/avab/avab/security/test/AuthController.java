@@ -1,11 +1,11 @@
 package com.avab.avab.security.test;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.avab.avab.apiPayload.BaseResponse;
-import com.avab.avab.auth.test.dto.LoginRequest;
-import com.avab.avab.auth.test.dto.LoginResponse;
-import com.avab.avab.apiPayload.ApiResponse;
 import com.avab.avab.security.test.dto.LoginRequest;
 import com.avab.avab.security.test.dto.LoginResponse;
 
