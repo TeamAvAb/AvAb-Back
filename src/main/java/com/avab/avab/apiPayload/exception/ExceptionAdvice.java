@@ -19,7 +19,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.avab.avab.apiPayload.ApiResponse;
+import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.apiPayload.code.ErrorReasonDTO;
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 
@@ -93,8 +93,8 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleExceptionInternal(
             Exception e, ErrorReasonDTO reason, HttpHeaders headers, HttpServletRequest request) {
 
-        ApiResponse<Object> body =
-                ApiResponse.onFailure(reason.getCode(), reason.getMessage(), null);
+        BaseResponse<Object> body =
+                BaseResponse.onFailure(reason.getCode(), reason.getMessage(), null);
 
         WebRequest webRequest = new ServletWebRequest(request);
         return super.handleExceptionInternal(e, body, headers, reason.getHttpStatus(), webRequest);
@@ -107,8 +107,8 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
             HttpStatus status,
             WebRequest request,
             String errorPoint) {
-        ApiResponse<Object> body =
-                ApiResponse.onFailure(
+        BaseResponse<Object> body =
+                BaseResponse.onFailure(
                         errorCommonStatus.getCode(), errorCommonStatus.getMessage(), errorPoint);
         return super.handleExceptionInternal(e, body, headers, status, request);
     }
@@ -119,8 +119,8 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
             ErrorStatus errorCommonStatus,
             WebRequest request,
             Map<String, String> errorArgs) {
-        ApiResponse<Object> body =
-                ApiResponse.onFailure(
+        BaseResponse<Object> body =
+                BaseResponse.onFailure(
                         errorCommonStatus.getCode(), errorCommonStatus.getMessage(), errorArgs);
         return super.handleExceptionInternal(
                 e, body, headers, errorCommonStatus.getHttpStatus(), request);
@@ -128,8 +128,8 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> handleExceptionInternalConstraint(
             Exception e, ErrorStatus errorCommonStatus, HttpHeaders headers, WebRequest request) {
-        ApiResponse<Object> body =
-                ApiResponse.onFailure(
+        BaseResponse<Object> body =
+                BaseResponse.onFailure(
                         errorCommonStatus.getCode(), errorCommonStatus.getMessage(), null);
         return super.handleExceptionInternal(
                 e, body, headers, errorCommonStatus.getHttpStatus(), request);
