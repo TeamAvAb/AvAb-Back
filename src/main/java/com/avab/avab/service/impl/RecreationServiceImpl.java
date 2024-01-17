@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.avab.avab.converter.RecreationConverter;
 import com.avab.avab.domain.Recreation;
+import com.avab.avab.dto.recreation.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.recreation.RecreationResponseDTO.PopularRecreationListDTO;
 import com.avab.avab.repository.RecreationRepository;
 import com.avab.avab.service.RecreationService;
@@ -26,5 +27,10 @@ public class RecreationServiceImpl implements RecreationService {
         return topRecreations.stream()
                 .map(RecreationConverter::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public DescriptionDTO getRecreationDescription(Long recreationId) {
+        Recreation recreation = recreationRepository.findById(recreationId).get();
+        return RecreationConverter.toDescriptionDTO(recreation);
     }
 }

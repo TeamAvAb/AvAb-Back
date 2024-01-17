@@ -3,11 +3,12 @@ package com.avab.avab.converter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.avab.avab.domain.Recreation;
-import com.avab.avab.domain.RecreationHashtag;
-import com.avab.avab.domain.RecreationKeyword;
+import com.avab.avab.domain.*;
+import com.avab.avab.domain.enums.Age;
+import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
+import com.avab.avab.dto.recreation.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.recreation.RecreationResponseDTO.PopularRecreationListDTO;
 
 public class RecreationConverter {
@@ -32,6 +33,44 @@ public class RecreationConverter {
                 .title(recreation.getTitle())
                 .imageUrl(recreation.getImageUrl())
                 .totalStars(recreation.getTotal_stars())
+                .build();
+    }
+
+    public static DescriptionDTO toDescriptionDTO(Recreation recreation) {
+        List<String> hashtagList =
+                recreation.getRecreationHashTagsList().stream()
+                        .map(RecreationHashtag::getHashtag)
+                        .collect(Collectors.toList());
+
+        List<Age> ageList =
+                recreation.getRecreationAgeList().stream()
+                        .map(RecreationAge::getAge)
+                        .collect(Collectors.toList());
+
+        List<String> preparationList =
+                recreation.getRecreationPreparationList().stream()
+                        .map(RecreationPreparation::getName)
+                        .collect(Collectors.toList());
+
+        List<Gender> genderList =
+                recreation.getRecreationGenderList().stream()
+                        .map(RecreationGender::getGender)
+                        .collect(Collectors.toList());
+
+        List<String> wayList =
+                recreation.getRecreationWayList().stream()
+                        .map(RecreationWay::getContents)
+                        .collect(Collectors.toList());
+
+        return DescriptionDTO.builder()
+                .summary(recreation.getSummary())
+                .minParticipants(recreation.getMinParticipants())
+                .maxParticipants(recreation.getMaxParticipants())
+                .hashTagList(hashtagList)
+                .genderList(genderList)
+                .ageList(ageList)
+                .preparationList(preparationList)
+                .wayList(wayList)
                 .build();
     }
 }

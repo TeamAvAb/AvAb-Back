@@ -2,11 +2,10 @@ package com.avab.avab.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.avab.avab.apiPayload.BaseResponse;
+import com.avab.avab.dto.recreation.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.recreation.RecreationResponseDTO.PopularRecreationListDTO;
 import com.avab.avab.service.RecreationService;
 
@@ -29,5 +28,15 @@ public class RecreationController {
     @GetMapping("/popular")
     public BaseResponse<List<PopularRecreationListDTO>> getTop3RecreationsByViewCount() {
         return BaseResponse.onSuccess(recreationService.getTop3RecreationsByViewCount());
+    }
+
+    @Operation(summary = "레크레이션 상세설명 조회 API", description = "레크레이션 상세설명을 조회합니다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+    })
+    @GetMapping("/description/{recreationId}")
+    public BaseResponse<DescriptionDTO> getRecreationDescription(
+            @PathVariable(name = "recreationId") Long recreationId) {
+        return BaseResponse.onSuccess(recreationService.getRecreationDescription(recreationId));
     }
 }
