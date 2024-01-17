@@ -1,4 +1,4 @@
-## ?? ????
+## Default profile
 spring:
   application:
     name: avab-dev
@@ -10,7 +10,7 @@ springdoc:
     operations-sorter: alpha
   use-fqn: true
 ---
-# ?? ????
+# Local Profile
 spring:
   config:
     activate:
@@ -26,13 +26,16 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
         show_sql: true
         format_sql: true
         use_sql_comments: true
         hbm2ddl:
           auto: update
         default_batch_fetch_size: 1000
+  data:
+    redis:
+      host: localhost
+      port: 6379
 # S3
 cloud:
   aws:
@@ -55,7 +58,7 @@ jwt:
   access-token-validity: ${JWT_ACCESS_TOKEN_TIME}
   refresh-token-validity: ${JWT_REFRESH_TOKEN_TIME}
 ---
-# ?? ????
+# Dev Profile
 spring:
   config:
     activate:
@@ -71,13 +74,16 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
         show_sql: true
         format_sql: true
         use_sql_comments: true
         hbm2ddl:
           auto: update
         default_batch_fetch_size: 1000
+  data:
+    redis:
+      host: ${REDIS_URL}
+      port: 6379
 # S3
 cloud:
   aws:
