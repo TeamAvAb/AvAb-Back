@@ -13,8 +13,8 @@ import com.avab.avab.converter.RecreationConverter;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.dto.recreation.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.recreation.RecreationResponseDTO.PopularRecreationListDTO;
-import com.avab.avab.security.handler.annotation.ExistRecreations;
 import com.avab.avab.service.RecreationService;
+import com.avab.avab.validation.annotation.ExistRecreation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,7 +43,7 @@ public class RecreationController {
     })
     @GetMapping("/{recreationId}")
     public BaseResponse<DescriptionDTO> getRecreationDescription(
-            @ExistRecreations @PathVariable(name = "recreationId") Long recreationId) {
+            @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
         Recreation recreation = recreationService.getRecreationDescription(recreationId);
         return BaseResponse.onSuccess(RecreationConverter.toDescriptionDTO(recreation));
     }

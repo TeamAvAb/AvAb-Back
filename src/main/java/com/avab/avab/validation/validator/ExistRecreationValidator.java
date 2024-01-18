@@ -1,4 +1,4 @@
-package com.avab.avab.security.handler.validator;
+package com.avab.avab.validation.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -7,17 +7,17 @@ import org.springframework.stereotype.Component;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.repository.RecreationRepository;
-import com.avab.avab.security.handler.annotation.ExistRecreations;
+import com.avab.avab.validation.annotation.ExistRecreation;
 
 import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor
-public class ExistRecreationValidator implements ConstraintValidator<ExistRecreations, Long> {
+public class ExistRecreationValidator implements ConstraintValidator<ExistRecreation, Long> {
     private final RecreationRepository recreationRepository;
 
     @Override
-    public void initialize(ExistRecreations constraintAnnotation) {
+    public void initialize(ExistRecreation constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
