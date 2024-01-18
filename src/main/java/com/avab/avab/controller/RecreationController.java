@@ -26,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/recreations")
 @RequiredArgsConstructor
 public class RecreationController {
-
     private final RecreationService recreationService;
 
     @Operation(summary = "인기 레크레이션 목록 조회 API", description = "조회수를 기준으로 인기 레크레이션 목록을 조회합니다.")
