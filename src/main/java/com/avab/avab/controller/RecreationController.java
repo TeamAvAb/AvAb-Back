@@ -37,7 +37,7 @@ public class RecreationController {
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
-    @GetMapping("/{recreationId}/description")
+    @GetMapping("/{recreationId}")
     public BaseResponse<DescriptionDTO> getRecreationDescription(
             @PathVariable(name = "recreationId") Long recreationId) {
         return BaseResponse.onSuccess(recreationService.getRecreationDescription(recreationId));
