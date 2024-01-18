@@ -68,7 +68,13 @@ public class RecreationConverter {
                         .map(RecreationWay::getContents)
                         .collect(Collectors.toList());
 
+        List<String> wayImgList =
+                recreation.getRecreationWayList().stream()
+                        .map(RecreationWay::getImageUrl)
+                        .collect(Collectors.toList());
+
         return DescriptionDTO.builder()
+                .recreationId(recreation.getId())
                 .summary(recreation.getSummary())
                 .minParticipants(recreation.getMinParticipants())
                 .maxParticipants(recreation.getMaxParticipants())
@@ -77,6 +83,7 @@ public class RecreationConverter {
                 .ageList(ageList)
                 .preparationList(preparationList)
                 .wayList(wayList)
+                .wayImgList(wayImgList)
                 .build();
     }
 }

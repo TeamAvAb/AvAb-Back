@@ -35,11 +35,13 @@ public class RecreationResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DescriptionDTO {
+        Long recreationId;
         String summary;
         List<String> hashTagList;
         List<Age> ageList;
         List<String> preparationList;
         List<String> wayList;
+        List<String> wayImgList;
         List<Gender> genderList;
         Integer minParticipants;
         Integer maxParticipants;
