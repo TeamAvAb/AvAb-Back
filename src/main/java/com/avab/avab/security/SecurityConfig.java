@@ -1,4 +1,4 @@
-package com.avab.avab.config;
+package com.avab.avab.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,8 @@ public class SecurityConfig {
         "/swagger-ui/**",
         "/swagger-resources/**",
         "/v3/api-docs/**",
-        "/api/recreations/popular"
+        "/api/recreations/popular",
+        "/api/recreations/search"
     };
 
     @Bean

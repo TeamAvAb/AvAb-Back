@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.avab.avab.domain.Recreation;
 
-public interface RecreationRepository extends JpaRepository<Recreation, Long> {
+public interface RecreationRepository
+        extends JpaRepository<Recreation, Long>, RecreationCustomRepository {
 
     @Query("SELECT r FROM Recreation r ORDER BY r.viewCount DESC")
     List<Recreation> findTop3ByOrderByViewCountDesc(Pageable pageable);
