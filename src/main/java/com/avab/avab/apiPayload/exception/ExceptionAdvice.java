@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,7 +30,18 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice(annotations = {RestController.class})
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
-    @org.springframework.web.bind.annotation.ExceptionHandler
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(
+            MissingServletRequestParameterException e,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+        String errorMessage = e.getParameterName() + ": 올바른 값이 아닙니다.";
+
+        return handleExceptionInternalRequestParam(e, headers, request, errorMessage);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<Object> validation(ConstraintViolationException e, WebRequest request) {
         String errorMessage =
                 e.getConstraintViolations().stream()
@@ -70,7 +82,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                 e, HttpHeaders.EMPTY, ErrorStatus.valueOf("_BAD_REQUEST"), request, errors);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler
+    @ExceptionHandler
     public ResponseEntity<Object> exception(Exception e, WebRequest request) {
         e.printStackTrace();
 
@@ -133,5 +145,16 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                         errorCommonStatus.getCode(), errorCommonStatus.getMessage(), null);
         return super.handleExceptionInternal(
                 e, body, headers, errorCommonStatus.getHttpStatus(), request);
+    }
+
+    private ResponseEntity<Object> handleExceptionInternalRequestParam(
+            Exception e, HttpHeaders headers, WebRequest request, String errorMessage) {
+        ErrorStatus errorStatus = ErrorStatus._BAD_REQUEST;
+        BaseResponse<String> body =
+                BaseResponse.onFailure(
+                        errorStatus.getCode(), errorStatus.getMessage(), errorMessage);
+
+        return super.handleExceptionInternal(
+                e, body, headers, errorStatus.getHttpStatus(), request);
     }
 }
