@@ -41,7 +41,7 @@ public class Recreation extends BaseEntity {
     @Column(length = 300)
     private String imageUrl;
 
-    private Float total_stars;
+    private Float totalStars;
 
     @Column(length = 300)
     private String summary;
