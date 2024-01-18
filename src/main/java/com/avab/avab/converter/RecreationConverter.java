@@ -45,8 +45,8 @@ public class RecreationConverter {
 
     public static WayDTO toWayDTO(RecreationWay recreationWay) {
         return WayDTO.builder()
-                .wayList(recreationWay.getContents())
-                .wayImgList(recreationWay.getImageUrl())
+                .contents(recreationWay.getContents())
+                .imageUrl(recreationWay.getImageUrl())
                 .build();
     }
 
