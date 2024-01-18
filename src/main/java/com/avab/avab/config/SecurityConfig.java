@@ -30,7 +30,7 @@ public class SecurityConfig {
         "/swagger-resources/**",
         "/v3/api-docs/**",
         "/api/recreations/popular",
-        "/api/recreations/{recreationId}/description"
+        "/api/recreations/{recreationId}"
     };
 
     @Bean
