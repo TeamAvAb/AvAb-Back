@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.avab.avab.apiPayload.BaseResponse;
+import com.avab.avab.converter.RecreationConverter;
+import com.avab.avab.domain.Recreation;
 import com.avab.avab.dto.recreation.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.recreation.RecreationResponseDTO.PopularRecreationListDTO;
 import com.avab.avab.service.RecreationService;
@@ -40,6 +42,7 @@ public class RecreationController {
     @GetMapping("/{recreationId}")
     public BaseResponse<DescriptionDTO> getRecreationDescription(
             @PathVariable(name = "recreationId") Long recreationId) {
-        return BaseResponse.onSuccess(recreationService.getRecreationDescription(recreationId));
+        Recreation recreation = recreationService.getRecreationDescription(recreationId);
+        return BaseResponse.onSuccess(RecreationConverter.toDescriptionDTO(recreation));
     }
 }
