@@ -40,10 +40,18 @@ public class RecreationResponseDTO {
         List<String> hashTagList;
         List<Age> ageList;
         List<String> preparationList;
-        List<String> wayList;
-        List<String> wayImgList;
+        List<WayDTO> wayList;
         List<Gender> genderList;
         Integer minParticipants;
         Integer maxParticipants;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class WayDTO {
+        String wayList;
+        String wayImgList;
     }
 }

@@ -16,6 +16,7 @@ import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.dto.recreation.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.recreation.RecreationResponseDTO.PopularRecreationListDTO;
+import com.avab.avab.dto.recreation.RecreationResponseDTO.WayDTO;
 
 public class RecreationConverter {
 
@@ -42,6 +43,13 @@ public class RecreationConverter {
                 .build();
     }
 
+    public static WayDTO toWayDTO(RecreationWay recreationWay) {
+        return WayDTO.builder()
+                .wayList(recreationWay.getContents())
+                .wayImgList(recreationWay.getImageUrl())
+                .build();
+    }
+
     public static DescriptionDTO toDescriptionDTO(Recreation recreation) {
         List<String> hashtagList =
                 recreation.getRecreationHashTagsList().stream()
@@ -63,14 +71,9 @@ public class RecreationConverter {
                         .map(RecreationGender::getGender)
                         .collect(Collectors.toList());
 
-        List<String> wayList =
+        List<WayDTO> wayList =
                 recreation.getRecreationWayList().stream()
-                        .map(RecreationWay::getContents)
-                        .collect(Collectors.toList());
-
-        List<String> wayImgList =
-                recreation.getRecreationWayList().stream()
-                        .map(RecreationWay::getImageUrl)
+                        .map(RecreationConverter::toWayDTO)
                         .collect(Collectors.toList());
 
         return DescriptionDTO.builder()
@@ -83,7 +86,6 @@ public class RecreationConverter {
                 .ageList(ageList)
                 .preparationList(preparationList)
                 .wayList(wayList)
-                .wayImgList(wayImgList)
                 .build();
     }
 }
