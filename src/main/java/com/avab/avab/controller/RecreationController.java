@@ -2,6 +2,7 @@ package com.avab.avab.controller;
 
 import java.util.List;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import com.avab.avab.converter.RecreationConverter;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.dto.recreation.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.recreation.RecreationResponseDTO.PopularRecreationListDTO;
+import com.avab.avab.security.handler.annotation.ExistRecreations;
 import com.avab.avab.service.RecreationService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
+@Validated
 @RestController
 @RequestMapping("/api/recreations")
 @RequiredArgsConstructor
@@ -41,7 +44,7 @@ public class RecreationController {
     })
     @GetMapping("/{recreationId}")
     public BaseResponse<DescriptionDTO> getRecreationDescription(
-            @PathVariable(name = "recreationId") Long recreationId) {
+            @ExistRecreations @PathVariable(name = "recreationId") Long recreationId) {
         Recreation recreation = recreationService.getRecreationDescription(recreationId);
         return BaseResponse.onSuccess(RecreationConverter.toDescriptionDTO(recreation));
     }
