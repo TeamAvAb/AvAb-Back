@@ -51,7 +51,7 @@ public class RecreationResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class WayDTO {
-        String wayList;
-        String wayImgList;
+        String contents;
+        String imageUrl;
     }
 }
