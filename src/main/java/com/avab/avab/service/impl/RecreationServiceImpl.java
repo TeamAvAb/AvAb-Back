@@ -27,4 +27,9 @@ public class RecreationServiceImpl implements RecreationService {
                 .map(RecreationConverter::convertToDTO)
                 .collect(Collectors.toList());
     }
+
+    public Recreation getRecreationDescription(Long recreationId) {
+        Recreation recreation = recreationRepository.findById(recreationId).get();
+        return recreation;
+    }
 }

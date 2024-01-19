@@ -2,6 +2,8 @@ package com.avab.avab.dto.recreation;
 
 import java.util.List;
 
+import com.avab.avab.domain.enums.Age;
+import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 
 import lombok.AllArgsConstructor;
@@ -26,5 +28,30 @@ public class RecreationResponseDTO {
         String imageUrl;
 
         Float totalStars;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DescriptionDTO {
+        Long recreationId;
+        String summary;
+        List<String> hashTagList;
+        List<Age> ageList;
+        List<String> preparationList;
+        List<WayDTO> wayList;
+        List<Gender> genderList;
+        Integer minParticipants;
+        Integer maxParticipants;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class WayDTO {
+        String contents;
+        String imageUrl;
     }
 }
