@@ -36,7 +36,6 @@ public enum ErrorStatus implements BaseErrorCode {
     SEARCH_CONDITION_INVALID(HttpStatus.BAD_REQUEST, "RECR_001", "검색 조건이 하나라도 존재해야 합니다."),
     RECREATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RECR_002", "존재하지 않는 레크레이션입니다.");
 
-
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;

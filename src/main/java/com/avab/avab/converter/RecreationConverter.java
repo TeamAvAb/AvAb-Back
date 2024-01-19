@@ -6,23 +6,22 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 
 import com.avab.avab.domain.Recreation;
+import com.avab.avab.domain.RecreationAge;
+import com.avab.avab.domain.RecreationGender;
 import com.avab.avab.domain.RecreationHashtag;
 import com.avab.avab.domain.RecreationKeyword;
-import com.avab.avab.domain.User;
-import com.avab.avab.domain.RecreationAge;
 import com.avab.avab.domain.RecreationPreparation;
 import com.avab.avab.domain.RecreationWay;
-import com.avab.avab.domain.RecreationGender;
+import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
+import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.PopularRecreationListDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
-import com.avab.avab.dto.recreation.RecreationResponseDTO.DescriptionDTO;
-import com.avab.avab.dto.recreation.RecreationResponseDTO.PopularRecreationListDTO;
-import com.avab.avab.dto.recreation.RecreationResponseDTO.WayDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.WayDTO;
 
 public class RecreationConverter {
 
