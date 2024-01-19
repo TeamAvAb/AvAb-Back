@@ -42,7 +42,7 @@ public class RecreationController {
 
     private final RecreationService recreationService;
 
-    @Operation(summary = "인기 레크레이션 목록 조회 API", description = "조회수를 기준으로 인기 레크레이션 목록을 조회합니다.")
+    @Operation(summary = "인기 레크레이션 목록 조회 API", description = "조회수를 기준으로 인기 레크레이션 목록을 조회합니다. by 루아")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
@@ -51,7 +51,7 @@ public class RecreationController {
         return BaseResponse.onSuccess(recreationService.getTop3RecreationsByViewCount());
     }
 
-    @Operation(summary = "레크레이션 상세설명 조회 API", description = "레크레이션 상세설명을 조회합니다.")
+    @Operation(summary = "레크레이션 상세설명 조회 API", description = "레크레이션 상세설명을 조회합니다. by 수기")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
@@ -62,7 +62,7 @@ public class RecreationController {
         return BaseResponse.onSuccess(RecreationConverter.toDescriptionDTO(recreation));
     }
 
-    @Operation(summary = "레크레이션 검색 API", description = "검색 키워드와 세부 필터를 이용해 레크레이션을 검색합니다.")
+    @Operation(summary = "레크레이션 검색 API", description = "검색 키워드와 세부 필터를 이용해 레크레이션을 검색합니다. by 보노")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
     @GetMapping("/search")
