@@ -29,12 +29,12 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
     @Override
     public Page<Recreation> searchRecreations(
             String searchKeyword,
-            Keyword keyword,
+            List<Keyword> keywords,
             Integer participants,
             Integer playTime,
-            Place place,
-            Gender gender,
-            Age age,
+            List<Place> places,
+            List<Gender> genders,
+            List<Age> ages,
             Pageable pageable) {
         QRecreation recreation = QRecreation.recreation;
 
@@ -44,12 +44,12 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                         .from(recreation)
                         .where(
                                 containsSearchKeyword(searchKeyword),
-                                eqKeyword(keyword),
+                                inKeyword(keywords),
                                 betweenParticipants(participants),
                                 loePlayTime(playTime),
-                                eqPlace(place),
-                                eqGender(gender),
-                                eqAge(age))
+                                inPlace(places),
+                                inGender(genders),
+                                inAge(ages))
                         .limit(pageable.getPageSize())
                         .offset(pageable.getOffset())
                         .fetch();
@@ -68,9 +68,9 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                 : null;
     }
 
-    private BooleanExpression eqKeyword(Keyword keyword) {
-        return keyword != null
-                ? recreation.recreationRecreationKeywordList.any().keyword.keyword.eq(keyword)
+    private BooleanExpression inKeyword(List<Keyword> keywords) {
+        return keywords != null
+                ? recreation.recreationRecreationKeywordList.any().keyword.keyword.in(keywords)
                 : null;
     }
 
@@ -87,15 +87,15 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
         return playTime != null ? recreation.playTime.loe(playTime) : null;
     }
 
-    private BooleanExpression eqPlace(Place place) {
-        return place != null ? recreation.recreationPlaceList.any().place.eq(place) : null;
+    private BooleanExpression inPlace(List<Place> places) {
+        return places != null ? recreation.recreationPlaceList.any().place.in(places) : null;
     }
 
-    private BooleanExpression eqGender(Gender gender) {
-        return gender != null ? recreation.recreationGenderList.any().gender.eq(gender) : null;
+    private BooleanExpression inGender(List<Gender> genders) {
+        return genders != null ? recreation.recreationGenderList.any().gender.in(genders) : null;
     }
 
-    private BooleanExpression eqAge(Age age) {
-        return age != null ? recreation.recreationAgeList.any().age.eq(age) : null;
+    private BooleanExpression inAge(List<Age> ages) {
+        return ages != null ? recreation.recreationAgeList.any().age.in(ages) : null;
     }
 }

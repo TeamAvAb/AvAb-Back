@@ -41,37 +41,37 @@ public class RecreationServiceImpl implements RecreationService {
     public Page<Recreation> searchRecreations(
             User user,
             String searchKeyword,
-            Keyword keyword,
+            List<Keyword> keywords,
             Integer participants,
             Integer playTime,
-            Place place,
-            Gender gender,
-            Age age,
+            List<Place> places,
+            List<Gender> genders,
+            List<Age> ages,
             Integer page) {
         if (!isAtLeastOneConditionNotNull(
-                searchKeyword, keyword, participants, playTime, place, gender, age)) {
+                searchKeyword, keywords, participants, playTime, places, genders, ages)) {
             throw new RecreationException(ErrorStatus.SEARCH_CONDITION_INVALID);
         }
 
         return recreationRepository.searchRecreations(
                 searchKeyword,
-                keyword,
+                keywords,
                 participants,
                 playTime,
-                place,
-                gender,
-                age,
+                places,
+                genders,
+                ages,
                 PageRequest.of(page, SEARCH_PAGE_SIZE));
     }
 
     private Boolean isAtLeastOneConditionNotNull(
             String searchKeyword,
-            Keyword keyword,
+            List<Keyword> keyword,
             Integer participants,
             Integer playTime,
-            Place place,
-            Gender gender,
-            Age age) {
+            List<Place> place,
+            List<Gender> gender,
+            List<Age> age) {
         return searchKeyword != null
                 || keyword != null
                 || participants != null

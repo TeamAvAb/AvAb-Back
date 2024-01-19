@@ -1,5 +1,7 @@
 package com.avab.avab.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,11 +15,11 @@ public interface RecreationCustomRepository {
 
     Page<Recreation> searchRecreations(
             String searchKeyword,
-            Keyword keyword,
+            List<Keyword> keywords,
             Integer participants,
             Integer playTime,
-            Place place,
-            Gender gender,
-            Age age,
+            List<Place> places,
+            List<Gender> genders,
+            List<Age> ages,
             Pageable page);
 }

@@ -19,11 +19,11 @@ public interface RecreationService {
     Page<Recreation> searchRecreations(
             User user,
             String searchKeyword,
-            Keyword keyword,
+            List<Keyword> keyword,
             Integer participants,
             Integer playTime,
-            Place place,
-            Gender gender,
-            Age age,
+            List<Place> place,
+            List<Gender> gender,
+            List<Age> age,
             Integer page);
 }
