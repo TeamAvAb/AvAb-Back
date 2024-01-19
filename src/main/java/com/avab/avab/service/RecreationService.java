@@ -11,6 +11,8 @@ import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
 import com.avab.avab.dto.response.RecreationResponseDTO.PopularRecreationListDTO;
+import com.avab.avab.domain.Recreation;
+import com.avab.avab.dto.recreation.RecreationResponseDTO.PopularRecreationListDTO;
 
 public interface RecreationService {
 
@@ -26,4 +28,6 @@ public interface RecreationService {
             List<Gender> gender,
             List<Age> age,
             Integer page);
+
+    Recreation getRecreationDescription(Long recreationId);
 }

@@ -37,6 +37,11 @@ public class RecreationServiceImpl implements RecreationService {
                 .collect(Collectors.toList());
     }
 
+    public Recreation getRecreationDescription(Long recreationId) {
+        Recreation recreation = recreationRepository.findById(recreationId).get();
+        return recreation;
+    }
+
     @Override
     public Page<Recreation> searchRecreations(
             User user,
