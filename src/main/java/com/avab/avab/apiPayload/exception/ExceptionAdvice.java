@@ -7,6 +7,7 @@ import java.util.Optional;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -31,6 +32,17 @@ import lombok.extern.slf4j.Slf4j;
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @Override
+    protected ResponseEntity<Object> handleTypeMismatch(
+            TypeMismatchException e,
+            HttpHeaders headers,
+            HttpStatusCode status,
+            WebRequest request) {
+        String errorMessage = e.getPropertyName() + ": 올바른 값이 아닙니다.";
+
+        return handleExceptionInternalMessage(e, headers, request, errorMessage);
+    }
+
+    @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
             MissingServletRequestParameterException e,
             HttpHeaders headers,
@@ -38,7 +50,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
             WebRequest request) {
         String errorMessage = e.getParameterName() + ": 올바른 값이 아닙니다.";
 
-        return handleExceptionInternalRequestParam(e, headers, request, errorMessage);
+        return handleExceptionInternalMessage(e, headers, request, errorMessage);
     }
 
     @ExceptionHandler
@@ -147,7 +159,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
                 e, body, headers, errorCommonStatus.getHttpStatus(), request);
     }
 
-    private ResponseEntity<Object> handleExceptionInternalRequestParam(
+    private ResponseEntity<Object> handleExceptionInternalMessage(
             Exception e, HttpHeaders headers, WebRequest request, String errorMessage) {
         ErrorStatus errorStatus = ErrorStatus._BAD_REQUEST;
         BaseResponse<String> body =
