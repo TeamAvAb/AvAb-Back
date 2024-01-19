@@ -16,8 +16,10 @@ import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
+import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.PopularRecreationListDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
@@ -131,5 +133,13 @@ public class RecreationConverter {
                 .preparationList(preparationList)
                 .wayList(wayList)
                 .build();
+    }
+
+    public static RecreationFavorite toRecreationFavorite(Recreation recreation, User user) {
+        return RecreationFavorite.builder().recreation(recreation).user(user).build();
+    }
+
+    public static FavoriteDTO toFavoriteDTO(Boolean isFavorite) {
+        return FavoriteDTO.builder().isFavorite(isFavorite).build();
     }
 }

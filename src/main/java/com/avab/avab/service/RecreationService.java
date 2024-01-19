@@ -28,4 +28,6 @@ public interface RecreationService {
             Integer page);
 
     Recreation getRecreationDescription(Long recreationId);
+
+    Boolean toggleFavoriteRecreation(Long recreationId, User user);
 }
