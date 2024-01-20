@@ -30,6 +30,7 @@ public class SecurityConfig {
         "/swagger-resources/**",
         "/v3/api-docs/**",
         "/api/recreations/popular",
+        "/api/recreations/search",
         "/api/recreations/{recreationId}"
     };
 

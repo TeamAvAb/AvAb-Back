@@ -1,4 +1,4 @@
-package com.avab.avab.dto.recreation;
+package com.avab.avab.dto.response;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,7 +35,35 @@ public class RecreationResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class RecreationPreviewDTO {
+
+        Long id;
+        List<String> hashtagList;
+        String title;
+        Float totalStars;
+        List<Keyword> keywordList;
+        String imageUrl;
+
+        @Schema(description = "즐겨찾기 여부, 미로그인시 null")
+        Boolean isFavorite;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RecreationPreviewListDTO {
+
+        List<RecreationPreviewDTO> recreationList;
+        Integer totalPages;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class DescriptionDTO {
+
         Long recreationId;
         String summary;
         List<String> hashTagList;
@@ -51,6 +80,7 @@ public class RecreationResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class WayDTO {
+
         String contents;
         String imageUrl;
     }
