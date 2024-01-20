@@ -84,4 +84,13 @@ public class RecreationResponseDTO {
         String contents;
         String imageUrl;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FavoriteDTO {
+
+        Boolean isFavorite;
+    }
 }

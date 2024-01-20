@@ -1,8 +1,7 @@
-package com.avab.avab.config;
+package com.avab.avab.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -13,6 +12,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.avab.avab.security.filter.JwtRequestFilter;
+import com.avab.avab.security.handler.JwtAccessDeniedHandler;
+import com.avab.avab.security.handler.JwtAuthenticationEntryPoint;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +23,9 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
     private final JwtRequestFilter jwtRequestFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
     private final String[] securityAllowArray = {
         "/api/login",
         "/health",
@@ -42,7 +46,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
-        http.cors(Customizer.withDefaults());
 
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
@@ -54,13 +57,19 @@ public class SecurityConfig {
                 sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
+        http.exceptionHandling(
+                (configurer ->
+                        configurer
+                                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                                .accessDeniedHandler(jwtAccessDeniedHandler)));
+
         http.authorizeHttpRequests(
                 (authorize) ->
                         authorize
                                 .requestMatchers(securityAllowArray)
                                 .permitAll()
                                 .anyRequest()
-                                .hasAnyAuthority("ROLE_USER"));
+                                .authenticated());
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
