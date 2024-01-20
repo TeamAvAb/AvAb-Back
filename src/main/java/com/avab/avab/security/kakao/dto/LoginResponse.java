@@ -1,4 +1,4 @@
-package com.avab.avab.security.test.dto;
+package com.avab.avab.security.kakao.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

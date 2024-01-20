@@ -57,6 +57,11 @@ jwt:
   secret: ${JWT_SECRET_KEY}
   access-token-validity: ${JWT_ACCESS_TOKEN_TIME}
   refresh-token-validity: ${JWT_REFRESH_TOKEN_TIME}
+#kakao
+kakao:
+  auth:
+    client: ${CLIENT_ID}
+    redirect: ${REDIRECT_URI}
 ---
 # Dev Profile
 spring:
@@ -105,4 +110,9 @@ jwt:
   secret: ${JWT_SECRET_KEY}
   access-token-validity: ${JWT_ACCESS_TOKEN_TIME}
   refresh-token-validity: ${JWT_REFRESH_TOKEN_TIME}
+#kakao
+kakao:
+  auth:
+    client: ${CLIENT_ID}
+    redirect: ${REDIRECT_URI}
 ---
