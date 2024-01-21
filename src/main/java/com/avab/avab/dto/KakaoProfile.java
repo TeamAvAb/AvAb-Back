@@ -1,37 +1,26 @@
 package com.avab.avab.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Getter;
 
 @Getter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class KakaoProfile {
 
-    private Long id;
-    private String connected_at;
     private Properties properties;
     private KakaoAccount kakao_account;
 
     @Getter
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public class Properties {
-
         private String nickname;
     }
 
     @Getter
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public class KakaoAccount {
-
-        private Boolean profile_nickname_needs_agreement;
-        private Profile profile;
-        private Boolean name_needs_agreement;
         private String name;
-        private Boolean has_email;
-        private Boolean email_needs_agreement;
-        private Boolean is_email_valid;
-        private Boolean is_email_verified;
         private String email;
-
-        public class Profile {
-
-            private String nickname;
-        }
     }
 }

@@ -8,5 +8,4 @@ public interface AuthService {
     OAuthResponse kakaoLogin(String code);
 
     TokenRefreshResponse refresh(String refreshToken);
-
 }

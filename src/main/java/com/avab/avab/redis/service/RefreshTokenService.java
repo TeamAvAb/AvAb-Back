@@ -1,13 +1,15 @@
 package com.avab.avab.redis.service;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.AuthException;
 import com.avab.avab.redis.domain.RefreshToken;
 import com.avab.avab.redis.repository.RefreshTokenRepository;
 import com.avab.avab.security.provider.JwtTokenProvider;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +21,9 @@ public class RefreshTokenService {
     @Transactional(readOnly = true)
     public boolean isEqualsToken(String refreshToken) {
         RefreshToken savedrefreshToken =
-            refreshTokenRepository
-                .findById(jwtTokenProvider.getId(refreshToken))
-                .orElseThrow(
-                    () -> new AuthException(ErrorStatus.NOT_CONTAIN_TOKEN));
+                refreshTokenRepository
+                        .findById(jwtTokenProvider.getId(refreshToken))
+                        .orElseThrow(() -> new AuthException(ErrorStatus.NOT_CONTAIN_TOKEN));
 
         return savedrefreshToken.getToken().equals(refreshToken);
     }
@@ -30,7 +31,7 @@ public class RefreshTokenService {
     @Transactional
     public void saveToken(String refreshToken) {
         RefreshToken newRefreshToken =
-            RefreshToken.builder()
+                RefreshToken.builder()
                         .id(jwtTokenProvider.getId(refreshToken))
                         .token(refreshToken)
                         .build();

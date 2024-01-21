@@ -1,15 +1,5 @@
 package com.avab.avab.security.provider;
 
-import com.avab.avab.apiPayload.code.status.ErrorStatus;
-import com.avab.avab.apiPayload.exception.AuthException;
-import com.avab.avab.dto.KakaoProfile;
-import com.avab.avab.dto.OAuthToken;
-import com.avab.avab.redis.service.RefreshTokenService;
-import com.avab.avab.repository.UserRepository;
-import com.avab.avab.security.principal.PrincipalDetailsService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +9,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import com.avab.avab.apiPayload.code.status.ErrorStatus;
+import com.avab.avab.apiPayload.exception.AuthException;
+import com.avab.avab.dto.KakaoProfile;
+import com.avab.avab.dto.OAuthToken;
+import com.avab.avab.redis.service.RefreshTokenService;
+import com.avab.avab.repository.UserRepository;
+import com.avab.avab.security.principal.PrincipalDetailsService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -49,14 +51,14 @@ public class KakaoAuthProvider {
         params.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
-            new HttpEntity<>(params, headers);
+                new HttpEntity<>(params, headers);
 
         ResponseEntity<String> response =
-            restTemplate.exchange(
-                "https://kauth.kakao.com/oauth/token",
-                HttpMethod.POST,
-                kakaoTokenRequest,
-                String.class);
+                restTemplate.exchange(
+                        "https://kauth.kakao.com/oauth/token",
+                        HttpMethod.POST,
+                        kakaoTokenRequest,
+                        String.class);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -81,11 +83,11 @@ public class KakaoAuthProvider {
         HttpEntity<MultiValueMap<String, String>> kakaoProfileRequest = new HttpEntity<>(headers);
 
         ResponseEntity<String> response =
-            restTemplate.exchange(
-                "https://kapi.kakao.com/v2/user/me",
-                HttpMethod.POST,
-                kakaoProfileRequest,
-                String.class);
+                restTemplate.exchange(
+                        "https://kapi.kakao.com/v2/user/me",
+                        HttpMethod.POST,
+                        kakaoProfileRequest,
+                        String.class);
 
         ObjectMapper objectMapper = new ObjectMapper();
         KakaoProfile kakaoProfile = null;
