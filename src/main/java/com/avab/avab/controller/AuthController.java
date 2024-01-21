@@ -26,7 +26,7 @@ public class AuthController {
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
-    @GetMapping("/auth/login/kakao") // redirect uri를 여기에 적어야 합니다. (변수 안되서 그냥 상수로 적어 놓았습니다.)
+    @GetMapping("/auth/login/kakao")
     public BaseResponse<OAuthResponse> kakaoLogin(@RequestParam("code") String code) {
         return BaseResponse.onSuccess(authServiceImpl.kakaoLogin(code));
     }
