@@ -7,6 +7,7 @@ import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,8 +17,8 @@ public class RecreationResponseDTO {
 
     @Builder
     @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class PopularRecreationListDTO {
 
         List<Keyword> keywordList;
@@ -33,8 +34,8 @@ public class RecreationResponseDTO {
 
     @Builder
     @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class RecreationPreviewDTO {
 
         Long id;
@@ -50,8 +51,8 @@ public class RecreationResponseDTO {
 
     @Builder
     @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class RecreationPreviewListDTO {
 
         List<RecreationPreviewDTO> recreationList;
@@ -60,8 +61,8 @@ public class RecreationResponseDTO {
 
     @Builder
     @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class DescriptionDTO {
 
         Long recreationId;
@@ -77,8 +78,8 @@ public class RecreationResponseDTO {
 
     @Builder
     @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class WayDTO {
 
         String contents;
@@ -87,10 +88,19 @@ public class RecreationResponseDTO {
 
     @Builder
     @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class FavoriteDTO {
 
         Boolean isFavorite;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RecreationReviewCreatedDTO {
+
+        Long reviewId;
     }
 }
