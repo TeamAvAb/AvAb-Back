@@ -66,7 +66,7 @@ clean {
     delete file(querydslSrcDir)
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.generatedSourceOutputDirectory = file(querydslSrcDir)
 }
 
@@ -78,8 +78,15 @@ jar {
     enabled = false
 }
 
+tasks.register('addGitHooks', Copy) {
+    from new File(rootProject.rootDir, '.script/pre-commit')
+    into { new File(rootProject.rootDir, '.git/hooks') }
+    Runtime.getRuntime().exec("chmod -R +x .git/hooks/");
+}
+
 tasks.named('compileJava') {
     dependsOn 'spotlessApply'
+    dependsOn 'addGitHooks'
 }
 
 spotless {
