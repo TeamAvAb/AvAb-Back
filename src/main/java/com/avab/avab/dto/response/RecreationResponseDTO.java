@@ -73,6 +73,7 @@ public class RecreationResponseDTO {
         List<Gender> genderList;
         Integer minParticipants;
         Integer maxParticipants;
+        Long viewCount;
     }
 
     @Builder
