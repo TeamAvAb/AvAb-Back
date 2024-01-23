@@ -139,8 +139,10 @@ public class RecreationController {
 
     @Operation(summary = "레크레이션 리뷰 목록 조회 API", description = "레크레이션 리뷰를 조회합니다.")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "리뷰 조회 성공")})
+    @Parameter(name = "user", hidden = true)
     @GetMapping("/{recreationId}/reviews")
     public BaseResponse<RecreationReviewPageDTO> getRecreationReviews(
+            @AuthUser User user,
             @PathVariable("recreationId") @ExistRecreation Long recreationId,
             @RequestParam(name = "page", defaultValue = "0", required = false) @ValidatePage
                     Integer page) {
@@ -148,6 +150,7 @@ public class RecreationController {
         Page<RecreationReview> reviewPage =
                 recreationService.getRecreationReviews(recreationId, page);
 
-        return BaseResponse.onSuccess(RecreationConverter.toRecreationReviewPageDTO(reviewPage));
+        return BaseResponse.onSuccess(
+                RecreationConverter.toRecreationReviewPageDTO(reviewPage, user));
     }
 }

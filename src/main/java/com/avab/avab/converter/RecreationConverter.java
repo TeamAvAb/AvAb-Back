@@ -19,6 +19,7 @@ import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
+import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
@@ -30,6 +31,7 @@ import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.WayDTO;
+import com.avab.avab.dto.response.RecreationReviewResponseDTO.RecommendationDTO;
 
 public class RecreationConverter {
 
@@ -164,18 +166,23 @@ public class RecreationConverter {
     }
 
     public static RecreationReviewPageDTO toRecreationReviewPageDTO(
-            Page<RecreationReview> reviewPage) {
+            Page<RecreationReview> reviewPage, User user) {
         return RecreationReviewPageDTO.builder()
                 .reviewList(
                         reviewPage.stream()
-                                .map(RecreationConverter::toRecreationReviewDTO)
+                                .map(recreation -> toRecreationReviewDTO(recreation, user))
                                 .toList())
                 .totalPages(reviewPage.getTotalPages())
                 .build();
     }
 
-    public static RecreationReviewDTO toRecreationReviewDTO(RecreationReview review) {
+    public static RecreationReviewDTO toRecreationReviewDTO(RecreationReview review, User user) {
         User author = review.getAuthor();
+        RecreationReviewRecommendation recommendation =
+                review.getRecreationReviewRecommendationList().stream()
+                        .filter(rec -> rec.getUser().equals(user))
+                        .findFirst()
+                        .orElseGet(() -> null);
 
         return RecreationReviewDTO.builder()
                 .reviewId(review.getId())
@@ -190,6 +197,16 @@ public class RecreationConverter {
                 .contents(review.getContents())
                 .goodCount(review.getGoodCount())
                 .badCount(review.getBadCount())
+                .recommendation(
+                        user != null
+                                ? RecommendationDTO.builder()
+                                        .isRecommended(recommendation != null)
+                                        .type(
+                                                recommendation != null
+                                                        ? recommendation.getType()
+                                                        : null)
+                                        .build()
+                                : null)
                 .build();
     }
 }

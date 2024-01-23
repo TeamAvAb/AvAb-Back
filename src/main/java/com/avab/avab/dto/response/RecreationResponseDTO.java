@@ -6,6 +6,7 @@ import java.util.List;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
+import com.avab.avab.dto.response.RecreationReviewResponseDTO.RecommendationDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -119,6 +120,9 @@ public class RecreationResponseDTO {
         String contents;
         Integer goodCount;
         Integer badCount;
+
+        @Schema(description = "로그인하지 않은 경우 null", nullable = true)
+        RecommendationDTO recommendation;
 
         @Builder
         @Getter

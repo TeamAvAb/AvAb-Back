@@ -89,9 +89,14 @@ public class RecreationServiceImpl implements RecreationService {
 
     @Override
     public Page<RecreationReview> getRecreationReviews(Long recreationId, Integer page) {
+        Recreation recreation =
+                recreationRepository
+                        .findById(recreationId)
+                        .orElseThrow(
+                                () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
 
-        return recreationReviewRepository.findByRecreation_Id(
-                recreationId, PageRequest.of(page, REVIEW_PAGE_SIZE));
+        return recreationReviewRepository.findByRecreation(
+                recreation, PageRequest.of(page, REVIEW_PAGE_SIZE));
     }
 
     @Override
