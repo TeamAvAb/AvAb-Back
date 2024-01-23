@@ -1,12 +1,10 @@
 package com.avab.avab.apiPayload.code.status;
 
-import org.springframework.http.HttpStatus;
-
 import com.avab.avab.apiPayload.code.BaseErrorCode;
 import com.avab.avab.apiPayload.code.ErrorReasonDTO;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
@@ -34,7 +32,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // Recreation 관련
     SEARCH_CONDITION_INVALID(HttpStatus.BAD_REQUEST, "RECR_001", "검색 조건이 하나라도 존재해야 합니다."),
-    RECREATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RECR_002", "존재하지 않는 레크레이션입니다.");
+    RECREATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RECR_002", "존재하지 않는 레크레이션입니다."),
+
+    // RecreationReview 관련
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REV_001", "존재하지 않는 리뷰입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
@@ -48,10 +49,10 @@ public enum ErrorStatus implements BaseErrorCode {
     @Override
     public ErrorReasonDTO getReasonHttpStatus() {
         return ErrorReasonDTO.builder()
-                .message(message)
-                .code(code)
-                .isSuccess(false)
-                .httpStatus(httpStatus)
-                .build();
+                             .message(message)
+                             .code(code)
+                             .isSuccess(false)
+                             .httpStatus(httpStatus)
+                             .build();
     }
 }
