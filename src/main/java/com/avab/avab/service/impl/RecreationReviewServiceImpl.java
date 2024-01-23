@@ -36,26 +36,29 @@ public class RecreationReviewServiceImpl implements RecreationReviewService {
                         .orElseThrow(
                                 () -> new RecreationReviewException(ErrorStatus.REVIEW_NOT_FOUND));
 
-        Optional<RecreationReviewRecommendation> recommendation =
+        Optional<RecreationReviewRecommendation> queryRecommendation =
                 recreationReviewRecommendationRepository.findByRecreationReviewAndUser(
                         review, user);
 
-        RecreationReviewRecommendation updatedRecommendation = null;
-        if (recommendation.isEmpty()) {
-            updatedRecommendation =
+        RecreationReviewRecommendation recommendation = null;
+
+        if (queryRecommendation.isEmpty()) {
+            recommendation =
                     RecreationReviewConverter.toRecreationReviewRecommendation(
                             user, review, request);
-            return recreationReviewRecommendationRepository.save(updatedRecommendation);
+            return recreationReviewRecommendationRepository.save(recommendation);
         }
 
-        updatedRecommendation = recommendation.get();
-        if (updatedRecommendation.getType().equals(request.getType())) {
-            recreationReviewRecommendationRepository.delete(updatedRecommendation);
+        recommendation = queryRecommendation.get();
+        if (recommendation.getType().equals(request.getType())) {
+            recreationReviewRecommendationRepository.delete(recommendation);
             return null;
         }
 
-        updatedRecommendation.toggleType();
-        return updatedRecommendation;
+        recreationReviewRecommendationRepository.delete(recommendation);
+        recommendation =
+                RecreationReviewConverter.toRecreationReviewRecommendation(user, review, request);
+        return recreationReviewRecommendationRepository.save(recommendation);
     }
 
     @Override
