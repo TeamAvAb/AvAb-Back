@@ -61,6 +61,7 @@ jwt:
 kakao:
   auth:
     client: ${CLIENT_ID}
+    redirect-uri: ${REDIRECT_URI}
 ---
 # Dev Profile
 spring:
@@ -113,4 +114,5 @@ jwt:
 kakao:
   auth:
     client: ${CLIENT_ID}
+    redirect-uri: ${REDIRECT_URI}
 ---

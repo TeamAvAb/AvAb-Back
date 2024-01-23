@@ -37,4 +37,13 @@ public class RefreshTokenService {
                         .build();
         refreshTokenRepository.save(newRefreshToken);
     }
+
+    @Transactional
+    public void deleteToken(Long userId) {
+        RefreshToken refreshToken =
+                refreshTokenRepository
+                        .findById(userId)
+                        .orElseThrow(() -> new AuthException(ErrorStatus.NOT_CONTAIN_TOKEN));
+        refreshTokenRepository.delete(refreshToken);
+    }
 }

@@ -1,13 +1,12 @@
 package com.avab.avab.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.avab.avab.apiPayload.BaseResponse;
+import com.avab.avab.domain.User;
 import com.avab.avab.dto.response.AuthResponseDTO.OAuthResponse;
 import com.avab.avab.dto.response.AuthResponseDTO.TokenRefreshResponse;
+import com.avab.avab.security.handler.annotation.AuthUser;
 import com.avab.avab.security.handler.annotation.ExtractToken;
 import com.avab.avab.service.impl.AuthServiceImpl;
 
@@ -40,5 +39,15 @@ public class AuthController {
     @PostMapping("/auth/refresh")
     public BaseResponse<TokenRefreshResponse> refresh(@ExtractToken String refreshToken) {
         return BaseResponse.onSuccess(authServiceImpl.refresh(refreshToken));
+    }
+
+    @Operation(summary = "로그아웃 API", description = "REDIS의 refresh 토큰을 없애주는 API입니다. by 준환")
+    @ApiResponses({
+        @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+    })
+    @DeleteMapping("/auth/logout")
+    public BaseResponse<String> logout(@AuthUser User user) {
+        authServiceImpl.logout(user.getId());
+        return BaseResponse.onSuccess("로그아웃에 성공하였습니다.");
     }
 }

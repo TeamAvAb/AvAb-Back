@@ -75,4 +75,8 @@ public class AuthServiceImpl implements AuthService {
         refreshTokenService.saveToken(newRefreshToken);
         return AuthConverter.toTokenRefreshResponse(accessToken, newRefreshToken);
     }
+
+    public void logout(Long userId) {
+        refreshTokenService.deleteToken(userId);
+    }
 }

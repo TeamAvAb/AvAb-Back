@@ -34,6 +34,9 @@ public class KakaoAuthProvider {
     @Value("${kakao.auth.client}")
     private String client;
 
+    @Value("${kakao.auth.redirect-uri}")
+    private String redirect;
+
     // code로 access 토큰 요청하기
     public OAuthToken requestToken(String code) {
         RestTemplate restTemplate = new RestTemplate();
@@ -44,7 +47,7 @@ public class KakaoAuthProvider {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", client);
-        params.add("redirect_uri", "http://localhost:8080/auth/login/kakao");
+        params.add("redirect_uri", redirect);
         params.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
