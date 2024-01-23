@@ -135,6 +135,7 @@ public class RecreationConverter {
                 .ageList(ageList)
                 .preparationList(preparationList)
                 .wayList(wayList)
+                .viewCount(recreation.getViewCount())
                 .build();
     }
 
