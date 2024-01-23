@@ -41,7 +41,7 @@ public class RecreationReview extends BaseEntity {
 
     private Integer stars;
 
-    @Column(length = 300)
+    @Column(length = 500)
     private String contents;
 
     private Integer goodCount;
