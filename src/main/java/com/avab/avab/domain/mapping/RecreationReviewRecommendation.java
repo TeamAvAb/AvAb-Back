@@ -44,4 +44,11 @@ public class RecreationReviewRecommendation extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recreation_review_id")
     private RecreationReview recreationReview;
+
+    public void toggleType() {
+        this.type =
+                this.type == RecommendationType.GOOD
+                        ? RecommendationType.BAD
+                        : RecommendationType.GOOD;
+    }
 }

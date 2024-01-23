@@ -1,10 +1,12 @@
 package com.avab.avab.apiPayload.code.status;
 
+import org.springframework.http.HttpStatus;
+
 import com.avab.avab.apiPayload.code.BaseErrorCode;
 import com.avab.avab.apiPayload.code.ErrorReasonDTO;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
@@ -49,10 +51,10 @@ public enum ErrorStatus implements BaseErrorCode {
     @Override
     public ErrorReasonDTO getReasonHttpStatus() {
         return ErrorReasonDTO.builder()
-                             .message(message)
-                             .code(code)
-                             .isSuccess(false)
-                             .httpStatus(httpStatus)
-                             .build();
+                .message(message)
+                .code(code)
+                .isSuccess(false)
+                .httpStatus(httpStatus)
+                .build();
     }
 }
