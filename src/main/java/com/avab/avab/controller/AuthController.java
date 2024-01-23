@@ -8,7 +8,7 @@ import com.avab.avab.dto.response.AuthResponseDTO.OAuthResponse;
 import com.avab.avab.dto.response.AuthResponseDTO.TokenRefreshResponse;
 import com.avab.avab.security.handler.annotation.AuthUser;
 import com.avab.avab.security.handler.annotation.ExtractToken;
-import com.avab.avab.service.impl.AuthServiceImpl;
+import com.avab.avab.service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthServiceImpl authServiceImpl;
+    private final AuthService authService;
 
     @Operation(summary = "카카오 로그인 API", description = "카카오 로그인 및 회원 가입을 진행하는 API입니다. by 준환")
     @ApiResponses({
@@ -27,7 +27,7 @@ public class AuthController {
     })
     @GetMapping("/auth/login/kakao")
     public BaseResponse<OAuthResponse> kakaoLogin(@RequestParam("code") String code) {
-        return BaseResponse.onSuccess(authServiceImpl.kakaoLogin(code));
+        return BaseResponse.onSuccess(authService.kakaoLogin(code));
     }
 
     @Operation(
@@ -38,7 +38,7 @@ public class AuthController {
     })
     @PostMapping("/auth/refresh")
     public BaseResponse<TokenRefreshResponse> refresh(@ExtractToken String refreshToken) {
-        return BaseResponse.onSuccess(authServiceImpl.refresh(refreshToken));
+        return BaseResponse.onSuccess(authService.refresh(refreshToken));
     }
 
     @Operation(summary = "로그아웃 API", description = "REDIS의 refresh 토큰을 없애주는 API입니다. by 준환")
@@ -47,7 +47,7 @@ public class AuthController {
     })
     @DeleteMapping("/auth/logout")
     public BaseResponse<String> logout(@AuthUser User user) {
-        authServiceImpl.logout(user.getId());
+        authService.logout(user.getId());
         return BaseResponse.onSuccess("로그아웃에 성공하였습니다.");
     }
 }
