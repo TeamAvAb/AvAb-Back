@@ -1,5 +1,6 @@
 package com.avab.avab.dto.response;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.avab.avab.domain.enums.Age;
@@ -103,5 +104,41 @@ public class RecreationResponseDTO {
     public static class RecreationReviewCreatedDTO {
 
         Long reviewId;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RecreationReviewDTO {
+
+        Long reviewId;
+        AuthorDTO author;
+        Integer stars;
+        LocalDateTime createdAt;
+        LocalDateTime updatedAt;
+        String contents;
+        Integer goodCount;
+        Integer badCount;
+
+        @Builder
+        @Getter
+        @NoArgsConstructor(access = AccessLevel.PROTECTED)
+        @AllArgsConstructor(access = AccessLevel.PROTECTED)
+        public static class AuthorDTO {
+
+            Long userId;
+            String username;
+        }
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RecreationReviewPageDTO {
+
+        List<RecreationReviewDTO> reviewList;
+        Integer totalPages;
     }
 }

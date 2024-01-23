@@ -39,6 +39,7 @@ public class RecreationServiceImpl implements RecreationService {
     private final RecreationReviewRepository recreationReviewRepository;
     private final RecreationViewCountService recreationViewCountService;
     private final Integer SEARCH_PAGE_SIZE = 9;
+    private final Integer REVIEW_PAGE_SIZE = 2;
 
     public List<PopularRecreationListDTO> getTop3RecreationsByViewCount() {
         List<Recreation> topRecreations =
@@ -91,6 +92,13 @@ public class RecreationServiceImpl implements RecreationService {
 
         RecreationReview review = RecreationConverter.toRecreationReview(user, recreation, request);
         return recreationReviewRepository.save(review);
+    }
+
+    @Override
+    public Page<RecreationReview> getRecreationReviews(Long recreationId, Integer page) {
+
+        return recreationReviewRepository.findByRecreation_Id(
+                recreationId, PageRequest.of(page, REVIEW_PAGE_SIZE));
     }
 
     @Override

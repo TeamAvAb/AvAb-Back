@@ -34,4 +34,6 @@ public interface RecreationService {
     Boolean toggleFavoriteRecreation(Long recreationId, User user);
 
     RecreationReview createReview(User user, Long recreationId, PostRecreationReviewDTO request);
+
+    Page<RecreationReview> getRecreationReviews(Long recreationId, Integer page);
 }
