@@ -13,7 +13,7 @@ import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;
-import com.avab.avab.service.RecreationService;
+import com.avab.avab.service.UserService;
 import com.avab.avab.validation.annotation.ValidatePage;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "User", description = "사용자 관련 API")
 public class UserController {
 
-    private final RecreationService recreationService;
+    private final UserService userService;
 
     @Operation(
             summary = "즐겨찾는 레크레이션 목록 조회 API",
@@ -42,7 +42,7 @@ public class UserController {
             @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
                     Integer page,
             @AuthUser User user) {
-        Page<Recreation> recreationPage = recreationService.getFavoriteRecreations(user, page);
+        Page<Recreation> recreationPage = userService.getFavoriteRecreations(user, page);
 
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationPreviewListDTO(recreationPage, user));

@@ -30,6 +30,4 @@ public interface RecreationService {
     Recreation getRecreationDescription(Long recreationId);
 
     Boolean toggleFavoriteRecreation(Long recreationId, User user);
-
-    Page<Recreation> getFavoriteRecreations(User user, Integer page);
 }
