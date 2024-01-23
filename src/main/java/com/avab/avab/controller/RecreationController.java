@@ -32,6 +32,7 @@ import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.PopularRecreationListDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewPageDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;
 import com.avab.avab.service.RecreationService;
 import com.avab.avab.validation.annotation.ExistRecreation;
@@ -134,5 +135,19 @@ public class RecreationController {
 
         return BaseResponse.of(
                 SuccessStatus._CREATED, RecreationConverter.toRecreationReviewCreatedDTO(review));
+    }
+
+    @Operation(summary = "레크레이션 리뷰 목록 조회 API", description = "레크레이션 리뷰를 조회합니다.")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "리뷰 조회 성공")})
+    @GetMapping("/{recreationId}/reviews")
+    public BaseResponse<RecreationReviewPageDTO> getRecreationReviews(
+            @PathVariable("recreationId") @ExistRecreation Long recreationId,
+            @RequestParam(name = "page", defaultValue = "0", required = false) @ValidatePage
+                    Integer page) {
+
+        Page<RecreationReview> reviewPage =
+                recreationService.getRecreationReviews(recreationId, page);
+
+        return BaseResponse.onSuccess(RecreationConverter.toRecreationReviewPageDTO(reviewPage));
     }
 }

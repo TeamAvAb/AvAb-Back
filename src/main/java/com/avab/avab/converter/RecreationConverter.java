@@ -26,6 +26,9 @@ import com.avab.avab.dto.response.RecreationResponseDTO.PopularRecreationListDTO
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.WayDTO;
 
 public class RecreationConverter {
@@ -158,5 +161,35 @@ public class RecreationConverter {
 
     public static RecreationReviewCreatedDTO toRecreationReviewCreatedDTO(RecreationReview review) {
         return RecreationReviewCreatedDTO.builder().reviewId(review.getId()).build();
+    }
+
+    public static RecreationReviewPageDTO toRecreationReviewPageDTO(
+            Page<RecreationReview> reviewPage) {
+        return RecreationReviewPageDTO.builder()
+                .reviewList(
+                        reviewPage.stream()
+                                .map(RecreationConverter::toRecreationReviewDTO)
+                                .toList())
+                .totalPages(reviewPage.getTotalPages())
+                .build();
+    }
+
+    public static RecreationReviewDTO toRecreationReviewDTO(RecreationReview review) {
+        User author = review.getAuthor();
+
+        return RecreationReviewDTO.builder()
+                .reviewId(review.getId())
+                .stars(review.getStars())
+                .author(
+                        AuthorDTO.builder()
+                                .userId(author.getId())
+                                .username(author.getUsername())
+                                .build())
+                .createdAt(review.getCreatedAt())
+                .updatedAt(review.getUpdatedAt())
+                .contents(review.getContents())
+                .goodCount(review.getGoodCount())
+                .badCount(review.getBadCount())
+                .build();
     }
 }

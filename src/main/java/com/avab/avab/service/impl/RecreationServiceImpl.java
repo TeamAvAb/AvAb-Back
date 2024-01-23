@@ -87,6 +87,13 @@ public class RecreationServiceImpl implements RecreationService {
     }
 
     @Override
+    public Page<RecreationReview> getRecreationReviews(Long recreationId, Integer page) {
+
+        return recreationReviewRepository.findByRecreation_Id(
+                recreationId, PageRequest.of(page, 5));
+    }
+
+    @Override
     public Page<Recreation> searchRecreations(
             User user,
             String searchKeyword,
