@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.RecreationException;
@@ -30,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RecreationServiceImpl implements RecreationService {
 
     private final RecreationRepository recreationRepository;
@@ -52,6 +54,7 @@ public class RecreationServiceImpl implements RecreationService {
     }
 
     @Override
+    @Transactional
     public Boolean toggleFavoriteRecreation(Long recreationId, User user) {
         Recreation recreation =
                 recreationRepository
@@ -75,6 +78,7 @@ public class RecreationServiceImpl implements RecreationService {
     }
 
     @Override
+    @Transactional
     public RecreationReview createReview(
             User user, Long recreationId, PostRecreationReviewDTO request) {
         Recreation recreation =
