@@ -2,29 +2,36 @@ package com.avab.avab.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.avab.avab.apiPayload.BaseResponse;
+import com.avab.avab.apiPayload.code.status.SuccessStatus;
 import com.avab.avab.converter.RecreationConverter;
 import com.avab.avab.domain.Recreation;
+import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
+import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.PopularRecreationListDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;
 import com.avab.avab.service.RecreationService;
 import com.avab.avab.validation.annotation.ExistRecreation;
@@ -112,5 +119,20 @@ public class RecreationController {
         Boolean isFavorite = recreationService.toggleFavoriteRecreation(recreationId, user);
 
         return BaseResponse.onSuccess(RecreationConverter.toFavoriteDTO(isFavorite));
+    }
+
+    @Operation(summary = "레크레이션 리뷰 작성 API", description = "레크레이션에 리뷰를 작성합니다.")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON201", description = "리뷰 생성 성공")})
+    @Parameter(name = "user", hidden = true)
+    @PostMapping("/{recreationId}/reviews")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public BaseResponse<RecreationReviewCreatedDTO> postRecreationReviewDTO(
+            @AuthUser User user,
+            @PathVariable("recreationId") @ExistRecreation Long recreationId,
+            @Valid @RequestBody PostRecreationReviewDTO request) {
+        RecreationReview review = recreationService.createReview(user, recreationId, request);
+
+        return BaseResponse.of(
+                SuccessStatus._CREATED, RecreationConverter.toRecreationReviewCreatedDTO(review));
     }
 }
