@@ -69,6 +69,13 @@ public class RecreationServiceImpl implements RecreationService {
         }
     }
 
+    public Page<Recreation> getFavoriteRecreations(User user, Integer page) {
+        Page<RecreationFavorite> favoritesPage =
+                recreationFavoriteRepository.findByUser(user, PageRequest.of(page, 6));
+
+        return favoritesPage.map(RecreationFavorite::getRecreation);
+    }
+
     @Override
     public Page<Recreation> searchRecreations(
             User user,

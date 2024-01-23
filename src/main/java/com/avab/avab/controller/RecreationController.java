@@ -113,4 +113,20 @@ public class RecreationController {
 
         return BaseResponse.onSuccess(RecreationConverter.toFavoriteDTO(isFavorite));
     }
+
+    @Operation(
+            summary = "즐겨찾는 레크레이션 목록 조회 API",
+            description = "즐겨찾기가 되어있는 레크레이션 목록을 조회합니다. 한 페이지에 6개까지 출력되고, 페이지는 인자로 받습니다. _by 루아_")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
+    @GetMapping("/favorites")
+    @Parameter(name = "user", hidden = true)
+    public BaseResponse<RecreationPreviewListDTO> getFavoriteRecreations(
+            @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
+                    Integer page,
+            @AuthUser User user) {
+        Page<Recreation> recreationPage = recreationService.getFavoriteRecreations(user, page);
+
+        return BaseResponse.onSuccess(
+                RecreationConverter.toRecreationPreviewListDTO(recreationPage, user));
+    }
 }
