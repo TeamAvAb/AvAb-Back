@@ -12,11 +12,10 @@ import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
-import com.avab.avab.dto.response.RecreationResponseDTO.PopularRecreationListDTO;
 
 public interface RecreationService {
 
-    List<PopularRecreationListDTO> getTop3RecreationsByViewCount();
+    Page<Recreation> getTop9RecreationsByWeeklyViewCount();
 
     Page<Recreation> searchRecreations(
             User user,

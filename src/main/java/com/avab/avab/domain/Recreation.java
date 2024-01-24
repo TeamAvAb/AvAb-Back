@@ -56,6 +56,8 @@ public class Recreation extends BaseEntity {
 
     private Long viewCount;
 
+    private Long weeklyViewCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;

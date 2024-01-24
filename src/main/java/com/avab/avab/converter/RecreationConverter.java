@@ -9,20 +9,16 @@ import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationAge;
 import com.avab.avab.domain.RecreationGender;
 import com.avab.avab.domain.RecreationHashtag;
-import com.avab.avab.domain.RecreationKeyword;
 import com.avab.avab.domain.RecreationPreparation;
 import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.RecreationWay;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
-import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.mapping.RecreationFavorite;
-import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
-import com.avab.avab.dto.response.RecreationResponseDTO.PopularRecreationListDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
@@ -32,29 +28,6 @@ import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.WayDTO;
 
 public class RecreationConverter {
-
-    public static PopularRecreationListDTO convertToDTO(Recreation recreation) {
-        // 키워드 리스트 추출 및 변환
-        List<Keyword> keywordList =
-                recreation.getRecreationRecreationKeywordList().stream()
-                        .map(RecreationRecreationKeyword::getKeyword)
-                        .map(RecreationKeyword::getKeyword)
-                        .collect(Collectors.toList());
-
-        // 해시태그 리스트 추출 및 변환
-        List<String> hashtagList =
-                recreation.getRecreationHashTagsList().stream()
-                        .map(RecreationHashtag::getHashtag)
-                        .collect(Collectors.toList());
-
-        return PopularRecreationListDTO.builder()
-                .keywordList(keywordList)
-                .hashtagList(hashtagList)
-                .title(recreation.getTitle())
-                .imageUrl(recreation.getImageUrl())
-                .totalStars(recreation.getTotalStars())
-                .build();
-    }
 
     public static RecreationPreviewListDTO toRecreationPreviewListDTO(
             Page<Recreation> recreationPage, User user) {

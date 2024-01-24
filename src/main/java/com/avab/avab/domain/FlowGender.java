@@ -31,7 +31,7 @@ public class FlowGender {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(10")
+    @Column(columnDefinition = "VARCHAR(10)")
     private Gender gender;
 
     @ManyToOne(fetch = FetchType.LAZY)

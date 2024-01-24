@@ -72,6 +72,8 @@ public class QRecreation extends EntityPathBase<Recreation> {
 
     public final NumberPath<Long> viewCount = createNumber("viewCount", Long.class);
 
+    public final NumberPath<Long> weeklyViewCount = createNumber("weeklyViewCount", Long.class);
+
     public QRecreation(String variable) {
         this(Recreation.class, forVariable(variable), INITS);
     }
