@@ -22,21 +22,13 @@ public class QRecreationWay extends EntityPathBase<RecreationWay> {
 
     public static final QRecreationWay recreationWay = new QRecreationWay("recreationWay");
 
-    public final com.avab.avab.domain.common.QBaseEntity _super = new com.avab.avab.domain.common.QBaseEntity(this);
-
     public final StringPath contents = createString("contents");
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath imageUrl = createString("imageUrl");
 
     public final QRecreation recreation;
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public QRecreationWay(String variable) {
         this(RecreationWay.class, forVariable(variable), INITS);

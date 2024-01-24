@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-import com.avab.avab.domain.enums.Gender;
+import com.avab.avab.domain.enums.Age;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,17 +24,17 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RecreationGender {
+public class FlowAge {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(10)")
-    private Gender gender;
+    @Column(columnDefinition = "VARCHAR(20")
+    private Age age;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recreation_id")
-    private Recreation recreation;
+    @JoinColumn(name = "flow_id")
+    private Flow flow;
 }

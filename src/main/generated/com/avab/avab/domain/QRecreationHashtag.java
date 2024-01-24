@@ -22,19 +22,11 @@ public class QRecreationHashtag extends EntityPathBase<RecreationHashtag> {
 
     public static final QRecreationHashtag recreationHashtag = new QRecreationHashtag("recreationHashtag");
 
-    public final com.avab.avab.domain.common.QBaseEntity _super = new com.avab.avab.domain.common.QBaseEntity(this);
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
-
     public final StringPath hashtag = createString("hashtag");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final QRecreation recreation;
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public QRecreationHashtag(String variable) {
         this(RecreationHashtag.class, forVariable(variable), INITS);
