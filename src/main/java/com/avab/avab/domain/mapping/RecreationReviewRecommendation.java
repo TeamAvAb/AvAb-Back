@@ -13,7 +13,6 @@ import jakarta.persistence.ManyToOne;
 
 import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.User;
-import com.avab.avab.domain.common.BaseEntity;
 import com.avab.avab.domain.enums.RecommendationType;
 
 import lombok.AccessLevel;
@@ -27,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RecreationReviewRecommendation extends BaseEntity {
+public class RecreationReviewRecommendation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

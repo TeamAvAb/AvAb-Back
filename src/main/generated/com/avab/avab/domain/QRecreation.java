@@ -29,6 +29,8 @@ public class QRecreation extends EntityPathBase<Recreation> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final ListPath<com.avab.avab.domain.mapping.FlowRecreation, com.avab.avab.domain.mapping.QFlowRecreation> flowRecreationList = this.<com.avab.avab.domain.mapping.FlowRecreation, com.avab.avab.domain.mapping.QFlowRecreation>createList("flowRecreationList", com.avab.avab.domain.mapping.FlowRecreation.class, com.avab.avab.domain.mapping.QFlowRecreation.class, PathInits.DIRECT2);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath imageUrl = createString("imageUrl");
@@ -52,6 +54,8 @@ public class QRecreation extends EntityPathBase<Recreation> {
     public final ListPath<RecreationPreparation, QRecreationPreparation> recreationPreparationList = this.<RecreationPreparation, QRecreationPreparation>createList("recreationPreparationList", RecreationPreparation.class, QRecreationPreparation.class, PathInits.DIRECT2);
 
     public final ListPath<com.avab.avab.domain.mapping.RecreationRecreationKeyword, com.avab.avab.domain.mapping.QRecreationRecreationKeyword> recreationRecreationKeywordList = this.<com.avab.avab.domain.mapping.RecreationRecreationKeyword, com.avab.avab.domain.mapping.QRecreationRecreationKeyword>createList("recreationRecreationKeywordList", com.avab.avab.domain.mapping.RecreationRecreationKeyword.class, com.avab.avab.domain.mapping.QRecreationRecreationKeyword.class, PathInits.DIRECT2);
+
+    public final ListPath<com.avab.avab.domain.mapping.RecreationRecreationPurpose, com.avab.avab.domain.mapping.QRecreationRecreationPurpose> recreationRecreationPurposeList = this.<com.avab.avab.domain.mapping.RecreationRecreationPurpose, com.avab.avab.domain.mapping.QRecreationRecreationPurpose>createList("recreationRecreationPurposeList", com.avab.avab.domain.mapping.RecreationRecreationPurpose.class, com.avab.avab.domain.mapping.QRecreationRecreationPurpose.class, PathInits.DIRECT2);
 
     public final ListPath<RecreationReview, QRecreationReview> recreationReviewList = this.<RecreationReview, QRecreationReview>createList("recreationReviewList", RecreationReview.class, QRecreationReview.class, PathInits.DIRECT2);
 

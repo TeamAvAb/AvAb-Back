@@ -22,19 +22,11 @@ public class QRecreationRecreationKeyword extends EntityPathBase<RecreationRecre
 
     public static final QRecreationRecreationKeyword recreationRecreationKeyword = new QRecreationRecreationKeyword("recreationRecreationKeyword");
 
-    public final com.avab.avab.domain.common.QBaseEntity _super = new com.avab.avab.domain.common.QBaseEntity(this);
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final com.avab.avab.domain.QRecreationKeyword keyword;
 
     public final com.avab.avab.domain.QRecreation recreation;
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public QRecreationRecreationKeyword(String variable) {
         this(RecreationRecreationKeyword.class, forVariable(variable), INITS);

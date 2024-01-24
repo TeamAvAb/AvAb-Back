@@ -22,19 +22,11 @@ public class QRecreationPreparation extends EntityPathBase<RecreationPreparation
 
     public static final QRecreationPreparation recreationPreparation = new QRecreationPreparation("recreationPreparation");
 
-    public final com.avab.avab.domain.common.QBaseEntity _super = new com.avab.avab.domain.common.QBaseEntity(this);
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath name = createString("name");
 
     public final QRecreation recreation;
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public QRecreationPreparation(String variable) {
         this(RecreationPreparation.class, forVariable(variable), INITS);

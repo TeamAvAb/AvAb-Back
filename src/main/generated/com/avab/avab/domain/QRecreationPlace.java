@@ -22,19 +22,11 @@ public class QRecreationPlace extends EntityPathBase<RecreationPlace> {
 
     public static final QRecreationPlace recreationPlace = new QRecreationPlace("recreationPlace");
 
-    public final com.avab.avab.domain.common.QBaseEntity _super = new com.avab.avab.domain.common.QBaseEntity(this);
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final EnumPath<com.avab.avab.domain.enums.Place> place = createEnum("place", com.avab.avab.domain.enums.Place.class);
 
     public final QRecreation recreation;
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public QRecreationPlace(String variable) {
         this(RecreationPlace.class, forVariable(variable), INITS);
