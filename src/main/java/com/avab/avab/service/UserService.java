@@ -10,4 +10,6 @@ public interface UserService {
     User findUserById(Long userId);
 
     Page<Recreation> getFavoriteRecreations(User user, Integer page);
+
+    User updateUserName(String username, User user);
 }

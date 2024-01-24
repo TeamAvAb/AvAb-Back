@@ -37,4 +37,15 @@ public class UserServiceImpl implements UserService {
 
         return favoritesPage.map(RecreationFavorite::getRecreation);
     }
+
+    public User updateUserName(String username, User user) {
+
+        User existUser =
+                userRepository
+                        .findById(user.getId())
+                        .orElseThrow(() -> new UserException(ErrorStatus.USER_NOT_FOUND));
+
+        existUser.updateUserName(username);
+        return existUser;
+    }
 }

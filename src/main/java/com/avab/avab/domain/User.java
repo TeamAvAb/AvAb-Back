@@ -60,4 +60,8 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<RecreationReviewRecommendation> recreationReviewRecommendationList =
             new ArrayList<>();
+
+    public void updateUserName(String username) {
+        this.username = username;
+    }
 }
