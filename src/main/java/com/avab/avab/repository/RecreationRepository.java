@@ -12,8 +12,7 @@ import com.avab.avab.domain.Recreation;
 public interface RecreationRepository
         extends JpaRepository<Recreation, Long>, RecreationCustomRepository {
 
-    @Query("SELECT r FROM Recreation r ORDER BY r.weeklyViewCount DESC")
-    Page<Recreation> findTop9ByOrderByWeeklyViewCount(Pageable pageable);
+    Page<Recreation> findTop9ByOrderByWeeklyViewCountDesc(Pageable pageable);
 
     @Modifying
     @Query("UPDATE Recreation r SET r.viewCount = r.viewCount + :viewCount WHERE r.id = :id")

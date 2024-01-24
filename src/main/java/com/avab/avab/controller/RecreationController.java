@@ -59,12 +59,14 @@ public class RecreationController {
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
+    @Parameter(name = "user", hidden = true)
     @GetMapping("/popular")
-    public BaseResponse<RecreationPreviewListDTO> getTop9RecreationsByWeeklyViewCount() {
+    public BaseResponse<RecreationPreviewListDTO> getTop9RecreationsByWeeklyViewCount(
+            @AuthUser User user) {
         Page<Recreation> topRecreations = recreationService.getTop9RecreationsByWeeklyViewCount();
 
         return BaseResponse.onSuccess(
-                RecreationConverter.toRecreationPreviewListDTO(topRecreations, null));
+                RecreationConverter.toRecreationPreviewListDTO(topRecreations, user));
     }
 
     @Operation(summary = "레크레이션 상세설명 조회 API", description = "레크레이션 상세설명을 조회합니다. _by 수기_")
