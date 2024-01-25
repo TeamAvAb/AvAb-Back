@@ -29,7 +29,6 @@ import com.avab.avab.domain.enums.Place;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
-import com.avab.avab.dto.response.RecreationResponseDTO.PopularRecreationListDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewPageDTO;
@@ -60,9 +59,14 @@ public class RecreationController {
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
+    @Parameter(name = "user", hidden = true)
     @GetMapping("/popular")
-    public BaseResponse<List<PopularRecreationListDTO>> getTop3RecreationsByViewCount() {
-        return BaseResponse.onSuccess(recreationService.getTop3RecreationsByViewCount());
+    public BaseResponse<RecreationPreviewListDTO> getTop9RecreationsByWeeklyViewCount(
+            @AuthUser User user) {
+        Page<Recreation> topRecreations = recreationService.getTop9RecreationsByWeeklyViewCount();
+
+        return BaseResponse.onSuccess(
+                RecreationConverter.toRecreationPreviewListDTO(topRecreations, user));
     }
 
     @Operation(summary = "레크레이션 상세설명 조회 API", description = "레크레이션 상세설명을 조회합니다. _by 수기_")

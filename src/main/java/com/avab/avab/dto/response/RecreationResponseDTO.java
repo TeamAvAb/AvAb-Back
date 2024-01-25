@@ -21,23 +21,6 @@ public class RecreationResponseDTO {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class PopularRecreationListDTO {
-
-        List<Keyword> keywordList;
-
-        List<String> hashtagList;
-
-        String title;
-
-        String imageUrl;
-
-        Float totalStars;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class RecreationPreviewDTO {
 
         Long id;

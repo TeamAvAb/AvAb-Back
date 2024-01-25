@@ -31,7 +31,7 @@ public class FlowAge {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(20")
+    @Column(columnDefinition = "VARCHAR(20)")
     private Age age;
 
     @ManyToOne(fetch = FetchType.LAZY)
