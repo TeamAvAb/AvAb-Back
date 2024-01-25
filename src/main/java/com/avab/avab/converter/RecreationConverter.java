@@ -9,14 +9,19 @@ import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationAge;
 import com.avab.avab.domain.RecreationGender;
 import com.avab.avab.domain.RecreationHashtag;
+import com.avab.avab.domain.RecreationKeyword;
 import com.avab.avab.domain.RecreationPreparation;
+import com.avab.avab.domain.RecreationPurpose;
 import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.RecreationWay;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
+import com.avab.avab.domain.enums.Keyword;
+import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
+import com.avab.avab.domain.mapping.RecreationRecreationPurpose;
 import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
@@ -27,6 +32,8 @@ import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedD
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewPageDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RelatedRecreationDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RelatedRecreationListDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.WayDTO;
 import com.avab.avab.dto.response.RecreationReviewResponseDTO.RecommendationDTO;
 
@@ -182,6 +189,38 @@ public class RecreationConverter {
                                                         : null)
                                         .build()
                                 : null)
+                .build();
+    }
+
+    public static RelatedRecreationDTO toRelatedRecreationDTO(Recreation recreation) {
+        List<Keyword> keywordList =
+                recreation.getRecreationRecreationKeywordList().stream()
+                        .map(RecreationRecreationKeyword::getKeyword)
+                        .map(RecreationKeyword::getKeyword)
+                        .collect(Collectors.toList());
+
+        List<Purpose> purposeList =
+                recreation.getRecreationRecreationPurposeList().stream()
+                        .map(RecreationRecreationPurpose::getPurpose)
+                        .map(RecreationPurpose::getPurpose)
+                        .collect(Collectors.toList());
+
+        return RelatedRecreationDTO.builder()
+                .keywordList(keywordList)
+                .purposeList(purposeList)
+                .title(recreation.getTitle())
+                .pageUrl("/api/recreations/" + recreation.getId())
+                .totalStars(recreation.getTotalStars())
+                .build();
+    }
+
+    public static RelatedRecreationListDTO toRelatedRecreationListDTO(
+            List<Recreation> recreations) {
+        return RelatedRecreationListDTO.builder()
+                .relatedRecreationList(
+                        recreations.stream()
+                                .map(RecreationConverter::toRelatedRecreationDTO)
+                                .collect(Collectors.toList()))
                 .build();
     }
 }

@@ -18,6 +18,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
+import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.redis.service.RecreationViewCountService;
@@ -145,5 +146,22 @@ public class RecreationServiceImpl implements RecreationService {
                 || place != null
                 || gender != null
                 || age != null;
+    }
+
+    public List<Recreation> relatedRecreation(
+            Long recreationId,
+            List<Keyword> keyword,
+            List<Purpose> purpose,
+            Integer maxParticipants,
+            List<Age> age) {
+        return recreationRepository.relatedRecreations(
+                recreationId, keyword, purpose, maxParticipants, age);
+    }
+
+    @Override
+    public Recreation findByRecreationId(Long recreationId) {
+        return recreationRepository
+                .findById(recreationId)
+                .orElseThrow(() -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
     }
 }

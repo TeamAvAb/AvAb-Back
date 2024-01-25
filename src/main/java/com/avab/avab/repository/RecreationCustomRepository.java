@@ -10,6 +10,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
+import com.avab.avab.domain.enums.Purpose;
 
 public interface RecreationCustomRepository {
 
@@ -22,4 +23,11 @@ public interface RecreationCustomRepository {
             List<Gender> genders,
             List<Age> ages,
             Pageable page);
+
+    List<Recreation> relatedRecreations(
+            Long recreationId,
+            List<Keyword> keyword,
+            List<Purpose> purpose,
+            Integer maxParticipants,
+            List<Age> age);
 }

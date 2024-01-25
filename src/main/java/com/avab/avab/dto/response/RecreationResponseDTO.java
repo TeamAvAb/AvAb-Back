@@ -6,6 +6,7 @@ import java.util.List;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
+import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.dto.response.RecreationReviewResponseDTO.RecommendationDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -127,5 +128,25 @@ public class RecreationResponseDTO {
 
         List<RecreationReviewDTO> reviewList;
         Integer totalPages;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RelatedRecreationDTO {
+        String title;
+        Float totalStars;
+        List<Keyword> keywordList;
+        List<Purpose> purposeList;
+        String pageUrl;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RelatedRecreationListDTO {
+        List<RelatedRecreationDTO> relatedRecreationList;
     }
 }
