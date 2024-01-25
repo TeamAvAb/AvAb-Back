@@ -187,8 +187,8 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                             otherRecreation,
                             purposeMatchSize * 0.4
                                     + keywordMatchSize * 0.3
-                                    + ageMatchList * 0.15
-                                    + participantsMatch * 0.15));
+                                    + ageMatchList * 0.2
+                                    + participantsMatch * 0.10));
         }
 
         // 가중치별 내림차순 정렬
