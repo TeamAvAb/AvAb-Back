@@ -47,9 +47,12 @@ public class RecreationServiceImpl implements RecreationService {
 
     @Transactional
     public Recreation getRecreationDescription(Long recreationId) {
-        Recreation recreation = recreationRepository.findById(recreationId)
-                .orElseThrow(
-                () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));;
+        Recreation recreation =
+                recreationRepository
+                        .findById(recreationId)
+                        .orElseThrow(
+                                () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
+        ;
 
         recreationViewCountService.incrementViewCount(recreation.getId());
 
