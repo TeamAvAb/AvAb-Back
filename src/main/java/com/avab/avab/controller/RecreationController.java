@@ -1,7 +1,6 @@
 package com.avab.avab.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
@@ -21,17 +20,12 @@ import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.apiPayload.code.status.SuccessStatus;
 import com.avab.avab.converter.RecreationConverter;
 import com.avab.avab.domain.Recreation;
-import com.avab.avab.domain.RecreationAge;
-import com.avab.avab.domain.RecreationKeyword;
-import com.avab.avab.domain.RecreationPurpose;
 import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
-import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
-import com.avab.avab.domain.mapping.RecreationRecreationPurpose;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
@@ -170,28 +164,8 @@ public class RecreationController {
     @GetMapping("/{recreationId}/related")
     public BaseResponse<RelatedRecreationListDTO> relatedRecreation(
             @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
-        // 해당 레크레이션 받기
-        Recreation recreation = recreationService.findByRecreationId(recreationId);
-        // 해당레크레이션과 연관된 레크레이션 받아오기
-        List<Recreation> relatedRecreation =
-                recreationService.relatedRecreation(
-                        recreationId,
-                        // 키워드
-                        recreation.getRecreationRecreationKeywordList().stream()
-                                .map(RecreationRecreationKeyword::getKeyword)
-                                .map(RecreationKeyword::getKeyword)
-                                .collect(Collectors.toList()),
-                        // 목적
-                        recreation.getRecreationRecreationPurposeList().stream()
-                                .map(RecreationRecreationPurpose::getPurpose)
-                                .map(RecreationPurpose::getPurpose)
-                                .collect(Collectors.toList()),
-                        // 인원 최대
-                        recreation.getMaxParticipants(),
-                        // 연령대
-                        recreation.getRecreationAgeList().stream()
-                                .map(RecreationAge::getAge)
-                                .collect(Collectors.toList()));
+        List<Recreation> relatedRecreation = recreationService.relatedRecreations(recreationId);
+
         return BaseResponse.onSuccess(
                 RecreationConverter.toRelatedRecreationListDTO(relatedRecreation));
     }

@@ -2,6 +2,7 @@ package com.avab.avab.service.impl;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,14 +13,18 @@ import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.RecreationException;
 import com.avab.avab.converter.RecreationConverter;
 import com.avab.avab.domain.Recreation;
+import com.avab.avab.domain.RecreationAge;
+import com.avab.avab.domain.RecreationKeyword;
+import com.avab.avab.domain.RecreationPurpose;
 import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
-import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.domain.mapping.RecreationFavorite;
+import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
+import com.avab.avab.domain.mapping.RecreationRecreationPurpose;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.redis.service.RecreationViewCountService;
 import com.avab.avab.repository.RecreationFavoriteRepository;
@@ -52,7 +57,6 @@ public class RecreationServiceImpl implements RecreationService {
                         .findById(recreationId)
                         .orElseThrow(
                                 () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
-        ;
 
         recreationViewCountService.incrementViewCount(recreation.getId());
 
@@ -153,20 +157,26 @@ public class RecreationServiceImpl implements RecreationService {
                 || age != null;
     }
 
-    public List<Recreation> relatedRecreation(
-            Long recreationId,
-            List<Keyword> keyword,
-            List<Purpose> purpose,
-            Integer maxParticipants,
-            List<Age> age) {
-        return recreationRepository.relatedRecreations(
-                recreationId, keyword, purpose, maxParticipants, age);
-    }
+    public List<Recreation> relatedRecreations(Long recreationId) {
+        Recreation recreation =
+                recreationRepository
+                        .findById(recreationId)
+                        .orElseThrow(
+                                () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
 
-    @Override
-    public Recreation findByRecreationId(Long recreationId) {
-        return recreationRepository
-                .findById(recreationId)
-                .orElseThrow(() -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
+        return recreationRepository.relatedRecreations(
+                recreationId,
+                recreation.getRecreationRecreationKeywordList().stream()
+                        .map(RecreationRecreationKeyword::getKeyword)
+                        .map(RecreationKeyword::getKeyword)
+                        .collect(Collectors.toList()),
+                recreation.getRecreationRecreationPurposeList().stream()
+                        .map(RecreationRecreationPurpose::getPurpose)
+                        .map(RecreationPurpose::getPurpose)
+                        .collect(Collectors.toList()),
+                recreation.getMaxParticipants(),
+                recreation.getRecreationAgeList().stream()
+                        .map(RecreationAge::getAge)
+                        .collect(Collectors.toList()));
     }
 }
