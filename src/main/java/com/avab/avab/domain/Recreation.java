@@ -15,8 +15,10 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 import com.avab.avab.domain.common.BaseEntity;
+import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
+import com.avab.avab.domain.mapping.RecreationRecreationPurpose;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -41,7 +43,7 @@ public class Recreation extends BaseEntity {
     @Column(length = 300)
     private String imageUrl;
 
-    private Float total_stars;
+    private Float totalStars;
 
     @Column(length = 300)
     private String summary;
@@ -53,6 +55,8 @@ public class Recreation extends BaseEntity {
     private Integer playTime;
 
     private Long viewCount;
+
+    private Long weeklyViewCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
@@ -74,6 +78,9 @@ public class Recreation extends BaseEntity {
     private List<RecreationRecreationKeyword> recreationRecreationKeywordList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
+    private List<RecreationRecreationPurpose> recreationRecreationPurposeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<RecreationPlace> recreationPlaceList = new ArrayList<>();
 
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
@@ -84,4 +91,7 @@ public class Recreation extends BaseEntity {
 
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<RecreationReview> recreationReviewList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
+    private List<FlowRecreation> flowRecreationList = new ArrayList<>();
 }

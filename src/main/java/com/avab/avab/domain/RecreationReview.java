@@ -14,6 +14,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.avab.avab.domain.common.BaseEntity;
 import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
 
@@ -28,6 +31,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
+@DynamicInsert
 public class RecreationReview extends BaseEntity {
 
     @Id
@@ -36,7 +41,7 @@ public class RecreationReview extends BaseEntity {
 
     private Integer stars;
 
-    @Column(length = 300)
+    @Column(length = 500)
     private String contents;
 
     private Integer goodCount;

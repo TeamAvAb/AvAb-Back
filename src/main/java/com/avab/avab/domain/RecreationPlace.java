@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-import com.avab.avab.domain.common.BaseEntity;
 import com.avab.avab.domain.enums.Place;
 
 import lombok.AccessLevel;
@@ -25,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RecreationPlace extends BaseEntity {
+public class RecreationPlace {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -35,7 +35,6 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory)
             throws Exception {
-        System.out.println("hihi");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Object principal = null;
