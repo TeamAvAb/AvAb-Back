@@ -32,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RecreationServiceImpl implements RecreationService {
 
     private final RecreationRepository recreationRepository;
@@ -59,6 +60,7 @@ public class RecreationServiceImpl implements RecreationService {
     }
 
     @Override
+    @Transactional
     public Boolean toggleFavoriteRecreation(Long recreationId, User user) {
         Recreation recreation =
                 recreationRepository
@@ -82,6 +84,7 @@ public class RecreationServiceImpl implements RecreationService {
     }
 
     @Override
+    @Transactional
     public RecreationReview createReview(
             User user, Long recreationId, PostRecreationReviewDTO request) {
         Recreation recreation =
@@ -96,9 +99,14 @@ public class RecreationServiceImpl implements RecreationService {
 
     @Override
     public Page<RecreationReview> getRecreationReviews(Long recreationId, Integer page) {
+        Recreation recreation =
+                recreationRepository
+                        .findById(recreationId)
+                        .orElseThrow(
+                                () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
 
-        return recreationReviewRepository.findByRecreation_Id(
-                recreationId, PageRequest.of(page, REVIEW_PAGE_SIZE));
+        return recreationReviewRepository.findByRecreation(
+                recreation, PageRequest.of(page, REVIEW_PAGE_SIZE));
     }
 
     @Override
