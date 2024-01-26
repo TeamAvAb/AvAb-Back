@@ -179,4 +179,14 @@ public class RecreationServiceImpl implements RecreationService {
                         .map(RecreationAge::getAge)
                         .collect(Collectors.toList()));
     }
+
+    public List<Boolean> getFavoriteList(List<Recreation> recreations, User user) {
+        return recreations.stream()
+                .map(
+                        recreation ->
+                                recreationFavoriteRepository
+                                        .findByRecreationAndUser(recreation, user)
+                                        .isPresent())
+                .toList();
+    }
 }

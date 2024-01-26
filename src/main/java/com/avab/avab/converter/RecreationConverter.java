@@ -2,6 +2,7 @@ package com.avab.avab.converter;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.data.domain.Page;
 
@@ -192,7 +193,8 @@ public class RecreationConverter {
                 .build();
     }
 
-    public static RelatedRecreationDTO toRelatedRecreationDTO(Recreation recreation) {
+    public static RelatedRecreationDTO toRelatedRecreationDTO(
+            Recreation recreation, Boolean favorite) {
         List<Keyword> keywordList =
                 recreation.getRecreationRecreationKeywordList().stream()
                         .map(RecreationRecreationKeyword::getKeyword)
@@ -204,22 +206,26 @@ public class RecreationConverter {
                         .map(RecreationRecreationPurpose::getPurpose)
                         .map(RecreationPurpose::getPurpose)
                         .collect(Collectors.toList());
-
         return RelatedRecreationDTO.builder()
                 .keywordList(keywordList)
                 .purposeList(purposeList)
                 .title(recreation.getTitle())
                 .pageUrl("/api/recreations/" + recreation.getId())
                 .totalStars(recreation.getTotalStars())
+                .favorite(favorite)
                 .build();
     }
 
     public static RelatedRecreationListDTO toRelatedRecreationListDTO(
-            List<Recreation> recreations) {
+            List<Recreation> recreations, List<Boolean> favorites) {
+
         return RelatedRecreationListDTO.builder()
                 .relatedRecreationList(
-                        recreations.stream()
-                                .map(RecreationConverter::toRelatedRecreationDTO)
+                        IntStream.range(0, recreations.size())
+                                .mapToObj(
+                                        i ->
+                                                toRelatedRecreationDTO(
+                                                        recreations.get(i), favorites.get(i)))
                                 .collect(Collectors.toList()))
                 .build();
     }

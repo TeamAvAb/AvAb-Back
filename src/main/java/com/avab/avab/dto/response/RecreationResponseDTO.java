@@ -140,6 +140,7 @@ public class RecreationResponseDTO {
         List<Keyword> keywordList;
         List<Purpose> purposeList;
         String pageUrl;
+        Boolean favorite;
     }
 
     @Builder

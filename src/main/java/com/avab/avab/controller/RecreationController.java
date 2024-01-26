@@ -161,12 +161,15 @@ public class RecreationController {
 
     @Operation(summary = "연관 레크레이션 API", description = "연관 레크레이션 목록을 가져옵니다. _by 수기_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
+    @Parameter(name = "user", hidden = true)
     @GetMapping("/{recreationId}/related")
     public BaseResponse<RelatedRecreationListDTO> relatedRecreation(
+            @AuthUser User user,
             @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
         List<Recreation> relatedRecreation = recreationService.relatedRecreations(recreationId);
+        List<Boolean> favorites = recreationService.getFavoriteList(relatedRecreation, user);
 
         return BaseResponse.onSuccess(
-                RecreationConverter.toRelatedRecreationListDTO(relatedRecreation));
+                RecreationConverter.toRelatedRecreationListDTO(relatedRecreation, favorites));
     }
 }
