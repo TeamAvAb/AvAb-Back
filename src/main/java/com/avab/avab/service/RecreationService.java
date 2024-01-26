@@ -36,7 +36,5 @@ public interface RecreationService {
 
     Page<RecreationReview> getRecreationReviews(Long recreationId, Integer page);
 
-    List<Recreation> relatedRecreations(Long recreationId);
-
-    List<Boolean> getFavoriteList(List<Recreation> recreation, User user);
+    List<Recreation> findRelatedRecreations(User user, Long recreationId);
 }

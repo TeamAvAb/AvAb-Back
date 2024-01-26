@@ -110,7 +110,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
     }
 
     @Override
-    public List<Recreation> relatedRecreations(
+    public List<Recreation> findRelatedRecreations(
             Long recreationId,
             List<Keyword> keyword,
             List<Purpose> purpose,

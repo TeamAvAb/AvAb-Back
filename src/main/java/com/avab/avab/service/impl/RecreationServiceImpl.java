@@ -157,14 +157,14 @@ public class RecreationServiceImpl implements RecreationService {
                 || age != null;
     }
 
-    public List<Recreation> relatedRecreations(Long recreationId) {
+    public List<Recreation> findRelatedRecreations(User user, Long recreationId) {
         Recreation recreation =
                 recreationRepository
                         .findById(recreationId)
                         .orElseThrow(
                                 () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
 
-        return recreationRepository.relatedRecreations(
+        return recreationRepository.findRelatedRecreations(
                 recreationId,
                 recreation.getRecreationRecreationKeywordList().stream()
                         .map(RecreationRecreationKeyword::getKeyword)
@@ -178,15 +178,5 @@ public class RecreationServiceImpl implements RecreationService {
                 recreation.getRecreationAgeList().stream()
                         .map(RecreationAge::getAge)
                         .collect(Collectors.toList()));
-    }
-
-    public List<Boolean> getFavoriteList(List<Recreation> recreations, User user) {
-        return recreations.stream()
-                .map(
-                        recreation ->
-                                recreationFavoriteRepository
-                                        .findByRecreationAndUser(recreation, user)
-                                        .isPresent())
-                .toList();
     }
 }

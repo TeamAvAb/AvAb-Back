@@ -32,7 +32,6 @@ import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewPageDTO;
-import com.avab.avab.dto.response.RecreationResponseDTO.RelatedRecreationListDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;
 import com.avab.avab.service.RecreationService;
 import com.avab.avab.validation.annotation.ExistRecreation;
@@ -163,13 +162,13 @@ public class RecreationController {
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
     @GetMapping("/{recreationId}/related")
-    public BaseResponse<RelatedRecreationListDTO> relatedRecreation(
+    public BaseResponse<RecreationPreviewListDTO> relatedRecreation(
             @AuthUser User user,
             @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
-        List<Recreation> relatedRecreation = recreationService.relatedRecreations(recreationId);
-        List<Boolean> favorites = recreationService.getFavoriteList(relatedRecreation, user);
+        List<Recreation> relatedRecreation =
+                recreationService.findRelatedRecreations(user, recreationId);
 
         return BaseResponse.onSuccess(
-                RecreationConverter.toRelatedRecreationListDTO(relatedRecreation, favorites));
+                RecreationConverter.toRelatedRecreationListDTO(relatedRecreation, user));
     }
 }
