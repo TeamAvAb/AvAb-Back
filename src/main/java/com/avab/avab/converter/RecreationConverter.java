@@ -21,7 +21,7 @@ import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
-import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
@@ -31,9 +31,9 @@ import com.avab.avab.dto.response.RecreationReviewResponseDTO.RecommendationDTO;
 
 public class RecreationConverter {
 
-    public static RecreationPreviewListDTO toRecreationPreviewListDTO(
+    public static RecreationPreviewListPageDTO toRecreationPreviewListPageDTO(
             Page<Recreation> recreationPage, User user) {
-        return RecreationPreviewListDTO.builder()
+        return RecreationPreviewListPageDTO.builder()
                 .recreationList(
                         recreationPage.getContent().stream()
                                 .map(recreation -> toRecreationPreviewDTO(recreation, user))
@@ -184,39 +184,10 @@ public class RecreationConverter {
                 .build();
     }
 
-    private static RecreationPreviewDTO toRelatedRecreationDTO(Recreation recreation, User user) {
-        return RecreationPreviewDTO.builder()
-                .id(recreation.getId())
-                .hashtagList(
-                        recreation.getRecreationHashTagsList().stream()
-                                .map(RecreationHashtag::getHashtag)
-                                .toList())
-                .isFavorite(
-                        user != null
-                                ? recreation.getRecreationFavoriteList().stream()
-                                .anyMatch(
-                                        (recreationFavorite ->
-                                                recreationFavorite.getUser().equals(user)))
-                                : null)
-                .keywordList(
-                        recreation.getRecreationRecreationKeywordList().stream()
-                                .map(
-                                        recreationRecreationKeyword ->
-                                                recreationRecreationKeyword
-                                                        .getKeyword()
-                                                        .getKeyword())
-                                .toList())
-                .title(recreation.getTitle())
-                .totalStars(recreation.getTotalStars())
-                .build();
-    }
-    public static RecreationPreviewListDTO toRelatedRecreationListDTO(
+    public static List<RecreationPreviewDTO> toRecreationPreviewListDTO(
             List<Recreation> recreations, User user) {
-        return RecreationPreviewListDTO.builder()
-                .recreationList(
-                        recreations.stream()
-                                .map(recreation -> toRelatedRecreationDTO(recreation, user))
-                                .toList())
-                .build();
+        return recreations.stream()
+                .map(recreation -> toRecreationPreviewDTO(recreation, user))
+                .toList();
     }
 }

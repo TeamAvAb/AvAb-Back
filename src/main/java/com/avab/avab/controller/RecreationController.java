@@ -29,7 +29,8 @@ import com.avab.avab.domain.enums.Place;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
-import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewPageDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;
@@ -61,12 +62,12 @@ public class RecreationController {
     })
     @Parameter(name = "user", hidden = true)
     @GetMapping("/popular")
-    public BaseResponse<RecreationPreviewListDTO> getTop9RecreationsByWeeklyViewCount(
+    public BaseResponse<RecreationPreviewListPageDTO> getTop9RecreationsByWeeklyViewCount(
             @AuthUser User user) {
         Page<Recreation> topRecreations = recreationService.getTop9RecreationsByWeeklyViewCount();
 
         return BaseResponse.onSuccess(
-                RecreationConverter.toRecreationPreviewListDTO(topRecreations, user));
+                RecreationConverter.toRecreationPreviewListPageDTO(topRecreations, user));
     }
 
     @Operation(summary = "레크레이션 상세설명 조회 API", description = "레크레이션 상세설명을 조회합니다. _by 수기_")
@@ -84,7 +85,7 @@ public class RecreationController {
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
     @GetMapping("/search")
-    public BaseResponse<RecreationPreviewListDTO> searchRecreations(
+    public BaseResponse<RecreationPreviewListPageDTO> searchRecreations(
             @AuthUser User user,
             @RequestParam(name = "searchKeyword", required = false) String searchKeyword,
             @RequestParam(name = "keyword", required = false) List<Keyword> keywords,
@@ -108,7 +109,7 @@ public class RecreationController {
                         page);
 
         return BaseResponse.onSuccess(
-                RecreationConverter.toRecreationPreviewListDTO(recreationPage, user));
+                RecreationConverter.toRecreationPreviewListPageDTO(recreationPage, user));
     }
 
     @Operation(
@@ -162,13 +163,13 @@ public class RecreationController {
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
     @GetMapping("/{recreationId}/related")
-    public BaseResponse<RecreationPreviewListDTO> relatedRecreation(
+    public BaseResponse<List<RecreationPreviewDTO>> relatedRecreation(
             @AuthUser User user,
             @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
         List<Recreation> relatedRecreation =
                 recreationService.findRelatedRecreations(user, recreationId);
 
         return BaseResponse.onSuccess(
-                RecreationConverter.toRelatedRecreationListDTO(relatedRecreation, user));
+                RecreationConverter.toRecreationPreviewListDTO(relatedRecreation, user));
     }
 }
