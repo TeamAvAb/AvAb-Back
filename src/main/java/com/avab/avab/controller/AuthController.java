@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -25,7 +26,7 @@ public class AuthController {
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
-    @GetMapping("/auth/login/kakao")
+    @GetMapping("/login/kakao")
     public BaseResponse<OAuthResponse> kakaoLogin(@RequestParam("code") String code) {
         return BaseResponse.onSuccess(authService.kakaoLogin(code));
     }
@@ -36,7 +37,7 @@ public class AuthController {
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
-    @PostMapping("/auth/refresh")
+    @PostMapping("/refresh")
     public BaseResponse<TokenRefreshResponse> refresh(@ExtractToken String refreshToken) {
         return BaseResponse.onSuccess(authService.refresh(refreshToken));
     }
@@ -45,7 +46,7 @@ public class AuthController {
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
-    @DeleteMapping("/auth/logout")
+    @DeleteMapping("/logout")
     public BaseResponse<String> logout(@AuthUser User user) {
         authService.logout(user.getId());
         return BaseResponse.onSuccess("로그아웃에 성공하였습니다.");

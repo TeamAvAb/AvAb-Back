@@ -38,8 +38,8 @@ public class SecurityConfig {
         "/api/recreations/search",
         "/api/recreations/{recreationId}",
         "/api/recreations/popular",
-        "/auth/login/kakao",
-        "/auth/refresh"
+        "/api/auth/login/kakao",
+        "/api/auth/refresh"
     };
 
     @Bean
