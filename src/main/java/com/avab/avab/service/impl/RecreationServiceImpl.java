@@ -18,6 +18,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
+import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.redis.service.RecreationViewCountService;
@@ -111,11 +112,12 @@ public class RecreationServiceImpl implements RecreationService {
             Integer participants,
             Integer playTime,
             List<Place> places,
+            List<Purpose> purposes,
             List<Gender> genders,
             List<Age> ages,
             Integer page) {
         if (!isAtLeastOneConditionNotNull(
-                searchKeyword, keywords, participants, playTime, places, genders, ages)) {
+                searchKeyword, keywords, participants, playTime, places, purposes, genders, ages)) {
             throw new RecreationException(ErrorStatus.SEARCH_CONDITION_INVALID);
         }
 
@@ -125,6 +127,7 @@ public class RecreationServiceImpl implements RecreationService {
                 participants,
                 playTime,
                 places,
+                purposes,
                 genders,
                 ages,
                 PageRequest.of(page, SEARCH_PAGE_SIZE));
@@ -136,6 +139,7 @@ public class RecreationServiceImpl implements RecreationService {
             Integer participants,
             Integer playTime,
             List<Place> place,
+            List<Purpose> purposes,
             List<Gender> gender,
             List<Age> age) {
         return searchKeyword != null
@@ -143,6 +147,7 @@ public class RecreationServiceImpl implements RecreationService {
                 || participants != null
                 || playTime != null
                 || place != null
+                || purposes != null
                 || gender != null
                 || age != null;
     }

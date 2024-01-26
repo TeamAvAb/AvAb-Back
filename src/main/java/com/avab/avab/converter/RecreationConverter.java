@@ -16,7 +16,6 @@ import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.mapping.RecreationFavorite;
-import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
