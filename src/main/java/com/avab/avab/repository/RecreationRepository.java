@@ -17,4 +17,9 @@ public interface RecreationRepository
     @Modifying
     @Query("UPDATE Recreation r SET r.viewCount = r.viewCount + :viewCount WHERE r.id = :id")
     void incrementViewCountById(@Param("id") Long id, @Param("viewCount") Long viewCount);
+
+    @Modifying
+    @Query(
+            "UPDATE Recreation r SET r.weeklyViewCount = r.weeklyViewCount + :viewCount WHERE r.id = :id")
+    void incrementWeeklyViewCountById(@Param("id") Long id, @Param("viewCount") Long viewCount);
 }
