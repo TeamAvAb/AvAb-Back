@@ -1,5 +1,7 @@
 package com.avab.avab.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,8 +60,8 @@ public class UserController {
     @Parameter(name = "user", hidden = true)
     @PatchMapping("/me/name")
     public BaseResponse<UserResponse> updateUserName(
-            @RequestBody UpdateUserNameDTO updateUserNameDTO, @AuthUser User user) {
+            @RequestBody @Valid UpdateUserNameDTO updateUserNameDTO, @AuthUser User user) {
         User updatedUser = userService.updateUserName(updateUserNameDTO.getName(), user);
-        return BaseResponse.onSuccess(UserConverter.convertUserToUserResponse(updatedUser));
+        return BaseResponse.onSuccess(UserConverter.toUserResponse(updatedUser));
     }
 }

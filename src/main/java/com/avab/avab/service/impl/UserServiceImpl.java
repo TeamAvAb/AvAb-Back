@@ -40,12 +40,7 @@ public class UserServiceImpl implements UserService {
 
     public User updateUserName(String username, User user) {
 
-        User existUser =
-                userRepository
-                        .findById(user.getId())
-                        .orElseThrow(() -> new UserException(ErrorStatus.USER_NOT_FOUND));
-
-        existUser.updateUserName(username);
-        return existUser;
+        user.updateUserName(username);
+        return user;
     }
 }

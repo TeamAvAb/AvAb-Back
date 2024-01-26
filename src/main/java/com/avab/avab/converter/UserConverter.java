@@ -5,7 +5,7 @@ import com.avab.avab.dto.response.UserResponseDTO;
 
 public class UserConverter {
 
-    public static UserResponseDTO.UserResponse convertUserToUserResponse(User user) {
+    public static UserResponseDTO.UserResponse toUserResponse(User user) {
         return UserResponseDTO.UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
