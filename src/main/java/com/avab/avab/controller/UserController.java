@@ -11,7 +11,7 @@ import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.converter.RecreationConverter;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
-import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListPageDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;
 import com.avab.avab.service.UserService;
 import com.avab.avab.validation.annotation.ValidatePage;
@@ -38,13 +38,13 @@ public class UserController {
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @GetMapping("/me/favorites/recreations")
     @Parameter(name = "user", hidden = true)
-    public BaseResponse<RecreationPreviewListPageDTO> getFavoriteRecreations(
+    public BaseResponse<RecreationPreviewPageDTO> getFavoriteRecreations(
             @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
                     Integer page,
             @AuthUser User user) {
         Page<Recreation> recreationPage = userService.getFavoriteRecreations(user, page);
 
         return BaseResponse.onSuccess(
-                RecreationConverter.toRecreationPreviewListPageDTO(recreationPage, user));
+                RecreationConverter.toRecreationPreviewPageDTO(recreationPage, user));
     }
 }
