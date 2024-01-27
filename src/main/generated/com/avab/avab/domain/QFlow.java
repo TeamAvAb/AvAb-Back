@@ -27,6 +27,8 @@ public class QFlow extends EntityPathBase<Flow> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final ListPath<com.avab.avab.domain.mapping.FlowFavorite, com.avab.avab.domain.mapping.QFlowFavorite> flowFavoriteList = this.<com.avab.avab.domain.mapping.FlowFavorite, com.avab.avab.domain.mapping.QFlowFavorite>createList("flowFavoriteList", com.avab.avab.domain.mapping.FlowFavorite.class, com.avab.avab.domain.mapping.QFlowFavorite.class, PathInits.DIRECT2);
+
     public final ListPath<com.avab.avab.domain.mapping.FlowRecreationKeyword, com.avab.avab.domain.mapping.QFlowRecreationKeyword> flowRecreationKeywordList = this.<com.avab.avab.domain.mapping.FlowRecreationKeyword, com.avab.avab.domain.mapping.QFlowRecreationKeyword>createList("flowRecreationKeywordList", com.avab.avab.domain.mapping.FlowRecreationKeyword.class, com.avab.avab.domain.mapping.QFlowRecreationKeyword.class, PathInits.DIRECT2);
 
     public final ListPath<com.avab.avab.domain.mapping.FlowRecreation, com.avab.avab.domain.mapping.QFlowRecreation> flowRecreationList = this.<com.avab.avab.domain.mapping.FlowRecreation, com.avab.avab.domain.mapping.QFlowRecreation>createList("flowRecreationList", com.avab.avab.domain.mapping.FlowRecreation.class, com.avab.avab.domain.mapping.QFlowRecreation.class, PathInits.DIRECT2);
@@ -45,6 +47,8 @@ public class QFlow extends EntityPathBase<Flow> {
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+
+    public final NumberPath<Long> viewCount = createNumber("viewCount", Long.class);
 
     public QFlow(String variable) {
         super(Flow.class, forVariable(variable));

@@ -3,6 +3,7 @@ package com.avab.avab.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.avab.avab.domain.mapping.FlowFavorite;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,6 +38,8 @@ public class Flow extends BaseEntity {
 
     private Integer participants;
 
+    private Long viewCount;
+
     @Column(length = 100)
     private String title;
 
@@ -54,4 +57,7 @@ public class Flow extends BaseEntity {
 
     @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL)
     private List<FlowRecreationPurpose> flowRecreationPurposeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL)
+    private List<FlowFavorite> flowFavoriteList = new ArrayList<>();
 }
