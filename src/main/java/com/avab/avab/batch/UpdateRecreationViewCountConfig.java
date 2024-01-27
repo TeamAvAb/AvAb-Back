@@ -53,6 +53,7 @@ public class UpdateRecreationViewCountConfig {
 
             if (viewCount != null) {
                 recreationRepository.incrementViewCountById(recreation.getId(), viewCount);
+                recreationRepository.incrementWeeklyViewCountById(recreation.getId(), viewCount);
             }
 
             return recreation;
