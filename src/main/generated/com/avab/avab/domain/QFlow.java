@@ -45,6 +45,8 @@ public class QFlow extends EntityPathBase<Flow> {
 
     public final NumberPath<Integer> participants = createNumber("participants", Integer.class);
 
+    public final NumberPath<Long> scrapCount = createNumber("scrapCount", Long.class);
+
     public final StringPath title = createString("title");
 
     public final NumberPath<Integer> totalPlayTime = createNumber("totalPlayTime", Integer.class);

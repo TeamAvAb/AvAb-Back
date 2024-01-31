@@ -46,6 +46,8 @@ public class Flow extends BaseEntity {
     @Column(length = 100)
     private String title;
 
+    private Long scrapCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;
