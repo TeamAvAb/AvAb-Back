@@ -20,6 +20,7 @@ public interface RecreationCustomRepository {
             Integer participants,
             Integer playTime,
             List<Place> places,
+            List<Purpose> purposes,
             List<Gender> genders,
             List<Age> ages,
             Pageable page);

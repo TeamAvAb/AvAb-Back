@@ -1,17 +1,24 @@
 package com.avab.avab.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.converter.RecreationConverter;
+import com.avab.avab.converter.UserConverter;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
+import com.avab.avab.dto.reqeust.UserRequestDTO.UpdateUserNameDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
+import com.avab.avab.dto.response.UserResponseDTO.UserResponse;
 import com.avab.avab.security.handler.annotation.AuthUser;
 import com.avab.avab.service.UserService;
 import com.avab.avab.validation.annotation.ValidatePage;
@@ -27,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "User", description = "사용자 관련 API")
+@Tag(name = "User 👥", description = "사용자 관련 API")
 public class UserController {
 
     private final UserService userService;
@@ -46,5 +53,15 @@ public class UserController {
 
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationPreviewPageDTO(recreationPage, user));
+    }
+
+    @Operation(summary = "회원 정보 수정 API", description = "회원 닉네임을 수정합니다. 닉네임을 인자로 받습니다. _by 루아_")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
+    @Parameter(name = "user", hidden = true)
+    @PatchMapping("/me/name")
+    public BaseResponse<UserResponse> updateUserName(
+            @RequestBody @Valid UpdateUserNameDTO updateUserNameDTO, @AuthUser User user) {
+        User updatedUser = userService.updateUserName(updateUserNameDTO.getName(), user);
+        return BaseResponse.onSuccess(UserConverter.toUserResponse(updatedUser));
     }
 }

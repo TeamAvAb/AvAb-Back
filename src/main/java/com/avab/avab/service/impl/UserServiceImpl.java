@@ -37,4 +37,10 @@ public class UserServiceImpl implements UserService {
 
         return favoritesPage.map(RecreationFavorite::getRecreation);
     }
+
+    public User updateUserName(String username, User user) {
+
+        user.updateUserName(username);
+        return user;
+    }
 }

@@ -11,6 +11,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
+import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 
 public interface RecreationService {
@@ -24,6 +25,7 @@ public interface RecreationService {
             Integer participants,
             Integer playTime,
             List<Place> place,
+            List<Purpose> purposes,
             List<Gender> gender,
             List<Age> age,
             Integer page);
