@@ -40,7 +40,8 @@ public class SecurityConfig {
         "/api/recreations/{recreationId}/related",
         "/api/recreations/popular",
         "/api/auth/login/kakao",
-        "/api/auth/refresh"
+        "/api/auth/refresh",
+        "/api/flows/{flowId}"
     };
 
     @Bean

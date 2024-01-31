@@ -1,8 +1,10 @@
 package com.avab.avab.domain.mapping;
 
+import jakarta.persistence.*;
+
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.User;
-import jakarta.persistence.*;
+
 import lombok.*;
 
 @Entity

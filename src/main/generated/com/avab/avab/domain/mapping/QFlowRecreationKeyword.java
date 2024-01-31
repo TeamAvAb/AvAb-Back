@@ -46,7 +46,7 @@ public class QFlowRecreationKeyword extends EntityPathBase<FlowRecreationKeyword
 
     public QFlowRecreationKeyword(Class<? extends FlowRecreationKeyword> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.flow = inits.isInitialized("flow") ? new com.avab.avab.domain.QFlow(forProperty("flow")) : null;
+        this.flow = inits.isInitialized("flow") ? new com.avab.avab.domain.QFlow(forProperty("flow"), inits.get("flow")) : null;
         this.keyword = inits.isInitialized("keyword") ? new com.avab.avab.domain.QRecreationKeyword(forProperty("keyword")) : null;
     }
 

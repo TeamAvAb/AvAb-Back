@@ -18,11 +18,15 @@ public class QFlow extends EntityPathBase<Flow> {
 
     private static final long serialVersionUID = -1997426549L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QFlow flow = new QFlow("flow");
 
     public final com.avab.avab.domain.common.QBaseEntity _super = new com.avab.avab.domain.common.QBaseEntity(this);
 
     public final ListPath<FlowAge, QFlowAge> ageList = this.<FlowAge, QFlowAge>createList("ageList", FlowAge.class, QFlowAge.class, PathInits.DIRECT2);
+
+    public final QUser author;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
@@ -51,15 +55,24 @@ public class QFlow extends EntityPathBase<Flow> {
     public final NumberPath<Long> viewCount = createNumber("viewCount", Long.class);
 
     public QFlow(String variable) {
-        super(Flow.class, forVariable(variable));
+        this(Flow.class, forVariable(variable), INITS);
     }
 
     public QFlow(Path<? extends Flow> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QFlow(PathMetadata metadata) {
-        super(Flow.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QFlow(PathMetadata metadata, PathInits inits) {
+        this(Flow.class, metadata, inits);
+    }
+
+    public QFlow(Class<? extends Flow> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.author = inits.isInitialized("author") ? new QUser(forProperty("author")) : null;
     }
 
 }

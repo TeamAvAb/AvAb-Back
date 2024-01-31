@@ -29,6 +29,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final ListPath<com.avab.avab.domain.mapping.FlowFavorite, com.avab.avab.domain.mapping.QFlowFavorite> flowFavoriteList = this.<com.avab.avab.domain.mapping.FlowFavorite, com.avab.avab.domain.mapping.QFlowFavorite>createList("flowFavoriteList", com.avab.avab.domain.mapping.FlowFavorite.class, com.avab.avab.domain.mapping.QFlowFavorite.class, PathInits.DIRECT2);
 
+    public final ListPath<Flow, QFlow> flowList = this.<Flow, QFlow>createList("flowList", Flow.class, QFlow.class, PathInits.DIRECT2);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath name = createString("name");

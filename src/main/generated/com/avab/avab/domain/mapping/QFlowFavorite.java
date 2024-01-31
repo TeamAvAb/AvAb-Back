@@ -46,7 +46,7 @@ public class QFlowFavorite extends EntityPathBase<FlowFavorite> {
 
     public QFlowFavorite(Class<? extends FlowFavorite> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.flow = inits.isInitialized("flow") ? new com.avab.avab.domain.QFlow(forProperty("flow")) : null;
+        this.flow = inits.isInitialized("flow") ? new com.avab.avab.domain.QFlow(forProperty("flow"), inits.get("flow")) : null;
         this.user = inits.isInitialized("user") ? new com.avab.avab.domain.QUser(forProperty("user")) : null;
     }
 

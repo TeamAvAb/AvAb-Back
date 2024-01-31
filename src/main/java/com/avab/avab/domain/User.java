@@ -3,7 +3,6 @@ package com.avab.avab.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.avab.avab.domain.mapping.FlowFavorite;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +15,7 @@ import jakarta.persistence.OneToMany;
 
 import com.avab.avab.domain.common.BaseEntity;
 import com.avab.avab.domain.enums.SocialType;
+import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
 
@@ -51,6 +51,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Recreation> recreationList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<Flow> flowList = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<RecreationFavorite> recreationFavoriteList = new ArrayList<>();
