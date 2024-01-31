@@ -18,8 +18,15 @@ public class FlowServiceImpl implements FlowService {
 
     private final FlowRepository flowRepository;
 
+    private final Integer FLOW_LIST_PAGE_SIZE = 6;
+
     @Override
     public Page<Flow> getFlows(Integer page) {
-        return flowRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(page, 6));
+        return flowRepository.findAllByOrderByCreatedAtDesc(
+                PageRequest.of(page, FLOW_LIST_PAGE_SIZE));
+    }
+
+    public Flow getFlowDetail(Long flowId) {
+        return flowRepository.findById(flowId).orElseThrow();
     }
 }

@@ -42,6 +42,7 @@ public class SecurityConfig {
         "/api/auth/login/kakao",
         "/api/auth/refresh",
         "/api/flows",
+        "/api/flows/{flowId}"
         "/api/users/scrap",
     };
 
