@@ -11,6 +11,7 @@ import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.converter.FlowConverter;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.User;
+import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;
 import com.avab.avab.service.FlowService;
@@ -32,6 +33,8 @@ public class FlowController {
 
     private final FlowService flowService;
 
+    //    private final UserRepository userRepository;
+
     @Operation(summary = "플로우 조회 API", description = "최신순으로 플로우를 조회합니다. _by 보노_")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
@@ -45,5 +48,22 @@ public class FlowController {
         Page<Flow> flowPage = flowService.getFlows(page);
 
         return BaseResponse.onSuccess(FlowConverter.toFlowPreviewPageDTO(flowPage, user));
+    }
+
+    @Operation(summary = "스크랩 플로우 API", description = "스크랩한 플로우 목록을 조회합니다. _by 수기_")
+    @ApiResponses({
+        @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+    })
+    @Parameter(name = "user", hidden = true)
+    @GetMapping("/scrap")
+    public BaseResponse<FlowPreviewPageDTO> getScrapFlows(
+            @AuthUser User user,
+            @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
+                    Integer page) {
+
+        Page<FlowFavorite> ScrapflowPage = flowService.getScrapFlows(user, page);
+
+        return BaseResponse.onSuccess(
+                FlowConverter.toFlowPreviewPageDTO(ScrapflowPage.map(FlowFavorite::getFlow), user));
     }
 }
