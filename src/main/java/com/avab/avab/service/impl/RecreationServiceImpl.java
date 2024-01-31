@@ -1,6 +1,8 @@
 package com.avab.avab.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -8,9 +10,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.RecreationException;
+import com.avab.avab.apiPayload.exception.S3Exception;
+import com.avab.avab.aws.s3.AmazonS3Manager;
 import com.avab.avab.converter.RecreationConverter;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationAge;
@@ -26,9 +31,12 @@ import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.domain.mapping.RecreationRecreationPurpose;
+import com.avab.avab.dto.reqeust.RecreationRequestDTO.CreateRecreationDTO;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.redis.service.RecreationViewCountService;
 import com.avab.avab.repository.RecreationFavoriteRepository;
+import com.avab.avab.repository.RecreationKeywordRepository;
+import com.avab.avab.repository.RecreationPurposeRepository;
 import com.avab.avab.repository.RecreationRepository;
 import com.avab.avab.repository.RecreationReviewRepository;
 import com.avab.avab.service.RecreationService;
@@ -44,6 +52,9 @@ public class RecreationServiceImpl implements RecreationService {
     private final RecreationFavoriteRepository recreationFavoriteRepository;
     private final RecreationReviewRepository recreationReviewRepository;
     private final RecreationViewCountService recreationViewCountService;
+    private final RecreationKeywordRepository recreationKeywordRepository;
+    private final RecreationPurposeRepository recreationPurposeRepository;
+    private final AmazonS3Manager s3Manager;
     private final Integer SEARCH_PAGE_SIZE = 9;
     private final Integer REVIEW_PAGE_SIZE = 2;
 
@@ -183,5 +194,54 @@ public class RecreationServiceImpl implements RecreationService {
                 recreation.getRecreationAgeList().stream()
                         .map(RecreationAge::getAge)
                         .collect(Collectors.toList()));
+    }
+
+    @Override
+    @Transactional
+    public Recreation createRecreation(
+            User user,
+            CreateRecreationDTO request,
+            MultipartFile thumbnailImage,
+            List<MultipartFile> wayImages) {
+        String thumbnailImageUrl = null;
+        if (thumbnailImage != null) {
+            thumbnailImageUrl = s3Manager.uploadRecreationThumbnailImage(thumbnailImage);
+        }
+
+        Map<Integer, String> wayImageUrls = new HashMap<>();
+        if (wayImages != null) {
+            wayImages.forEach(
+                    image -> {
+                        try {
+                            Integer order =
+                                    Integer.parseInt(image.getOriginalFilename().split("_")[0]);
+                            String imageUrl = s3Manager.uploadRecreationWayImage(image);
+                            wayImageUrls.put(order, imageUrl);
+                        } catch (Exception e) {
+                            throw new S3Exception(ErrorStatus.S3_UPLOAD_FAIL);
+                        }
+                    });
+        }
+
+        List<RecreationKeyword> recreationKeywordList =
+                request.getKeywords().stream()
+                        .map(keyword -> recreationKeywordRepository.findByKeyword(keyword).get())
+                        .toList();
+
+        List<RecreationPurpose> recreationPurposeList =
+                request.getPurposes().stream()
+                        .map(purpose -> recreationPurposeRepository.findByPurpose(purpose).get())
+                        .toList();
+
+        Recreation recreation =
+                RecreationConverter.toRecreation(
+                        user,
+                        request,
+                        thumbnailImageUrl,
+                        wayImageUrls,
+                        recreationKeywordList,
+                        recreationPurposeList);
+
+        return recreationRepository.save(recreation);
     }
 }

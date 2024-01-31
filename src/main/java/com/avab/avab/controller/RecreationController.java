@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.apiPayload.code.status.SuccessStatus;
@@ -27,9 +30,11 @@ import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
 import com.avab.avab.domain.enums.Purpose;
+import com.avab.avab.dto.reqeust.RecreationRequestDTO.CreateRecreationDTO;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationCreatedDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
@@ -41,6 +46,7 @@ import com.avab.avab.validation.annotation.ValidatePage;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -174,5 +180,30 @@ public class RecreationController {
 
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationPreviewListDTO(relatedRecreation, user));
+    }
+
+    @Operation(summary = "레크레이션 게시 API", description = "레크레이션을 게시합니다. _by 보노_")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON201", description = "게시 성공")})
+    @Parameter(name = "user", hidden = true)
+    @PostMapping(
+            value = "",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ResponseStatus(HttpStatus.CREATED)
+    public BaseResponse<RecreationCreatedDTO> createRecreation(
+            @AuthUser User user,
+            @Parameter(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE))
+                    @RequestPart("request")
+                    CreateRecreationDTO request,
+            @RequestPart(name = "thumbnail", required = false) MultipartFile thumbnailImage,
+            @Parameter(
+                            description =
+                                    "순서 이미지, 반드시 파일 명 앞에 순서(0부터 시작) 명시할 것! **{순서}_{파일명}** _ex)0_image.jpg_")
+                    @RequestPart(name = "wayImages", required = false)
+                    List<MultipartFile> wayImages) {
+
+        Recreation recreation =
+                recreationService.createRecreation(user, request, thumbnailImage, wayImages);
+        return BaseResponse.of(
+                SuccessStatus._CREATED, RecreationConverter.toRecreationCreatedDTO(recreation));
     }
 }

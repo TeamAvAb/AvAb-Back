@@ -129,4 +129,13 @@ public class RecreationResponseDTO {
         List<RecreationReviewDTO> reviewList;
         Integer totalPages;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RecreationCreatedDTO {
+
+        Long id;
+    }
 }
