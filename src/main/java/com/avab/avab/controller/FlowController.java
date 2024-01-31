@@ -33,8 +33,6 @@ public class FlowController {
 
     private final FlowService flowService;
 
-    //    private final UserRepository userRepository;
-
     @Operation(summary = "플로우 조회 API", description = "최신순으로 플로우를 조회합니다. _by 보노_")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
