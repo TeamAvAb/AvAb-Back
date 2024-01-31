@@ -32,7 +32,7 @@ public class RecreationWay {
     @Column(length = 300)
     private String imageUrl;
 
-    private Integer order;
+    private Integer seq;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recreation_id")
