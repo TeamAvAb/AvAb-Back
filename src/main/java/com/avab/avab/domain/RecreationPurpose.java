@@ -29,6 +29,6 @@ public class RecreationPurpose extends BaseEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(10)")
+    @Column(columnDefinition = "VARCHAR(30)")
     private Purpose purpose;
 }

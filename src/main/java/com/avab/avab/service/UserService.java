@@ -15,4 +15,6 @@ public interface UserService {
     User updateUserName(String username, User user);
 
     Page<Flow> getMyFlows(User user, Integer page);
+
+    Page<Flow> getScrapFlows(User user, Integer page);
 }

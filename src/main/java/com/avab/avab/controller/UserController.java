@@ -68,6 +68,23 @@ public class UserController {
         return BaseResponse.onSuccess(UserConverter.toUserResponse(updatedUser));
     }
 
+    @Operation(summary = "스크랩 플로우 API", description = "스크랩한 플로우 목록을 조회합니다. _by 수기_")
+    @ApiResponses({
+        @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+    })
+    @Parameter(name = "user", hidden = true)
+    @GetMapping("/scrap")
+    public BaseResponse<FlowPreviewPageDTO> getScrapFlows(
+            @AuthUser User user,
+            @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
+                    Integer page) {
+
+        Page<Flow> scrapFlowPage = userService.getScrapFlows(user, page);
+
+        return BaseResponse.onSuccess(
+                FlowConverter.toFlowPreviewPageDTO(scrapFlowPage, user));
+    }
+
     @Operation(summary = "내 플로우 조회", description = "내가 만든 플로우를 최신순으로 조회합니다. _by 보노_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
