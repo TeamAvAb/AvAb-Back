@@ -67,6 +67,7 @@ public class RecreationConverter {
                                 .toList())
                 .title(recreation.getTitle())
                 .totalStars(recreation.getTotalStars())
+                .summary(recreation.getSummary())
                 .build();
     }
 
