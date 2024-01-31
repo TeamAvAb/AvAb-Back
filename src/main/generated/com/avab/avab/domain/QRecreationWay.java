@@ -28,9 +28,9 @@ public class QRecreationWay extends EntityPathBase<RecreationWay> {
 
     public final StringPath imageUrl = createString("imageUrl");
 
-    public final NumberPath<Integer> order = createNumber("order", Integer.class);
-
     public final QRecreation recreation;
+
+    public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
 
     public QRecreationWay(String variable) {
         this(RecreationWay.class, forVariable(variable), INITS);
