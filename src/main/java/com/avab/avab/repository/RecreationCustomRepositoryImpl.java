@@ -15,6 +15,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
+import com.avab.avab.domain.enums.Purpose;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -33,6 +34,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             Integer participants,
             Integer playTime,
             List<Place> places,
+            List<Purpose> purposes,
             List<Gender> genders,
             List<Age> ages,
             Pageable pageable) {
@@ -48,6 +50,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                                 betweenParticipants(participants),
                                 loePlayTime(playTime),
                                 inPlace(places),
+                                inPurpose(purposes),
                                 inGender(genders),
                                 inAge(ages))
                         .limit(pageable.getPageSize())
@@ -89,6 +92,12 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
 
     private BooleanExpression inPlace(List<Place> places) {
         return places != null ? recreation.recreationPlaceList.any().place.in(places) : null;
+    }
+
+    private BooleanExpression inPurpose(List<Purpose> purposes) {
+        return purposes != null
+                ? recreation.recreationRecreationPurposeList.any().purpose.purpose.in(purposes)
+                : null;
     }
 
     private BooleanExpression inGender(List<Gender> genders) {

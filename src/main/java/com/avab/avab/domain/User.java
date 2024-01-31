@@ -64,4 +64,8 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<FlowFavorite> flowFavoriteList = new ArrayList<>();
+
+    public void updateUserName(String username) {
+        this.username = username;
+    }
 }
