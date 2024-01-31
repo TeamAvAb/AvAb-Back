@@ -28,9 +28,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RecreationFavoriteRepository recreationFavoriteRepository;
     private final FlowRepository flowRepository;
-
-    private final Integer MY_FLOWS_PAGE_SIZE = 6;
     private final FlowFavoriteRepository flowFavoriteRepository;
+
+    private final Integer FLOWS_PAGE_SIZE = 6;
 
     @Override
     public User findUserById(Long userId) {
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
     public Page<Recreation> getFavoriteRecreations(User user, Integer page) {
         Page<RecreationFavorite> favoritesPage =
-                recreationFavoriteRepository.findByUser(user, PageRequest.of(page, 6));
+                recreationFavoriteRepository.findByUser(user, PageRequest.of(page, FLOWS_PAGE_SIZE));
 
         return favoritesPage.map(RecreationFavorite::getRecreation);
     }
@@ -53,13 +53,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<FlowFavorite> getScrapFlows(User user, Integer page) {
-        return flowFavoriteRepository.findByUser(user, PageRequest.of(page, 4));
+    public Page<Flow> getScrapFlows(User user, Integer page) {
+        return flowFavoriteRepository.findByUser(user, PageRequest.of(page, FLOWS_PAGE_SIZE)).map(FlowFavorite::getFlow);
     }
 
     @Override
     public Page<Flow> getMyFlows(User user, Integer page) {
         return flowRepository.findAllByAuthorOrderByCreatedAtDesc(
-                user, PageRequest.of(page, MY_FLOWS_PAGE_SIZE));
+                user, PageRequest.of(page, FLOWS_PAGE_SIZE));
     }
 }
