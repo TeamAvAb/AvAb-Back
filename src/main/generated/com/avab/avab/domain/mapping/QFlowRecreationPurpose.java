@@ -46,7 +46,7 @@ public class QFlowRecreationPurpose extends EntityPathBase<FlowRecreationPurpose
 
     public QFlowRecreationPurpose(Class<? extends FlowRecreationPurpose> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.flow = inits.isInitialized("flow") ? new com.avab.avab.domain.QFlow(forProperty("flow")) : null;
+        this.flow = inits.isInitialized("flow") ? new com.avab.avab.domain.QFlow(forProperty("flow"), inits.get("flow")) : null;
         this.purpose = inits.isInitialized("purpose") ? new com.avab.avab.domain.QRecreationPurpose(forProperty("purpose")) : null;
     }
 

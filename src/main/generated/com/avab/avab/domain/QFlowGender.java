@@ -46,7 +46,7 @@ public class QFlowGender extends EntityPathBase<FlowGender> {
 
     public QFlowGender(Class<? extends FlowGender> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.flow = inits.isInitialized("flow") ? new QFlow(forProperty("flow")) : null;
+        this.flow = inits.isInitialized("flow") ? new QFlow(forProperty("flow"), inits.get("flow")) : null;
     }
 
 }

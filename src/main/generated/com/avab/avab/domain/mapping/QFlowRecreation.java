@@ -48,7 +48,7 @@ public class QFlowRecreation extends EntityPathBase<FlowRecreation> {
 
     public QFlowRecreation(Class<? extends FlowRecreation> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.flow = inits.isInitialized("flow") ? new com.avab.avab.domain.QFlow(forProperty("flow")) : null;
+        this.flow = inits.isInitialized("flow") ? new com.avab.avab.domain.QFlow(forProperty("flow"), inits.get("flow")) : null;
         this.recreation = inits.isInitialized("recreation") ? new com.avab.avab.domain.QRecreation(forProperty("recreation"), inits.get("recreation")) : null;
     }
 
