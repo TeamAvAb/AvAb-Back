@@ -303,22 +303,6 @@ public class RecreationConverter {
                 .build();
     }
 
-    public static RecreationRecreationKeyword toRecreationRecreationKeyword(
-            Recreation recreation, RecreationKeyword keyword) {
-        return RecreationRecreationKeyword.builder()
-                .keyword(keyword)
-                .recreation(recreation)
-                .build();
-    }
-
-    public static RecreationRecreationPurpose toRecreationRecreationPurpose(
-            Recreation recreation, RecreationPurpose purpose) {
-        return RecreationRecreationPurpose.builder()
-                .purpose(purpose)
-                .recreation(recreation)
-                .build();
-    }
-
     public static RecreationCreatedDTO toRecreationCreatedDTO(Recreation recreation) {
         return RecreationCreatedDTO.builder().id(recreation.getId()).build();
     }
