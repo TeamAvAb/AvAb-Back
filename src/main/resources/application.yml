@@ -100,9 +100,6 @@ cloud:
   aws:
     s3:
       bucket: avab-bucket
-      folder:
-        profile-image: user/profileImage
-        # etc
     credentials:
       access-key: ${S3_ACCESS_KEY}
       secret-key: ${S3_SECRET_KEY}
