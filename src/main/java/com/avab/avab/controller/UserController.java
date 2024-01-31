@@ -79,10 +79,10 @@ public class UserController {
             @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
                     Integer page) {
 
-        Page<Flow> scrapflowPage = userService.getScrapFlows(user, page);
+        Page<Flow> scrapFlowPage = userService.getScrapFlows(user, page);
 
         return BaseResponse.onSuccess(
-                FlowConverter.toFlowPreviewPageDTO(scrapflowPage, user));
+                FlowConverter.toFlowPreviewPageDTO(scrapFlowPage, user));
     }
 
     @Operation(summary = "내 플로우 조회", description = "내가 만든 플로우를 최신순으로 조회합니다. _by 보노_")
