@@ -7,4 +7,6 @@ import com.avab.avab.domain.Flow;
 public interface FlowService {
 
     Page<Flow> getFlows(Integer page);
+
+    Flow getFlowDetail(Long flowId);
 }

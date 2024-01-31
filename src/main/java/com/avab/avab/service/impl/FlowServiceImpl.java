@@ -25,4 +25,8 @@ public class FlowServiceImpl implements FlowService {
         return flowRepository.findAllByOrderByCreatedAtDesc(
                 PageRequest.of(page, FLOW_LIST_PAGE_SIZE));
     }
+
+    public Flow getFlowDetail(Long flowId) {
+        return flowRepository.findById(flowId).orElseThrow();
+    }
 }
