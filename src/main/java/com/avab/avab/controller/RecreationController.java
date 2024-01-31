@@ -26,6 +26,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
+import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
@@ -91,6 +92,7 @@ public class RecreationController {
             @RequestParam(name = "participants", required = false) Integer participants,
             @RequestParam(name = "playTime", required = false) Integer playTime,
             @RequestParam(name = "place", required = false) List<Place> places,
+            @RequestParam(name = "purpose", required = false) List<Purpose> purposes,
             @RequestParam(name = "gender", required = false) List<Gender> genders,
             @RequestParam(name = "age", required = false) List<Age> ages,
             @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
@@ -103,6 +105,7 @@ public class RecreationController {
                         participants,
                         playTime,
                         places,
+                        purposes,
                         genders,
                         ages,
                         page);
@@ -126,7 +129,7 @@ public class RecreationController {
         return BaseResponse.onSuccess(RecreationConverter.toFavoriteDTO(isFavorite));
     }
 
-    @Operation(summary = "레크레이션 리뷰 작성 API", description = "레크레이션에 리뷰를 작성합니다.")
+    @Operation(summary = "레크레이션 리뷰 작성 API", description = "레크레이션에 리뷰를 작성합니다. _by 보노_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON201", description = "리뷰 생성 성공")})
     @Parameter(name = "user", hidden = true)
     @PostMapping("/{recreationId}/reviews")
@@ -141,7 +144,7 @@ public class RecreationController {
                 SuccessStatus._CREATED, RecreationConverter.toRecreationReviewCreatedDTO(review));
     }
 
-    @Operation(summary = "레크레이션 리뷰 목록 조회 API", description = "레크레이션 리뷰를 조회합니다.")
+    @Operation(summary = "레크레이션 리뷰 목록 조회 API", description = "레크레이션 리뷰를 조회합니다. _by 보노_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "리뷰 조회 성공")})
     @Parameter(name = "user", hidden = true)
     @GetMapping("/{recreationId}/reviews")

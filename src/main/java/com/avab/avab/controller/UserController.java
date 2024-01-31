@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 @Validated
-@Tag(name = "User", description = "사용자 관련 API")
+@Tag(name = "User 👥", description = "사용자 관련 API")
 public class UserController {
 
     private final UserService userService;

@@ -10,6 +10,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
+import com.avab.avab.domain.enums.Purpose;
 
 public interface RecreationCustomRepository {
 
@@ -19,6 +20,7 @@ public interface RecreationCustomRepository {
             Integer participants,
             Integer playTime,
             List<Place> places,
+            List<Purpose> purposes,
             List<Gender> genders,
             List<Age> ages,
             Pageable page);
