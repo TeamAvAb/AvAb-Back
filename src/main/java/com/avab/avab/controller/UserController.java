@@ -17,7 +17,7 @@ import com.avab.avab.converter.UserConverter;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
 import com.avab.avab.dto.reqeust.UserRequestDTO.UpdateUserNameDTO;
-import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
 import com.avab.avab.dto.response.UserResponseDTO.UserResponse;
 import com.avab.avab.security.handler.annotation.AuthUser;
 import com.avab.avab.service.UserService;
@@ -45,14 +45,14 @@ public class UserController {
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @GetMapping("/me/favorites/recreations")
     @Parameter(name = "user", hidden = true)
-    public BaseResponse<RecreationPreviewListDTO> getFavoriteRecreations(
+    public BaseResponse<RecreationPreviewPageDTO> getFavoriteRecreations(
             @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
                     Integer page,
             @AuthUser User user) {
         Page<Recreation> recreationPage = userService.getFavoriteRecreations(user, page);
 
         return BaseResponse.onSuccess(
-                RecreationConverter.toRecreationPreviewListDTO(recreationPage, user));
+                RecreationConverter.toRecreationPreviewPageDTO(recreationPage, user));
     }
 
     @Operation(summary = "회원 정보 수정 API", description = "회원 닉네임을 수정합니다. 닉네임을 인자로 받습니다. _by 루아_")

@@ -38,7 +38,7 @@ public class RecreationResponseDTO {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class RecreationPreviewListDTO {
+    public static class RecreationPreviewPageDTO {
 
         List<RecreationPreviewDTO> recreationList;
         Integer totalPages;

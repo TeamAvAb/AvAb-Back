@@ -21,7 +21,7 @@ import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
-import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewListDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
@@ -31,9 +31,9 @@ import com.avab.avab.dto.response.RecreationReviewResponseDTO.RecommendationDTO;
 
 public class RecreationConverter {
 
-    public static RecreationPreviewListDTO toRecreationPreviewListDTO(
+    public static RecreationPreviewPageDTO toRecreationPreviewPageDTO(
             Page<Recreation> recreationPage, User user) {
-        return RecreationPreviewListDTO.builder()
+        return RecreationPreviewPageDTO.builder()
                 .recreationList(
                         recreationPage.getContent().stream()
                                 .map(recreation -> toRecreationPreviewDTO(recreation, user))
@@ -182,5 +182,12 @@ public class RecreationConverter {
                                         .build()
                                 : null)
                 .build();
+    }
+
+    public static List<RecreationPreviewDTO> toRecreationPreviewListDTO(
+            List<Recreation> recreations, User user) {
+        return recreations.stream()
+                .map(recreation -> toRecreationPreviewDTO(recreation, user))
+                .toList();
     }
 }

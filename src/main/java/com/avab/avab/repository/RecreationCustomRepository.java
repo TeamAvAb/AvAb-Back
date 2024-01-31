@@ -24,4 +24,11 @@ public interface RecreationCustomRepository {
             List<Gender> genders,
             List<Age> ages,
             Pageable page);
+
+    List<Recreation> findRelatedRecreations(
+            Long recreationId,
+            List<Keyword> keyword,
+            List<Purpose> purpose,
+            Integer maxParticipants,
+            List<Age> age);
 }
