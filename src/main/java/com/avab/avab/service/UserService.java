@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
+import com.avab.avab.domain.mapping.FlowFavorite;
 
 public interface UserService {
 
@@ -12,4 +13,6 @@ public interface UserService {
     Page<Recreation> getFavoriteRecreations(User user, Integer page);
 
     User updateUserName(String username, User user);
+
+    Page<FlowFavorite> getScrapFlows(User user, Integer page);
 }
