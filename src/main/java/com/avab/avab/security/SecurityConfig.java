@@ -41,7 +41,9 @@ public class SecurityConfig {
         "/api/recreations/popular",
         "/api/auth/login/kakao",
         "/api/auth/refresh",
-        "/api/flows"
+        "/api/flows",
+        "/api/flows/{flowId}",
+        "/api/users/scrap",
     };
 
     @Bean

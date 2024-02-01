@@ -52,6 +52,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Recreation> recreationList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<Flow> flowList = new ArrayList<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<RecreationFavorite> recreationFavoriteList = new ArrayList<>();
 
@@ -64,9 +67,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<FlowFavorite> flowFavoriteList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    private List<Flow> flowList = new ArrayList<>();
 
     public void updateUserName(String username) {
         this.username = username;
