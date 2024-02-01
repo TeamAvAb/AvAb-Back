@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.RecreationException;
 import com.avab.avab.converter.RecreationConverter;
+import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationAge;
 import com.avab.avab.domain.RecreationKeyword;
@@ -183,5 +184,10 @@ public class RecreationServiceImpl implements RecreationService {
                 recreation.getRecreationAgeList().stream()
                         .map(RecreationAge::getAge)
                         .collect(Collectors.toList()));
+    }
+
+    @Override
+    public List<Flow> findRelatedFlows(Long recreationId) {
+        return recreationRepository.findRelatedFlows(recreationId);
     }
 }
