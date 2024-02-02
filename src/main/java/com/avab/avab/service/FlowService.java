@@ -9,4 +9,6 @@ public interface FlowService {
     Page<Flow> getFlows(Integer page);
 
     Flow getFlowDetail(Long flowId);
+
+    Boolean existsByFlowId(Long flowId);
 }

@@ -29,4 +29,9 @@ public class FlowServiceImpl implements FlowService {
     public Flow getFlowDetail(Long flowId) {
         return flowRepository.findById(flowId).orElseThrow();
     }
+
+    @Override
+    public Boolean existsByFlowId(Long flowId) {
+        return flowRepository.existsById(flowId);
+    }
 }
