@@ -39,4 +39,6 @@ public interface RecreationService {
     Page<RecreationReview> getRecreationReviews(Long recreationId, Integer page);
 
     List<Recreation> findRelatedRecreations(User user, Long recreationId);
+
+    List<Recreation> recommendRecreations(List<Keyword> keywords, Integer participants, Integer playTime, List<Purpose> purposes, List<Gender> genders, List<Age> ages);
 }

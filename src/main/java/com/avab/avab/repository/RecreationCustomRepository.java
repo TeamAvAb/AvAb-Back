@@ -31,4 +31,6 @@ public interface RecreationCustomRepository {
             List<Purpose> purpose,
             Integer maxParticipants,
             List<Age> age);
+
+    List<Recreation> recommendRecreations(List<Purpose> purposes, List<Keyword> keywords, List<Gender> genders, List<Age> ages, Integer participants, Integer playTime);
 }
