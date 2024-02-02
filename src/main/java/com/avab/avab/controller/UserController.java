@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.avab.avab.apiPayload.BaseResponse;
+import com.avab.avab.converter.FlowConverter;
 import com.avab.avab.converter.RecreationConverter;
 import com.avab.avab.converter.UserConverter;
+import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
 import com.avab.avab.dto.reqeust.UserRequestDTO.UpdateUserNameDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
 import com.avab.avab.dto.response.UserResponseDTO.UserResponse;
 import com.avab.avab.security.handler.annotation.AuthUser;
@@ -63,5 +66,35 @@ public class UserController {
             @RequestBody @Valid UpdateUserNameDTO updateUserNameDTO, @AuthUser User user) {
         User updatedUser = userService.updateUserName(updateUserNameDTO.getName(), user);
         return BaseResponse.onSuccess(UserConverter.toUserResponse(updatedUser));
+    }
+
+    @Operation(summary = "스크랩 플로우 API", description = "스크랩한 플로우 목록을 조회합니다. _by 수기_")
+    @ApiResponses({
+        @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+    })
+    @Parameter(name = "user", hidden = true)
+    @GetMapping("/scrap")
+    public BaseResponse<FlowPreviewPageDTO> getScrapFlows(
+            @AuthUser User user,
+            @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
+                    Integer page) {
+
+        Page<Flow> scrapFlowPage = userService.getScrapFlows(user, page);
+
+        return BaseResponse.onSuccess(
+                FlowConverter.toFlowPreviewPageDTO(scrapFlowPage, user));
+    }
+
+    @Operation(summary = "내 플로우 조회", description = "내가 만든 플로우를 최신순으로 조회합니다. _by 보노_")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
+    @Parameter(name = "user", hidden = true)
+    @GetMapping("/me/flows")
+    public BaseResponse<FlowPreviewPageDTO> getMyFlows(
+            @AuthUser User user,
+            @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
+                    Integer page) {
+        Page<Flow> flowPage = userService.getMyFlows(user, page);
+
+        return BaseResponse.onSuccess(FlowConverter.toFlowPreviewPageDTO(flowPage, user));
     }
 }
