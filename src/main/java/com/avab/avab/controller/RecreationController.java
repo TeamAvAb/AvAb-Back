@@ -168,7 +168,7 @@ public class RecreationController {
     @Operation(summary = "연관 레크레이션 API", description = "연관 레크레이션 목록을 가져옵니다. _by 수기_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
-    @GetMapping("/{recreationId}/relatedRecreation")
+    @GetMapping("/{recreationId}/related/recreations")
     public BaseResponse<List<RecreationPreviewDTO>> relatedRecreation(
             @AuthUser User user,
             @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
@@ -182,7 +182,7 @@ public class RecreationController {
     @Operation(summary = "연관 플로우 API", description = "연관 플로우 목록을 가져옵니다. _by 수기_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
-    @GetMapping("/{recreationId}/relatedFlow")
+    @GetMapping("/{recreationId}/related/flows")
     public BaseResponse<List<FlowDetailDTO>> relatedFlow(
             @AuthUser User user,
             @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
