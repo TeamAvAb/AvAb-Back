@@ -17,7 +17,6 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
-import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.FlowRecreationKeyword;
 import com.avab.avab.domain.mapping.FlowRecreationPurpose;
@@ -27,9 +26,6 @@ import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
-import com.avab.avab.repository.RecreationKeyWordRepository;
-import com.avab.avab.repository.RecreationPurposeRepository;
-import com.avab.avab.repository.RecreationRepository;
 
 @Component
 public class FlowConverter {
@@ -78,108 +74,81 @@ public class FlowConverter {
     public static Flow toFlow(
             PostFlowDTO postFlowDTO,
             User user,
-            List<FlowAge> flowAgeList,
-            List<FlowFavorite> flowFavoriteList,
-            List<FlowRecreation> flowRecreationList,
-            List<FlowRecreationKeyword> flowRecreationKeywordList,
-            List<FlowGender> flowGenderList,
-            List<FlowRecreationPurpose> flowRecreationPurposeList) {
+            List<Recreation> recreationList,
+            List<RecreationKeyword> recreationKeywordList,
+            List<RecreationPurpose> recreationPurposeList) {
 
         Flow flow =
                 Flow.builder()
                         .participants(postFlowDTO.getParticipants())
                         .totalPlayTime(postFlowDTO.getTotalPlayTime())
-                        .ageList(flowAgeList)
-                        .flowFavoriteList(flowFavoriteList)
-                        .flowRecreationList(flowRecreationList)
-                        .flowRecreationKeywordList(flowRecreationKeywordList)
-                        .genderList(flowGenderList)
-                        .flowRecreationPurposeList(flowRecreationPurposeList)
                         .title(postFlowDTO.getTitle())
                         .author(user)
                         .build();
 
+        List<FlowRecreation> flowRecreationList =
+                postFlowDTO.getRecreationSpecList().stream()
+                        .flatMap(
+                                recreationSpec ->
+                                        recreationList.stream()
+                                                .filter(
+                                                        recreation ->
+                                                                recreation
+                                                                        .getId()
+                                                                        .equals(
+                                                                                recreationSpec
+                                                                                        .getRecreationId()))
+                                                .map(
+                                                        recreation ->
+                                                                FlowRecreation.builder()
+                                                                        .flow(flow)
+                                                                        .recreation(recreation)
+                                                                        .customPlayTime(
+                                                                                recreationSpec
+                                                                                        .getCustomPlayTime())
+                                                                        .seq(
+                                                                                recreationSpec
+                                                                                        .getSeq())
+                                                                        .build()))
+                        .toList();
+
+        List<FlowRecreationKeyword> flowRecreationKeywordList =
+                recreationKeywordList.stream()
+                        .map(
+                                recreationKeyword ->
+                                        FlowRecreationKeyword.builder()
+                                                .flow(flow)
+                                                .keyword(recreationKeyword)
+                                                .build())
+                        .toList();
+
+        List<FlowRecreationPurpose> flowRecreationPurposeList =
+                recreationPurposeList.stream()
+                        .map(
+                                recreationPurpose ->
+                                        FlowRecreationPurpose.builder()
+                                                .flow(flow)
+                                                .purpose(recreationPurpose)
+                                                .build())
+                        .toList();
+
+        List<FlowAge> flowAgeList =
+                postFlowDTO.getAgeList().stream()
+                        .map(age -> FlowAge.builder().age(age).flow(flow).build())
+                        .toList();
+
+        List<FlowGender> flowGenderList =
+                postFlowDTO.getGenderList().stream()
+                        .map(gender -> FlowGender.builder().flow(flow).gender(gender).build())
+                        .toList();
+
+        flow.getFlowRecreationList().addAll(flowRecreationList);
+        flow.getFlowRecreationKeywordList().addAll(flowRecreationKeywordList);
+        flow.getFlowRecreationPurposeList().addAll(flowRecreationPurposeList);
+        flow.getAgeList().addAll(flowAgeList);
+        flow.getGenderList().addAll(flowGenderList);
+
         return flow;
-    }
-
-    public static void addFlowRecreation(
-            PostFlowDTO postFlowDTO,
-            Flow flow,
-            RecreationRepository recreationRepository,
-            List<FlowRecreation> flowRecreationList) {
-        postFlowDTO.getRecreationSpecList().stream()
-                .flatMap(
-                        recreationSpec ->
-                                recreationRepository
-                                        .findById(recreationSpec.getRecreationId())
-                                        .map(
-                                                recreation ->
-                                                        FlowRecreation.builder()
-                                                                .flow(flow)
-                                                                .recreation(recreation)
-                                                                .customPlayTime(
-                                                                        recreationSpec
-                                                                                .getCustomPlayTime())
-                                                                .seq(recreationSpec.getSeq())
-                                                                .build())
-                                        .stream())
-                .forEach(flowRecreationList::add);
-    }
-
-    public static void addFlowAge(PostFlowDTO postFlowDTO, Flow flow, List<FlowAge> flowAgeList) {
-        postFlowDTO
-                .getAgeList()
-                .forEach(age -> flowAgeList.add(FlowAge.builder().age(age).flow(flow).build()));
-    }
-
-    public static void addFlowGender(
-            PostFlowDTO postFlowDTO, Flow flow, List<FlowGender> flowGenderList) {
-        postFlowDTO
-                .getGenderList()
-                .forEach(
-                        gender ->
-                                flowGenderList.add(
-                                        FlowGender.builder().flow(flow).gender(gender).build()));
-    }
-
-    public static void addFlowRecreationKeyword(
-            PostFlowDTO postFlowDTO,
-            Flow flow,
-            RecreationKeyWordRepository recreationKeywordRepository,
-            List<FlowRecreationKeyword> flowRecreationKeywordList) {
-        postFlowDTO
-                .getKeywordList()
-                .forEach(
-                        keyword -> {
-                            RecreationKeyword recreationKeyword =
-                                    recreationKeywordRepository.findByKeyword(keyword);
-                            FlowRecreationKeyword flowRecreationKeyword =
-                                    FlowRecreationKeyword.builder()
-                                            .flow(flow)
-                                            .keyword(recreationKeyword)
-                                            .build();
-                            flowRecreationKeywordList.add(flowRecreationKeyword);
-                        });
-    }
-
-    public static void addFlowRecreationPurpose(
-            PostFlowDTO postFlowDTO,
-            Flow flow,
-            RecreationPurposeRepository recreationPurposeRepository,
-            List<FlowRecreationPurpose> flowRecreationPurposeList) {
-        postFlowDTO
-                .getPurposeList()
-                .forEach(
-                        purpose -> {
-                            RecreationPurpose recreationPurpose =
-                                    recreationPurposeRepository.findByPurpose(purpose);
-                            FlowRecreationPurpose flowRecreationPurpose =
-                                    FlowRecreationPurpose.builder()
-                                            .flow(flow)
-                                            .purpose(recreationPurpose)
-                                            .build();
-                            flowRecreationPurposeList.add(flowRecreationPurpose);
-                        });
     }
 
     public static FlowDetailDTO toFlowDetailDTO(Flow flow, User user) {
