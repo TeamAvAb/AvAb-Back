@@ -30,6 +30,8 @@ public class QFlowRecreation extends EntityPathBase<FlowRecreation> {
 
     public final com.avab.avab.domain.QRecreation recreation;
 
+    public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
+
     public QFlowRecreation(String variable) {
         this(FlowRecreation.class, forVariable(variable), INITS);
     }
