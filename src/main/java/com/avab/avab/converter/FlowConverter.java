@@ -129,4 +129,8 @@ public class FlowConverter {
 
         return flowDetailDTO;
     }
+
+    public static List<FlowDetailDTO> toFlowDetailListDTO(List<Flow> flows, User user) {
+        return flows.stream().map(flow -> toFlowDetailDTO(flow, user)).toList();
+    }
 }
