@@ -1,5 +1,7 @@
 package com.avab.avab.service.impl;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -44,5 +46,16 @@ public class FlowServiceImpl implements FlowService {
     @Override
     public Boolean existsByFlowId(Long flowId) {
         return flowRepository.existsById(flowId);
+    }
+
+    @Override
+    public List<Long> getUpdateTargetFlowIds(List<Long> flowIdList) {
+        return flowRepository.findAllByIdIn(flowIdList).stream().map(Flow::getId).toList();
+    }
+
+    @Override
+    @Transactional
+    public void updateFlowViewCount(Long flowId, Long viewCount) {
+        flowRepository.incrementViewCountById(flowId, viewCount);
     }
 }

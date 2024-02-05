@@ -1,5 +1,7 @@
 package com.avab.avab.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +21,6 @@ public interface FlowRepository extends JpaRepository<Flow, Long> {
     @Modifying
     @Query("UPDATE Flow f SET f.viewCount = f.viewCount + :viewCount WHERE f.id = :id")
     void incrementViewCountById(@Param("id") Long id, @Param("viewCount") Long viewCount);
+
+    List<Flow> findAllByIdIn(List<Long> id);
 }
