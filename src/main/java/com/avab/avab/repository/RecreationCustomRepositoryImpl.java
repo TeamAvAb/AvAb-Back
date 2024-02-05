@@ -3,6 +3,7 @@ package com.avab.avab.repository;
 import static com.avab.avab.domain.QRecreation.recreation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Repository;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.RecreationException;
+import com.avab.avab.domain.Flow;
+import com.avab.avab.domain.QFlow;
 import com.avab.avab.domain.QRecreation;
 import com.avab.avab.domain.QRecreationAge;
 import com.avab.avab.domain.Recreation;
@@ -205,5 +208,28 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
 
         // 최대 가중치를 가지는 2개의 레크레이션 리턴
         return recreationList.stream().map(Pair::getLeft).limit(2).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Flow> findRelatedFlows(Long recreationId) {
+        QFlow flow = QFlow.flow;
+        List<Flow> randFlows = new ArrayList<>();
+
+        List<Flow> flows =
+                queryFactory
+                        .select(flow)
+                        .from(flow)
+                        .where(flow.flowRecreationList.any().recreation.id.eq(recreationId))
+                        .fetch();
+
+        // flow 사이즈가 2를 넘으면 랜덤으로 2개 리턴하기
+        if (flows.size() > 2) {
+            List<Flow> shuffledFlows = new ArrayList<>(flows);
+            Collections.shuffle(shuffledFlows);
+
+            randFlows.add(shuffledFlows.get(0));
+            randFlows.add(shuffledFlows.get(1));
+            return randFlows;
+        } else return flows;
     }
 }

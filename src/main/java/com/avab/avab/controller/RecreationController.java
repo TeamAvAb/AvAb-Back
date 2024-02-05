@@ -21,7 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.apiPayload.code.status.SuccessStatus;
+import com.avab.avab.converter.FlowConverter;
 import com.avab.avab.converter.RecreationConverter;
+import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.User;
@@ -32,6 +34,7 @@ import com.avab.avab.domain.enums.Place;
 import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.CreateRecreationDTO;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationCreatedDTO;
@@ -171,7 +174,7 @@ public class RecreationController {
     @Operation(summary = "연관 레크레이션 API", description = "연관 레크레이션 목록을 가져옵니다. _by 수기_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
-    @GetMapping("/{recreationId}/related")
+    @GetMapping("/{recreationId}/related/recreations")
     public BaseResponse<List<RecreationPreviewDTO>> relatedRecreation(
             @AuthUser User user,
             @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
@@ -205,5 +208,17 @@ public class RecreationController {
                 recreationService.createRecreation(user, request, thumbnailImage, wayImages);
         return BaseResponse.of(
                 SuccessStatus._CREATED, RecreationConverter.toRecreationCreatedDTO(recreation));
+    }
+
+    @Operation(summary = "연관 플로우 API", description = "연관 플로우 목록을 가져옵니다. _by 수기_")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
+    @Parameter(name = "user", hidden = true)
+    @GetMapping("/{recreationId}/related/flows")
+    public BaseResponse<List<FlowDetailDTO>> relatedFlow(
+            @AuthUser User user,
+            @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
+        List<Flow> relatedFlow = recreationService.findRelatedFlows(recreationId);
+
+        return BaseResponse.onSuccess(FlowConverter.toFlowDetailListDTO(relatedFlow, user));
     }
 }

@@ -17,6 +17,7 @@ import com.avab.avab.apiPayload.exception.RecreationException;
 import com.avab.avab.apiPayload.exception.S3Exception;
 import com.avab.avab.aws.s3.AmazonS3Manager;
 import com.avab.avab.converter.RecreationConverter;
+import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationAge;
 import com.avab.avab.domain.RecreationKeyword;
@@ -243,5 +244,10 @@ public class RecreationServiceImpl implements RecreationService {
                         recreationPurposeList);
 
         return recreationRepository.save(recreation);
+    }
+
+    @Override
+    public List<Flow> findRelatedFlows(Long recreationId) {
+        return recreationRepository.findRelatedFlows(recreationId);
     }
 }

@@ -52,21 +52,27 @@ public class Flow extends BaseEntity {
     @JoinColumn(name = "author_id")
     private User author;
 
+    @Builder.Default
     @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL)
     private List<FlowAge> ageList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL)
     private List<FlowGender> genderList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL)
     private List<FlowRecreation> flowRecreationList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL)
     private List<FlowRecreationKeyword> flowRecreationKeywordList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL)
     private List<FlowRecreationPurpose> flowRecreationPurposeList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL)
     private List<FlowFavorite> flowFavoriteList = new ArrayList<>();
 }

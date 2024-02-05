@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.User;
@@ -41,6 +42,8 @@ public interface RecreationService {
     Page<RecreationReview> getRecreationReviews(Long recreationId, Integer page);
 
     List<Recreation> findRelatedRecreations(User user, Long recreationId);
+
+    List<Flow> findRelatedFlows(Long recreationId);
 
     Recreation createRecreation(
             User user,
