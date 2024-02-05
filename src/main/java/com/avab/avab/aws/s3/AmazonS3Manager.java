@@ -1,6 +1,7 @@
 package com.avab.avab.aws.s3;
 
 import java.io.IOException;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,7 +24,22 @@ public class AmazonS3Manager {
     private final AmazonS3 amazonS3;
     private final AmazonConfig amazonConfig;
 
-    public String uploadFile(String keyName, MultipartFile file) throws S3Exception {
+    public String uploadRecreationThumbnailImage(MultipartFile file) {
+        return uploadFile(
+                generateKeyName(S3Directory.RECREATION_THUMBNAIL, file.getOriginalFilename()),
+                file);
+    }
+
+    public String uploadRecreationWayImage(MultipartFile file) {
+        return uploadFile(
+                generateKeyName(S3Directory.RECREATION_WAY, file.getOriginalFilename()), file);
+    }
+
+    public void deleteFileByUrl(String url) {
+        deleteFile(getKeyName(url));
+    }
+
+    private String uploadFile(String keyName, MultipartFile file) throws S3Exception {
         try {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
@@ -37,7 +53,7 @@ public class AmazonS3Manager {
         }
     }
 
-    public void deleteFile(String keyName) throws S3Exception {
+    private void deleteFile(String keyName) throws S3Exception {
         try {
             if (amazonS3.doesObjectExist(amazonConfig.getBucket(), keyName)) {
                 amazonS3.deleteObject(amazonConfig.getBucket(), keyName);
@@ -49,7 +65,7 @@ public class AmazonS3Manager {
         }
     }
 
-    public String getKeyName(String fileUrl) {
+    private String getKeyName(String fileUrl) {
         Pattern regex = Pattern.compile(getPattern());
         Matcher matcher = regex.matcher(fileUrl);
 
@@ -67,5 +83,9 @@ public class AmazonS3Manager {
                 + "\\.s3\\."
                 + amazonConfig.getRegion()
                 + "\\.amazonaws\\.com(.*)";
+    }
+
+    private String generateKeyName(S3Directory dir, String filename) {
+        return dir.getDirectory() + "/" + UUID.randomUUID() + "_" + filename;
     }
 }

@@ -30,6 +30,8 @@ public class QRecreationWay extends EntityPathBase<RecreationWay> {
 
     public final QRecreation recreation;
 
+    public final NumberPath<Integer> seq = createNumber("seq", Integer.class);
+
     public QRecreationWay(String variable) {
         this(RecreationWay.class, forVariable(variable), INITS);
     }

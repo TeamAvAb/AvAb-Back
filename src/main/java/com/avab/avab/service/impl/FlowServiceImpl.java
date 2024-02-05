@@ -58,12 +58,12 @@ public class FlowServiceImpl implements FlowService {
 
         List<RecreationKeyword> recreationKeywordList =
                 postFlowDTO.getKeywordList().stream()
-                        .map(recreationKeywordRepository::findByKeyword)
+                        .map(keyword -> recreationKeywordRepository.findByKeyword(keyword).get())
                         .toList();
 
         List<RecreationPurpose> recreationPurposeList =
                 postFlowDTO.getPurposeList().stream()
-                        .map(recreationPurposeRepository::findByPurpose)
+                        .map(purpose -> recreationPurposeRepository.findByPurpose(purpose).get())
                         .toList();
 
         Flow flow =
