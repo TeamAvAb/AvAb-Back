@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.avab.avab.apiPayload.code.status.ErrorStatus;
+import com.avab.avab.apiPayload.exception.FlowException;
 import com.avab.avab.converter.FlowConverter;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
@@ -14,6 +16,7 @@ import com.avab.avab.domain.RecreationKeyword;
 import com.avab.avab.domain.RecreationPurpose;
 import com.avab.avab.domain.User;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
+import com.avab.avab.redis.service.FlowViewCountService;
 import com.avab.avab.repository.FlowRepository;
 import com.avab.avab.repository.RecreationKeywordRepository;
 import com.avab.avab.repository.RecreationPurposeRepository;
@@ -28,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class FlowServiceImpl implements FlowService {
 
     private final FlowRepository flowRepository;
+    private final FlowViewCountService flowViewCountService;
     private final RecreationRepository recreationRepository;
     private final RecreationPurposeRepository recreationPurposeRepository;
     private final RecreationKeywordRepository recreationKeywordRepository;
@@ -41,7 +45,30 @@ public class FlowServiceImpl implements FlowService {
     }
 
     public Flow getFlowDetail(Long flowId) {
-        return flowRepository.findById(flowId).orElseThrow();
+        Flow flow =
+                flowRepository
+                        .findById(flowId)
+                        .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
+
+        flowViewCountService.incrementViewCount(flowId);
+
+        return flow;
+    }
+
+    @Override
+    public Boolean existsByFlowId(Long flowId) {
+        return flowRepository.existsById(flowId);
+    }
+
+    @Override
+    public List<Long> getUpdateTargetFlowIds(List<Long> flowIdList) {
+        return flowRepository.findAllByIdIn(flowIdList).stream().map(Flow::getId).toList();
+    }
+
+    @Override
+    @Transactional
+    public void updateFlowViewCount(Long flowId, Long viewCount) {
+        flowRepository.incrementViewCountById(flowId, viewCount);
     }
 
     @Transactional
