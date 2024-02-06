@@ -247,6 +247,12 @@ public class RecreationServiceImpl implements RecreationService {
     }
 
     @Override
+    public Page<Recreation> getRecentRecreation(Integer page) {
+        return recreationRepository.findByOrderByCreatedAtDesc(
+                PageRequest.of(page, SEARCH_PAGE_SIZE));
+    }
+
+    @Override
     public List<Flow> findRelatedFlows(Long recreationId) {
         return recreationRepository.findRelatedFlows(recreationId);
     }
