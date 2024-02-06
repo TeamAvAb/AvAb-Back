@@ -250,4 +250,11 @@ public class RecreationServiceImpl implements RecreationService {
     public List<Flow> findRelatedFlows(Long recreationId) {
         return recreationRepository.findRelatedFlows(recreationId);
     }
+
+    @Override
+    public List<Recreation> recommendRecreations(List<Keyword> keywords, Integer participants, Integer playTime, List<Purpose> purposes, List<Gender> genders, List<Age> ages) {
+        return recreationRepository.recommendRecreations(purposes, keywords, genders, ages, participants, playTime);
+    }
+
+
 }
