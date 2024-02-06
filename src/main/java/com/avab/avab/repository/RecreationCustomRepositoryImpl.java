@@ -2,7 +2,10 @@ package com.avab.avab.repository;
 
 import static com.avab.avab.domain.QRecreation.recreation;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import com.avab.avab.domain.QRecreationGender;
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Repository;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.RecreationException;
+import com.avab.avab.domain.Flow;
+import com.avab.avab.domain.QFlow;
 import com.avab.avab.domain.QRecreation;
 import com.avab.avab.domain.QRecreationAge;
 import com.avab.avab.domain.Recreation;
@@ -207,6 +212,29 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
         return recreationList.stream().map(Pair::getLeft).limit(2).collect(Collectors.toList());
     }
 
+    @Override
+    public List<Flow> findRelatedFlows(Long recreationId) {
+        QFlow flow = QFlow.flow;
+        List<Flow> randFlows = new ArrayList<>();
+
+        List<Flow> flows =
+                queryFactory
+                        .select(flow)
+                        .from(flow)
+                        .where(flow.flowRecreationList.any().recreation.id.eq(recreationId))
+                        .fetch();
+
+        // flow 사이즈가 2를 넘으면 랜덤으로 2개 리턴하기
+        if (flows.size() > 2) {
+            List<Flow> shuffledFlows = new ArrayList<>(flows);
+            Collections.shuffle(shuffledFlows);
+
+            randFlows.add(shuffledFlows.get(0));
+            randFlows.add(shuffledFlows.get(1));
+            return randFlows;
+        } else return flows;
+    }
+
     // 목적, 시간, 나머지는 연관 레크레이션과 같음 (키워드, 인원, 연령대, 성별)
     @Override
     public List<Recreation> recommendRecreations(List<Purpose> purpose, List<Keyword> keyword, List<Gender> gender, List<Age> age, Integer maxParticipant, Integer playTime) {
@@ -243,7 +271,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
 
             long purposeMatchSize =
                     purposesForComparison.stream().filter(purpose::contains).count();
-            
+
             // 시간 내로 할수 있는 것인지
             long loePlayTime = todayRecreation.getPlayTime() <= playTime ? -Math.abs(todayRecreation.getPlayTime() - playTime) : -10000;
 
@@ -257,7 +285,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
 
             long keywordMatchSize =
                     keyword != null ? keyword.stream().filter(keywordsForComparison::contains).count() : 0l;
-            
+
             // 인원
             int participantsMatch =
                     maxParticipant != null
@@ -285,7 +313,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
 
             long genderMatchList = gender != null ? genderForComparison.stream().filter(gender::contains).count() : 0l;
 
-            
+
 
             // List에 추가
             recreationList.add(
@@ -304,13 +332,13 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
         // 가중치별 내림차순 정렬 (중요하지 않은 것)
         recreationList.sort(
                 Comparator.comparing(Triple<Recreation,Double, Double>::getRight).reversed());
-        
+
         // Collection sort는 merge sort이기에 stable이 깨지지 않음.
         // 가중치별 내림차순 정렬 (중요한 것)
         recreationList.sort(
                 Comparator.comparing(Triple<Recreation, Double, Double>::getMiddle).reversed());
 
-        
+
         // 최대 가중치를 가지는 9개의 레크레이션 리턴
         return recreationList.stream().map(Triple::getLeft).limit(9).collect(Collectors.toList());
     }

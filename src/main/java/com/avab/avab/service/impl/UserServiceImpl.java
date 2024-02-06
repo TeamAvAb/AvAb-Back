@@ -12,8 +12,8 @@ import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.domain.mapping.RecreationFavorite;
-import com.avab.avab.repository.FlowRepository;
 import com.avab.avab.repository.FlowFavoriteRepository;
+import com.avab.avab.repository.FlowRepository;
 import com.avab.avab.repository.RecreationFavoriteRepository;
 import com.avab.avab.repository.UserRepository;
 import com.avab.avab.service.UserService;
@@ -41,7 +41,8 @@ public class UserServiceImpl implements UserService {
 
     public Page<Recreation> getFavoriteRecreations(User user, Integer page) {
         Page<RecreationFavorite> favoritesPage =
-                recreationFavoriteRepository.findByUser(user, PageRequest.of(page, FLOWS_PAGE_SIZE));
+                recreationFavoriteRepository.findByUser(
+                        user, PageRequest.of(page, FLOWS_PAGE_SIZE));
 
         return favoritesPage.map(RecreationFavorite::getRecreation);
     }
@@ -54,7 +55,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<Flow> getScrapFlows(User user, Integer page) {
-        return flowFavoriteRepository.findByUser(user, PageRequest.of(page, FLOWS_PAGE_SIZE)).map(FlowFavorite::getFlow);
+        return flowFavoriteRepository
+                .findByUser(user, PageRequest.of(page, FLOWS_PAGE_SIZE))
+                .map(FlowFavorite::getFlow);
     }
 
     @Override

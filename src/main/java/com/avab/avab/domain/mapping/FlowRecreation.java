@@ -36,5 +36,7 @@ public class FlowRecreation {
     @JoinColumn(name = "flow_id")
     private Flow flow;
 
+    private Integer seq;
+
     private Integer customPlayTime;
 }

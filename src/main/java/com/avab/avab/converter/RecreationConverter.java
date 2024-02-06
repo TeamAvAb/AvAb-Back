@@ -1,6 +1,7 @@
 package com.avab.avab.converter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -9,17 +10,25 @@ import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationAge;
 import com.avab.avab.domain.RecreationGender;
 import com.avab.avab.domain.RecreationHashtag;
+import com.avab.avab.domain.RecreationKeyword;
+import com.avab.avab.domain.RecreationPlace;
 import com.avab.avab.domain.RecreationPreparation;
+import com.avab.avab.domain.RecreationPurpose;
 import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.RecreationWay;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.mapping.RecreationFavorite;
+import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
+import com.avab.avab.domain.mapping.RecreationRecreationPurpose;
 import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
+import com.avab.avab.dto.reqeust.RecreationRequestDTO.CreateRecreationDTO;
+import com.avab.avab.dto.reqeust.RecreationRequestDTO.CreateRecreationWayDTO;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationCreatedDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
@@ -157,7 +166,7 @@ public class RecreationConverter {
                 review.getRecreationReviewRecommendationList().stream()
                         .filter(rec -> rec.getUser().equals(user))
                         .findFirst()
-                        .orElseGet(() -> null);
+                        .orElse(null);
 
         return RecreationReviewDTO.builder()
                 .reviewId(review.getId())
@@ -190,5 +199,111 @@ public class RecreationConverter {
         return recreations.stream()
                 .map(recreation -> toRecreationPreviewDTO(recreation, user))
                 .toList();
+    }
+
+    public static Recreation toRecreation(
+            User user,
+            CreateRecreationDTO request,
+            String thumbnailImageUrl,
+            Map<Integer, String> wayImageUrls,
+            List<RecreationKeyword> recreationKeywordList,
+            List<RecreationPurpose> recreationPurposeList) {
+        Recreation recreation =
+                Recreation.builder()
+                        .author(user)
+                        .title(request.getTitle())
+                        .summary(request.getSummary())
+                        .playTime(request.getPlayTime())
+                        .minParticipants(request.getMinParticipants())
+                        .maxParticipants(request.getMaxParticipants())
+                        .imageUrl(thumbnailImageUrl)
+                        .build();
+
+        List<RecreationHashtag> recreationHashtagList =
+                request.getHashtags().stream()
+                        .map(
+                                hashtag ->
+                                        RecreationHashtag.builder()
+                                                .recreation(recreation)
+                                                .hashtag(hashtag)
+                                                .build())
+                        .toList();
+
+        List<RecreationPlace> recreationPlaceList =
+                request.getPlaces().stream()
+                        .map(
+                                place ->
+                                        RecreationPlace.builder()
+                                                .recreation(recreation)
+                                                .place(place)
+                                                .build())
+                        .toList();
+
+        List<RecreationPreparation> recreationPreparationList =
+                request.getPreparations().stream()
+                        .map(
+                                preparation ->
+                                        RecreationPreparation.builder()
+                                                .recreation(recreation)
+                                                .name(preparation)
+                                                .build())
+                        .toList();
+
+        List<RecreationAge> recreationAgeList =
+                request.getAges().stream()
+                        .map(age -> RecreationAge.builder().recreation(recreation).age(age).build())
+                        .toList();
+
+        List<RecreationWay> recreationWayList =
+                request.getWays().stream()
+                        .map(
+                                way ->
+                                        toRecreationWay(
+                                                way, wayImageUrls.get(way.getSeq()), recreation))
+                        .toList();
+
+        List<RecreationRecreationKeyword> recreationRecreationKeywordList =
+                recreationKeywordList.stream()
+                        .map(
+                                keyword ->
+                                        RecreationRecreationKeyword.builder()
+                                                .keyword(keyword)
+                                                .recreation(recreation)
+                                                .build())
+                        .toList();
+
+        List<RecreationRecreationPurpose> recreationRecreationPurposeList =
+                recreationPurposeList.stream()
+                        .map(
+                                purpose ->
+                                        RecreationRecreationPurpose.builder()
+                                                .purpose(purpose)
+                                                .recreation(recreation)
+                                                .build())
+                        .toList();
+
+        recreation.getRecreationHashTagsList().addAll(recreationHashtagList);
+        recreation.getRecreationPlaceList().addAll(recreationPlaceList);
+        recreation.getRecreationPreparationList().addAll(recreationPreparationList);
+        recreation.getRecreationAgeList().addAll(recreationAgeList);
+        recreation.getRecreationWayList().addAll(recreationWayList);
+        recreation.getRecreationRecreationKeywordList().addAll(recreationRecreationKeywordList);
+        recreation.getRecreationRecreationPurposeList().addAll(recreationRecreationPurposeList);
+
+        return recreation;
+    }
+
+    private static RecreationWay toRecreationWay(
+            CreateRecreationWayDTO request, String wayImageUrl, Recreation recreation) {
+        return RecreationWay.builder()
+                .recreation(recreation)
+                .contents(request.getContents())
+                .seq(request.getSeq())
+                .imageUrl(wayImageUrl)
+                .build();
+    }
+
+    public static RecreationCreatedDTO toRecreationCreatedDTO(Recreation recreation) {
+        return RecreationCreatedDTO.builder().id(recreation.getId()).build();
     }
 }

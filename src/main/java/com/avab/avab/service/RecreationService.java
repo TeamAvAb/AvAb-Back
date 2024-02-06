@@ -3,7 +3,9 @@ package com.avab.avab.service;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.User;
@@ -12,6 +14,7 @@ import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
 import com.avab.avab.domain.enums.Purpose;
+import com.avab.avab.dto.reqeust.RecreationRequestDTO.CreateRecreationDTO;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 
 public interface RecreationService {
@@ -39,6 +42,14 @@ public interface RecreationService {
     Page<RecreationReview> getRecreationReviews(Long recreationId, Integer page);
 
     List<Recreation> findRelatedRecreations(User user, Long recreationId);
+
+    List<Flow> findRelatedFlows(Long recreationId);
+
+    Recreation createRecreation(
+            User user,
+            CreateRecreationDTO request,
+            MultipartFile thumbnailImage,
+            List<MultipartFile> wayImages);
 
     List<Recreation> recommendRecreations(List<Keyword> keywords, Integer participants, Integer playTime, List<Purpose> purposes, List<Gender> genders, List<Age> ages);
 }
