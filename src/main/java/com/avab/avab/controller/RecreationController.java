@@ -221,4 +221,18 @@ public class RecreationController {
 
         return BaseResponse.onSuccess(FlowConverter.toFlowDetailListDTO(relatedFlow, user));
     }
+
+    @Operation(summary = "최신 레크레이션 API", description = "최신 레크레이션 목록을 가져옵니다. _by 수기_")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
+    @Parameter(name = "user", hidden = true)
+    @GetMapping("/recent")
+    public BaseResponse<RecreationPreviewPageDTO> getRecentRecreation(
+            @AuthUser User user,
+            @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
+                    Integer page) {
+        Page<Recreation> recentRecreations = recreationService.getRecentRecreation(page);
+
+        return BaseResponse.onSuccess(
+                RecreationConverter.toRecreationPreviewPageDTO(recentRecreations, user));
+    }
 }

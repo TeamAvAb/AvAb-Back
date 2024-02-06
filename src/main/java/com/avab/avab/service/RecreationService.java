@@ -50,4 +50,6 @@ public interface RecreationService {
             CreateRecreationDTO request,
             MultipartFile thumbnailImage,
             List<MultipartFile> wayImages);
+
+    Page<Recreation> getRecentRecreation(Integer page);
 }
