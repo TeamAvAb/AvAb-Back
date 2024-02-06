@@ -263,4 +263,5 @@ public class RecreationController {
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationPreviewPageDTO(recentRecreations, user));
     }
+
 }
