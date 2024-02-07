@@ -19,6 +19,8 @@ import com.avab.avab.domain.RecreationWay;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
+import com.avab.avab.domain.enums.Keyword;
+import com.avab.avab.domain.enums.Place;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.domain.mapping.RecreationRecreationPurpose;
@@ -84,6 +86,7 @@ public class RecreationConverter {
         return WayDTO.builder()
                 .contents(recreationWay.getContents())
                 .imageUrl(recreationWay.getImageUrl())
+                .seq(recreationWay.getSeq())
                 .build();
     }
 
@@ -113,12 +116,27 @@ public class RecreationConverter {
                         .map(RecreationConverter::toWayDTO)
                         .collect(Collectors.toList());
 
+        List<Place> placeList =
+                recreation.getRecreationPlaceList().stream()
+                        .map(RecreationPlace::getPlace)
+                        .collect(Collectors.toList());
+
+        List<Keyword> keywordList =
+                recreation.getRecreationRecreationKeywordList().stream()
+                        .map(RecreationRecreationKeyword::getKeyword)
+                        .map(RecreationKeyword::getKeyword)
+                        .collect(Collectors.toList());
+
         return DescriptionDTO.builder()
                 .recreationId(recreation.getId())
+                .title(recreation.getTitle())
                 .summary(recreation.getSummary())
                 .minParticipants(recreation.getMinParticipants())
                 .maxParticipants(recreation.getMaxParticipants())
+                .playTime(recreation.getPlayTime())
                 .hashTagList(hashtagList)
+                .keywordList(keywordList)
+                .placeList(placeList)
                 .genderList(genderList)
                 .ageList(ageList)
                 .preparationList(preparationList)
