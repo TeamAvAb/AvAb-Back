@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import com.avab.avab.domain.enums.Age;
+import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
 import com.avab.avab.domain.enums.Purpose;
@@ -73,6 +74,8 @@ public class RecreationRequestDTO {
         List<String> preparations;
 
         List<Age> ages;
+
+        List<Gender> genders;
 
         @Size(min = 1)
         List<CreateRecreationWayDTO> ways;

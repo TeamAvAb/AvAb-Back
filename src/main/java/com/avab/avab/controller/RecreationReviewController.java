@@ -43,7 +43,7 @@ public class RecreationReviewController {
                     "리뷰를 추천합니다.\n\n"
                             + "1.처음 추천한 경우: 새 추천을 생성\n\n"
                             + "2.추천했다가 비추한 경우: 비추로 수정 (반대도 가능)\n\n"
-                            + "3.추천했다가 또 추천한 경우: 추천 취소(반대도 가능)\n\n"
+                            + "3.추천했다가 또 추천한 경우: 추천 취소 (반대도 가능)\n\n"
                             + "_by 보노_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON201", description = "추천 성공")})
     @Parameter(name = "user", hidden = true)

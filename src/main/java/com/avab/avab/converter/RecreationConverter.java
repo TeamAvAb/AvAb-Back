@@ -1,5 +1,6 @@
 package com.avab.avab.converter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -219,15 +220,18 @@ public class RecreationConverter {
                         .imageUrl(thumbnailImageUrl)
                         .build();
 
-        List<RecreationHashtag> recreationHashtagList =
-                request.getHashtags().stream()
-                        .map(
-                                hashtag ->
-                                        RecreationHashtag.builder()
-                                                .recreation(recreation)
-                                                .hashtag(hashtag)
-                                                .build())
-                        .toList();
+        List<RecreationHashtag> recreationHashtagList = new ArrayList<>();
+        if (request.getHashtags() != null) {
+            recreationHashtagList =
+                    request.getHashtags().stream()
+                            .map(
+                                    hashtag ->
+                                            RecreationHashtag.builder()
+                                                    .recreation(recreation)
+                                                    .hashtag(hashtag)
+                                                    .build())
+                            .toList();
+        }
 
         List<RecreationPlace> recreationPlaceList =
                 request.getPlaces().stream()
@@ -239,19 +243,32 @@ public class RecreationConverter {
                                                 .build())
                         .toList();
 
-        List<RecreationPreparation> recreationPreparationList =
-                request.getPreparations().stream()
-                        .map(
-                                preparation ->
-                                        RecreationPreparation.builder()
-                                                .recreation(recreation)
-                                                .name(preparation)
-                                                .build())
-                        .toList();
+        List<RecreationPreparation> recreationPreparationList = new ArrayList<>();
+        if (request.getPreparations() != null) {
+            recreationPreparationList =
+                    request.getPreparations().stream()
+                            .map(
+                                    preparation ->
+                                            RecreationPreparation.builder()
+                                                    .recreation(recreation)
+                                                    .name(preparation)
+                                                    .build())
+                            .toList();
+        }
 
         List<RecreationAge> recreationAgeList =
                 request.getAges().stream()
                         .map(age -> RecreationAge.builder().recreation(recreation).age(age).build())
+                        .toList();
+
+        List<RecreationGender> recreationGenderList =
+                request.getGenders().stream()
+                        .map(
+                                gender ->
+                                        RecreationGender.builder()
+                                                .recreation(recreation)
+                                                .gender(gender)
+                                                .build())
                         .toList();
 
         List<RecreationWay> recreationWayList =
@@ -286,6 +303,7 @@ public class RecreationConverter {
         recreation.getRecreationPlaceList().addAll(recreationPlaceList);
         recreation.getRecreationPreparationList().addAll(recreationPreparationList);
         recreation.getRecreationAgeList().addAll(recreationAgeList);
+        recreation.getRecreationGenderList().addAll(recreationGenderList);
         recreation.getRecreationWayList().addAll(recreationWayList);
         recreation.getRecreationRecreationKeywordList().addAll(recreationRecreationKeywordList);
         recreation.getRecreationRecreationPurposeList().addAll(recreationRecreationPurposeList);

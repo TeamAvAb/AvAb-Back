@@ -29,7 +29,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @Operation(summary = "카카오 로그인 API", description = "카카오 로그인 및 회원 가입을 진행하는 API입니다. by 준환")
+    @Operation(summary = "카카오 로그인 API", description = "카카오 로그인 및 회원 가입을 진행합니다. _by 준환_")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
@@ -39,8 +39,8 @@ public class AuthController {
     }
 
     @Operation(
-            summary = "Refresh Token 검증 API",
-            description = "Refresh Token을 검증하고 새로운 Access Token과 Refresh Token을 돌려주는 API입니다. by 준환")
+            summary = "JWT Access Token 재발급 API",
+            description = "Refresh Token을 검증하고 새로운 Access Token과 Refresh Token을 응답합니다. _by 준환_")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
@@ -49,7 +49,7 @@ public class AuthController {
         return BaseResponse.onSuccess(authService.refresh(refreshToken));
     }
 
-    @Operation(summary = "로그아웃 API", description = "REDIS의 refresh 토큰을 없애주는 API입니다. by 준환")
+    @Operation(summary = "로그아웃 API", description = "Refresh Token을 삭제합니다. _by 준환_")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })

@@ -14,6 +14,8 @@ public interface RecreationRepository
 
     Page<Recreation> findTop9ByOrderByWeeklyViewCountDesc(Pageable pageable);
 
+    Page<Recreation> findByOrderByCreatedAtDesc(Pageable pageable);
+
     @Modifying
     @Query("UPDATE Recreation r SET r.viewCount = r.viewCount + :viewCount WHERE r.id = :id")
     void incrementViewCountById(@Param("id") Long id, @Param("viewCount") Long viewCount);

@@ -40,11 +40,12 @@ public class SecurityConfig {
         "/api/recreations/{recreationId}/related/flows",
         "/api/recreations/{recreationId}/related/recreations",
         "/api/recreations/popular",
+        "/api/recreations/recent",
         "/api/auth/login/kakao",
         "/api/auth/refresh",
-        "/api/flows",
         "/api/flows/{flowId}",
         "/api/users/scrap",
+        "/api/recreations/recommend",
     };
 
     @Bean
@@ -79,6 +80,8 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers(
                                         HttpMethod.GET, "/api/recreations/{recreationId}/reviews")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/flows/")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated());
