@@ -226,10 +226,9 @@ public class RecreationController {
             summary = "레크레이션 추천 API",
             description = "키워드, 목적 등 여러 request 정보를 통해 추천 레크레이션을 만듭니다. _by 준환_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
-    @Parameter(name = "user", hidden = true)
     @GetMapping("/recommend")
     public BaseResponse<List<RecreationPreviewDTO>> recommendRecreations(
-            @AuthUser User user,
+            @Parameter(name = "user", hidden = true) @AuthUser User user,
             @RequestParam(name = "keyword", required = false) List<Keyword> keywords,
             @RequestParam(name = "participants", required = false) Integer participants,
             @RequestParam(name = "playTime") Integer playTime,
