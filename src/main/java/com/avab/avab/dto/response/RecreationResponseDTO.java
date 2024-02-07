@@ -6,6 +6,7 @@ import java.util.List;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
+import com.avab.avab.domain.enums.Place;
 import com.avab.avab.dto.response.RecreationReviewResponseDTO.RecommendationDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -52,8 +53,12 @@ public class RecreationResponseDTO {
     public static class DescriptionDTO {
 
         Long recreationId;
+        String title;
         String summary;
+        Integer playTime;
         List<String> hashTagList;
+        List<Keyword> keywordList;
+        List<Place> placeList;
         List<Age> ageList;
         List<String> preparationList;
         List<WayDTO> wayList;
@@ -71,6 +76,7 @@ public class RecreationResponseDTO {
 
         String contents;
         String imageUrl;
+        Integer seq;
     }
 
     @Builder
