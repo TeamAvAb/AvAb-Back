@@ -49,6 +49,7 @@ public class FlowResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class FlowDetailDTO {
+
         Long id;
         Integer totalPlayTime;
         Integer participants;
@@ -63,5 +64,14 @@ public class FlowResponseDTO {
 
         @Schema(description = "즐겨찾기 여부, 미로그인시 null")
         Boolean isFavorite;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class FlowScrapDTO {
+
+        Boolean isScraped;
     }
 }
