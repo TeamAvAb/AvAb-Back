@@ -17,6 +17,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
+import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.FlowRecreationKeyword;
 import com.avab.avab.domain.mapping.FlowRecreationPurpose;
@@ -24,6 +25,7 @@ import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowScrapDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
 
@@ -213,5 +215,13 @@ public class FlowConverter {
 
     public static List<FlowDetailDTO> toFlowDetailListDTO(List<Flow> flows, User user) {
         return flows.stream().map(flow -> toFlowDetailDTO(flow, user)).toList();
+    }
+
+    public static FlowScrapDTO toFlowScrapDTO(Boolean isScraped) {
+        return FlowScrapDTO.builder().isScraped(isScraped).build();
+    }
+
+    public static FlowFavorite toFlowFavorite(Flow flow, User user) {
+        return FlowFavorite.builder().flow(flow).user(user).build();
     }
 }

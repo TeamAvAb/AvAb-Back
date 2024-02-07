@@ -23,4 +23,12 @@ public interface FlowRepository extends JpaRepository<Flow, Long> {
     void incrementViewCountById(@Param("id") Long id, @Param("viewCount") Long viewCount);
 
     List<Flow> findAllByIdIn(List<Long> id);
+
+    @Modifying
+    @Query("UPDATE Flow f SET f.scrapCount = f.scrapCount + 1 WHERE f.id = : id")
+    void incrementScrapCountById(@Param("id") Long id);
+
+    @Modifying
+    @Query("UPDATE Flow f SET f.scrapCount = f.scrapCount - 1 WHERE f.id = : id")
+    void decrementScrapCountById(@Param("id") Long id);
 }

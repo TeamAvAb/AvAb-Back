@@ -1,6 +1,7 @@
 package com.avab.avab.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,8 +16,10 @@ import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationKeyword;
 import com.avab.avab.domain.RecreationPurpose;
 import com.avab.avab.domain.User;
+import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.redis.service.FlowViewCountService;
+import com.avab.avab.repository.FlowFavoriteRepository;
 import com.avab.avab.repository.FlowRepository;
 import com.avab.avab.repository.RecreationKeywordRepository;
 import com.avab.avab.repository.RecreationPurposeRepository;
@@ -31,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class FlowServiceImpl implements FlowService {
 
     private final FlowRepository flowRepository;
+    private final FlowFavoriteRepository flowFavoriteRepository;
     private final FlowViewCountService flowViewCountService;
     private final RecreationRepository recreationRepository;
     private final RecreationPurposeRepository recreationPurposeRepository;
@@ -69,6 +73,29 @@ public class FlowServiceImpl implements FlowService {
     @Transactional
     public void updateFlowViewCount(Long flowId, Long viewCount) {
         flowRepository.incrementViewCountById(flowId, viewCount);
+    }
+
+    @Override
+    @Transactional
+    public Boolean toggleScrapeFlow(User user, Long flowId) {
+        Flow flow =
+                flowRepository
+                        .findById(flowId)
+                        .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
+        Optional<FlowFavorite> flowFavorite = flowFavoriteRepository.findByFlowAndUser(flow, user);
+
+        if (flowFavorite.isPresent()) {
+            flowFavoriteRepository.delete(flowFavorite.get());
+            flowRepository.decrementScrapCountById(flow.getId());
+
+            return false;
+        }
+
+        FlowFavorite favorite = FlowConverter.toFlowFavorite(flow, user);
+        flowFavoriteRepository.save(favorite);
+        flowRepository.incrementScrapCountById(flow.getId());
+
+        return true;
     }
 
     @Transactional

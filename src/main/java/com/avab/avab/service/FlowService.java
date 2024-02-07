@@ -21,4 +21,6 @@ public interface FlowService {
     List<Long> getUpdateTargetFlowIds(List<Long> flowIdList);
 
     void updateFlowViewCount(Long flowId, Long viewCount);
+
+    Boolean toggleScrapeFlow(User user, Long flowId);
 }
