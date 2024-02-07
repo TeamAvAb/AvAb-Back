@@ -40,7 +40,10 @@ public enum ErrorStatus implements BaseErrorCode {
     RECREATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RECR_002", "존재하지 않는 레크레이션입니다."),
 
     // RecreationReview 관련
-    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REV_001", "존재하지 않는 리뷰입니다.");
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REV_001", "존재하지 않는 리뷰입니다."),
+
+    // Flow 관련
+    FLOW_DELETE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "FLOW_002", "삭제 권한이 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

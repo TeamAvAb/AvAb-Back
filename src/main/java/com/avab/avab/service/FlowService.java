@@ -13,4 +13,6 @@ public interface FlowService {
     Flow postFlow(PostFlowDTO postFlowDTO, User user);
 
     Flow getFlowDetail(Long flowId);
+
+    void deleteFlow(Long flowId, User user);
 }

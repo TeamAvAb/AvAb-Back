@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.avab.avab.apiPayload.code.status.ErrorStatus;
+import com.avab.avab.apiPayload.exception.FlowException;
 import com.avab.avab.converter.FlowConverter;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
@@ -76,5 +78,14 @@ public class FlowServiceImpl implements FlowService {
 
         flowRepository.save(flow);
         return flow;
+    }
+
+    @Transactional
+    public void deleteFlow(Long flowId, User user) {
+        Flow flow = flowRepository.findById(flowId).orElseThrow();
+        if (!flow.getAuthor().getId().equals(user.getId())) {
+            throw new FlowException(ErrorStatus.FLOW_DELETE_UNAUTHORIZED);
+        }
+        flowRepository.delete(flow);
     }
 }

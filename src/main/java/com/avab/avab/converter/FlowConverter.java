@@ -21,6 +21,7 @@ import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.FlowRecreationKeyword;
 import com.avab.avab.domain.mapping.FlowRecreationPurpose;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.DeletedFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
@@ -213,5 +214,16 @@ public class FlowConverter {
 
     public static List<FlowDetailDTO> toFlowDetailListDTO(List<Flow> flows, User user) {
         return flows.stream().map(flow -> toFlowDetailDTO(flow, user)).toList();
+    }
+
+    public static DeletedFlowDTO toDeletedFlowDTO(Long flowId, User user) {
+        return DeletedFlowDTO.builder()
+                .flowId(flowId)
+                .author(
+                        AuthorDTO.builder()
+                                .userId(user.getId())
+                                .username(user.getUsername())
+                                .build())
+                .build();
     }
 }
