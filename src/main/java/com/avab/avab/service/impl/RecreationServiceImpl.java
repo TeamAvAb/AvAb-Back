@@ -111,7 +111,10 @@ public class RecreationServiceImpl implements RecreationService {
                                 () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
 
         RecreationReview review = RecreationConverter.toRecreationReview(user, recreation, request);
-        return recreationReviewRepository.save(review);
+        recreationReviewRepository.save(review);
+
+        recreationRepository.updateTotalStars(recreation.getId());
+        return review;
     }
 
     @Override

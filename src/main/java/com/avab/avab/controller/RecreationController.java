@@ -144,7 +144,7 @@ public class RecreationController {
     @Parameter(name = "user", hidden = true)
     @PostMapping("/{recreationId}/reviews")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public BaseResponse<RecreationReviewCreatedDTO> postRecreationReviewDTO(
+    public BaseResponse<RecreationReviewCreatedDTO> postRecreationReview(
             @AuthUser User user,
             @PathVariable("recreationId") @ExistRecreation Long recreationId,
             @Valid @RequestBody PostRecreationReviewDTO request) {
