@@ -248,7 +248,7 @@ public class RecreationController {
     @Operation(summary = "최신 레크레이션 API", description = "최신 레크레이션 목록을 가져옵니다. _by 수기_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
-    @GetMapping("/recent")
+    @GetMapping("")
     public BaseResponse<RecreationPreviewPageDTO> getRecentRecreation(
             @AuthUser User user,
             @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
