@@ -22,11 +22,19 @@ public class QRecreationReviewRecommendation extends EntityPathBase<RecreationRe
 
     public static final QRecreationReviewRecommendation recreationReviewRecommendation = new QRecreationReviewRecommendation("recreationReviewRecommendation");
 
+    public final com.avab.avab.domain.common.QBaseEntity _super = new com.avab.avab.domain.common.QBaseEntity(this);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final com.avab.avab.domain.QRecreationReview recreationReview;
 
     public final EnumPath<com.avab.avab.domain.enums.RecommendationType> type = createEnum("type", com.avab.avab.domain.enums.RecommendationType.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public final com.avab.avab.domain.QUser user;
 
