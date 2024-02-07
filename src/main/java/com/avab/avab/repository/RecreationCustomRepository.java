@@ -35,5 +35,11 @@ public interface RecreationCustomRepository {
 
     List<Flow> findRelatedFlows(Long recreationId);
 
-    List<Recreation> recommendRecreations(List<Purpose> purposes, List<Keyword> keywords, List<Gender> genders, List<Age> ages, Integer participants, Integer playTime);
+    List<Recreation> recommendRecreations(
+            List<Purpose> purposes,
+            List<Keyword> keywords,
+            List<Gender> genders,
+            List<Age> ages,
+            Integer participants,
+            Integer playTime);
 }

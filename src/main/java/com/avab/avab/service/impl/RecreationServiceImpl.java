@@ -247,14 +247,25 @@ public class RecreationServiceImpl implements RecreationService {
     }
 
     @Override
+    public Page<Recreation> getRecentRecreation(Integer page) {
+        return recreationRepository.findByOrderByCreatedAtDesc(
+                PageRequest.of(page, SEARCH_PAGE_SIZE));
+    }
+
+    @Override
     public List<Flow> findRelatedFlows(Long recreationId) {
         return recreationRepository.findRelatedFlows(recreationId);
     }
 
     @Override
-    public List<Recreation> recommendRecreations(List<Keyword> keywords, Integer participants, Integer playTime, List<Purpose> purposes, List<Gender> genders, List<Age> ages) {
-        return recreationRepository.recommendRecreations(purposes, keywords, genders, ages, participants, playTime);
+    public List<Recreation> recommendRecreations(
+            List<Keyword> keywords,
+            Integer participants,
+            Integer playTime,
+            List<Purpose> purposes,
+            List<Gender> genders,
+            List<Age> ages) {
+        return recreationRepository.recommendRecreations(
+                purposes, keywords, genders, ages, participants, playTime);
     }
-
-
 }

@@ -222,7 +222,9 @@ public class RecreationController {
         return BaseResponse.onSuccess(FlowConverter.toFlowDetailListDTO(relatedFlow, user));
     }
 
-    @Operation(summary = "레크레이션 추천 API", description = "키워드, 목적 등 여러 request 정보를 통해 추천 레크레이션을 만듭니다. _by 준환_")
+    @Operation(
+            summary = "레크레이션 추천 API",
+            description = "키워드, 목적 등 여러 request 정보를 통해 추천 레크레이션을 만듭니다. _by 준환_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
     @GetMapping("/recommend")
@@ -233,20 +235,27 @@ public class RecreationController {
             @RequestParam(name = "playTime") Integer playTime,
             @RequestParam(name = "purpose") List<Purpose> purposes,
             @RequestParam(name = "gender", required = false) List<Gender> genders,
-            @RequestParam(name = "age", required = false) List<Age> ages
-            ) {
+            @RequestParam(name = "age", required = false) List<Age> ages) {
 
         List<Recreation> recommendRecreations =
                 recreationService.recommendRecreations(
-                        keywords,
-                        participants,
-                        playTime,
-                        purposes,
-                        genders,
-                        ages
-                );
+                        keywords, participants, playTime, purposes, genders, ages);
 
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationPreviewListDTO(recommendRecreations, user));
+    }
+
+    @Operation(summary = "최신 레크레이션 API", description = "최신 레크레이션 목록을 가져옵니다. _by 수기_")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
+    @Parameter(name = "user", hidden = true)
+    @GetMapping("/recent")
+    public BaseResponse<RecreationPreviewPageDTO> getRecentRecreation(
+            @AuthUser User user,
+            @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
+                    Integer page) {
+        Page<Recreation> recentRecreations = recreationService.getRecentRecreation(page);
+
+        return BaseResponse.onSuccess(
+                RecreationConverter.toRecreationPreviewPageDTO(recentRecreations, user));
     }
 }
