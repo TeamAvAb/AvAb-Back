@@ -14,6 +14,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.avab.avab.domain.common.BaseEntity;
 import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.RecreationFavorite;
@@ -27,6 +30,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @Builder
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -62,36 +67,47 @@ public class Recreation extends BaseEntity {
     @JoinColumn(name = "author_id")
     private User author;
 
+    @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<RecreationWay> recreationWayList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<RecreationAge> recreationAgeList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<RecreationGender> recreationGenderList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<RecreationHashtag> recreationHashTagsList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<RecreationRecreationKeyword> recreationRecreationKeywordList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<RecreationRecreationPurpose> recreationRecreationPurposeList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<RecreationPlace> recreationPlaceList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<RecreationPreparation> recreationPreparationList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<RecreationFavorite> recreationFavoriteList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<RecreationReview> recreationReviewList = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<FlowRecreation> flowRecreationList = new ArrayList<>();
 }

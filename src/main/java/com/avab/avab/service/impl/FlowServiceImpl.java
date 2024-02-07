@@ -9,9 +9,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.FlowException;
+import com.avab.avab.converter.FlowConverter;
 import com.avab.avab.domain.Flow;
+import com.avab.avab.domain.Recreation;
+import com.avab.avab.domain.RecreationKeyword;
+import com.avab.avab.domain.RecreationPurpose;
+import com.avab.avab.domain.User;
+import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.redis.service.FlowViewCountService;
 import com.avab.avab.repository.FlowRepository;
+import com.avab.avab.repository.RecreationKeywordRepository;
+import com.avab.avab.repository.RecreationPurposeRepository;
+import com.avab.avab.repository.RecreationRepository;
 import com.avab.avab.service.FlowService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +32,9 @@ public class FlowServiceImpl implements FlowService {
 
     private final FlowRepository flowRepository;
     private final FlowViewCountService flowViewCountService;
+    private final RecreationRepository recreationRepository;
+    private final RecreationPurposeRepository recreationPurposeRepository;
+    private final RecreationKeywordRepository recreationKeywordRepository;
 
     private final Integer FLOW_LIST_PAGE_SIZE = 6;
 
@@ -57,5 +69,39 @@ public class FlowServiceImpl implements FlowService {
     @Transactional
     public void updateFlowViewCount(Long flowId, Long viewCount) {
         flowRepository.incrementViewCountById(flowId, viewCount);
+    }
+
+    @Transactional
+    public Flow postFlow(PostFlowDTO postFlowDTO, User user) {
+
+        List<Recreation> recreationList =
+                postFlowDTO.getRecreationSpecList().stream()
+                        .map(
+                                recreationSpec ->
+                                        recreationRepository
+                                                .findById(recreationSpec.getRecreationId())
+                                                .get())
+                        .toList();
+
+        List<RecreationKeyword> recreationKeywordList =
+                postFlowDTO.getKeywordList().stream()
+                        .map(keyword -> recreationKeywordRepository.findByKeyword(keyword).get())
+                        .toList();
+
+        List<RecreationPurpose> recreationPurposeList =
+                postFlowDTO.getPurposeList().stream()
+                        .map(purpose -> recreationPurposeRepository.findByPurpose(purpose).get())
+                        .toList();
+
+        Flow flow =
+                FlowConverter.toFlow(
+                        postFlowDTO,
+                        user,
+                        recreationList,
+                        recreationKeywordList,
+                        recreationPurposeList);
+
+        flowRepository.save(flow);
+        return flow;
     }
 }

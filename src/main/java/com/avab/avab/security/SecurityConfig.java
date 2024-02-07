@@ -37,13 +37,16 @@ public class SecurityConfig {
         "/api/recreations/popular",
         "/api/recreations/search",
         "/api/recreations/{recreationId}",
-        "/api/recreations/{recreationId}/related",
+        "/api/recreations/{recreationId}/related/flows",
+        "/api/recreations/{recreationId}/related/recreations",
         "/api/recreations/popular",
+        "/api/recreations/recent",
         "/api/auth/login/kakao",
         "/api/auth/refresh",
         "/api/flows",
         "/api/flows/{flowId}",
         "/api/users/scrap",
+        "/api/recreations/recommend",
     };
 
     @Bean
