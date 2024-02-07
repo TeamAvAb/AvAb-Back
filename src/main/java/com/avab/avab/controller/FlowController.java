@@ -83,7 +83,9 @@ public class FlowController {
         return BaseResponse.onSuccess(FlowConverter.toFlowPreviewDTO(flow, user));
     }
 
-    @Operation(summary = "플로우 스크랩 API", description = "플로우를 스크랩합니다. _by 보노_")
+    @Operation(
+            summary = "플로우 스크랩 API",
+            description = "스크랩 되어 있지 않으면 스크랩, 되어 있지 않으면 스크랩 취소합니다. _by 보노_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "스크랩 성공")})
     @Parameter(name = "user", hidden = true)
     @PostMapping("/{flowId}/scraps")
