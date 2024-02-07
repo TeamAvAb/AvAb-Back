@@ -22,6 +22,7 @@ import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;
 import com.avab.avab.service.FlowService;
+import com.avab.avab.validation.annotation.ExistFlow;
 import com.avab.avab.validation.annotation.ValidatePage;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,7 +48,7 @@ public class FlowController {
     @Parameter(name = "user", hidden = true)
     @GetMapping("{flowId}")
     public BaseResponse<FlowDetailDTO> getFlowDetail(
-            @AuthUser User user, @PathVariable Long flowId) {
+            @AuthUser User user, @ExistFlow @PathVariable("flowId") Long flowId) {
 
         Flow flow = flowService.getFlowDetail(flowId);
         return BaseResponse.onSuccess(FlowConverter.toFlowDetailDTO(flow, user));
