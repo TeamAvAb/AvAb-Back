@@ -54,7 +54,7 @@ public class FlowController {
         return BaseResponse.onSuccess(FlowConverter.toFlowDetailDTO(flow, user));
     }
 
-    @Operation(summary = "플로우 조회 API", description = "최신순으로 플로우를 조회합니다. _by 보노_")
+    @Operation(summary = "플로우 목록 조회 API", description = "최신순으로 플로우를 조회합니다. _by 보노_")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
@@ -74,7 +74,7 @@ public class FlowController {
         @ApiResponse(responseCode = "COMMON201", description = "게시 성공"),
     })
     @Parameter(name = "user", hidden = true)
-    @PostMapping("/create")
+    @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public BaseResponse<FlowPreviewDTO> postFlow(
             @AuthUser User user, @RequestBody PostFlowDTO postFlowDTO) {

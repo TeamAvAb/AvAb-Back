@@ -43,7 +43,6 @@ public class SecurityConfig {
         "/api/recreations/recent",
         "/api/auth/login/kakao",
         "/api/auth/refresh",
-        "/api/flows",
         "/api/flows/{flowId}",
         "/api/users/scrap",
         "/api/recreations/recommend",
@@ -81,6 +80,8 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers(
                                         HttpMethod.GET, "/api/recreations/{recreationId}/reviews")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/flows/")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated());
