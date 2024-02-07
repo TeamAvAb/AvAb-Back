@@ -224,7 +224,7 @@ public class RecreationController {
 
     @Operation(
             summary = "레크레이션 추천 API",
-            description = "키워드, 목적 등 여러 request 정보를 통해 추천 레크레이션을 만듭니다. _by 준환_")
+            description = "키워드, 목적 등 여러 request 정보를 통해 추천 레크레이션을 만듭니다. _by 제이미_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @GetMapping("/recommend")
     public BaseResponse<List<RecreationPreviewDTO>> recommendRecreations(
