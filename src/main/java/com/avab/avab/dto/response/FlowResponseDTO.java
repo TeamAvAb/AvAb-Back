@@ -80,6 +80,5 @@ public class FlowResponseDTO {
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class DeletedFlowDTO {
         Long flowId;
-        AuthorDTO author;
     }
 }

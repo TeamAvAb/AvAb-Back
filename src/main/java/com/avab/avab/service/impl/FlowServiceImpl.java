@@ -134,7 +134,10 @@ public class FlowServiceImpl implements FlowService {
 
     @Transactional
     public void deleteFlow(Long flowId, User user) {
-        Flow flow = flowRepository.findById(flowId).orElseThrow();
+        Flow flow =
+                flowRepository
+                        .findById(flowId)
+                        .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
         if (!flow.getAuthor().getId().equals(user.getId())) {
             throw new FlowException(ErrorStatus.FLOW_DELETE_UNAUTHORIZED);
         }

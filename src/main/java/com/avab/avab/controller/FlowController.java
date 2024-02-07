@@ -103,8 +103,9 @@ public class FlowController {
     })
     @Parameter(name = "user", hidden = true)
     @DeleteMapping("/delete/{flowId}")
-    public BaseResponse<DeletedFlowDTO> deleteFlow(@AuthUser User user, @PathVariable Long flowId) {
+    public BaseResponse<DeletedFlowDTO> deleteFlow(
+            @AuthUser User user, @PathVariable @ExistFlow Long flowId) {
         flowService.deleteFlow(flowId, user);
-        return BaseResponse.onSuccess(FlowConverter.toDeletedFlowDTO(flowId, user));
+        return BaseResponse.onSuccess(FlowConverter.toDeletedFlowDTO(flowId));
     }
 }

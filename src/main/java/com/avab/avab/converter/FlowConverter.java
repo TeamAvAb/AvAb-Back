@@ -226,14 +226,7 @@ public class FlowConverter {
         return FlowFavorite.builder().flow(flow).user(user).build();
     }
 
-    public static DeletedFlowDTO toDeletedFlowDTO(Long flowId, User user) {
-        return DeletedFlowDTO.builder()
-                .flowId(flowId)
-                .author(
-                        AuthorDTO.builder()
-                                .userId(user.getId())
-                                .username(user.getUsername())
-                                .build())
-                .build();
+    public static DeletedFlowDTO toDeletedFlowDTO(Long flowId) {
+        return DeletedFlowDTO.builder().flowId(flowId).build();
     }
 }
