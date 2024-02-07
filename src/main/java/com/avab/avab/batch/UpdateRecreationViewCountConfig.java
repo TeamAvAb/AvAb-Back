@@ -30,7 +30,7 @@ public class UpdateRecreationViewCountConfig {
     @Bean
     public Job updateRecreationViewCountJob(
             JobRepository jobRepository, Step updateRecreationViewCountFirstStep) {
-        return new JobBuilder("Update Recreation View Count Job", jobRepository)
+        return new JobBuilder("updateRecreationViewCountJob", jobRepository)
                 .start(updateRecreationViewCountFirstStep)
                 .build();
     }

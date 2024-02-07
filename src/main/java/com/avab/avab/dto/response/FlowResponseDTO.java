@@ -69,6 +69,15 @@ public class FlowResponseDTO {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class FlowScrapDTO {
+
+        Boolean isScraped;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class DeletedFlowDTO {
         Long flowId;
         AuthorDTO author;
