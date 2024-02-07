@@ -22,9 +22,17 @@ public class QFlowFavorite extends EntityPathBase<FlowFavorite> {
 
     public static final QFlowFavorite flowFavorite = new QFlowFavorite("flowFavorite");
 
+    public final com.avab.avab.domain.common.QBaseEntity _super = new com.avab.avab.domain.common.QBaseEntity(this);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
     public final com.avab.avab.domain.QFlow flow;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public final com.avab.avab.domain.QUser user;
 
