@@ -22,6 +22,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
+import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.domain.mapping.RecreationRecreationPurpose;
@@ -91,7 +92,7 @@ public class RecreationConverter {
                 .build();
     }
 
-    public static DescriptionDTO toDescriptionDTO(Recreation recreation) {
+    public static DescriptionDTO toDescriptionDTO(Recreation recreation, User user) {
         List<String> hashtagList =
                 recreation.getRecreationHashTagsList().stream()
                         .map(RecreationHashtag::getHashtag)
@@ -128,6 +129,12 @@ public class RecreationConverter {
                         .map(RecreationKeyword::getKeyword)
                         .collect(Collectors.toList());
 
+        List<Purpose> purposeList =
+                recreation.getRecreationRecreationPurposeList().stream()
+                        .map(RecreationRecreationPurpose::getPurpose)
+                        .map(RecreationPurpose::getPurpose)
+                        .collect(Collectors.toList());
+
         return DescriptionDTO.builder()
                 .recreationId(recreation.getId())
                 .title(recreation.getTitle())
@@ -137,12 +144,21 @@ public class RecreationConverter {
                 .playTime(recreation.getPlayTime())
                 .hashTagList(hashtagList)
                 .keywordList(keywordList)
+                .purposeList(purposeList)
                 .placeList(placeList)
                 .genderList(genderList)
                 .ageList(ageList)
                 .preparationList(preparationList)
                 .wayList(wayList)
                 .viewCount(recreation.getViewCount())
+                .totalStars(recreation.getTotalStars())
+                .isFavorite(
+                        user != null
+                                ? recreation.getRecreationFavoriteList().stream()
+                                        .anyMatch(
+                                                (recreationFavorite ->
+                                                        recreationFavorite.getUser().equals(user)))
+                                : null)
                 .build();
     }
 

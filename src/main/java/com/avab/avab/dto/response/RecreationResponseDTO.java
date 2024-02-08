@@ -7,6 +7,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
+import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.dto.response.RecreationReviewResponseDTO.RecommendationDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -58,6 +59,7 @@ public class RecreationResponseDTO {
         Integer playTime;
         List<String> hashTagList;
         List<Keyword> keywordList;
+        List<Purpose> purposeList;
         List<Place> placeList;
         List<Age> ageList;
         List<String> preparationList;
@@ -66,6 +68,10 @@ public class RecreationResponseDTO {
         Integer minParticipants;
         Integer maxParticipants;
         Long viewCount;
+        Float totalStars;
+
+        @Schema(description = "즐겨찾기 여부, 미로그인시 null")
+        Boolean isFavorite;
     }
 
     @Builder
