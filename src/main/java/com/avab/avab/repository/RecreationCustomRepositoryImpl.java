@@ -1,6 +1,7 @@
 package com.avab.avab.repository;
 
 import static com.avab.avab.domain.QRecreation.recreation;
+import static com.avab.avab.domain.QRecreationReview.recreationReview;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -152,8 +153,9 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                             .selectFrom(recreation)
                             .where(recreation.id.eq(otherRecreationId))
                             .fetchOne();
-            if (otherRecreation == null)
+            if (otherRecreation == null) {
                 throw new RecreationException(ErrorStatus.RECREATION_NOT_FOUND);
+            }
 
             // 겹치는 목적 체크
             List<Purpose> purposesForComparison =
@@ -232,7 +234,9 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             randFlows.add(shuffledFlows.get(0));
             randFlows.add(shuffledFlows.get(1));
             return randFlows;
-        } else return flows;
+        } else {
+            return flows;
+        }
     }
 
     // 목적, 시간, 나머지는 연관 레크레이션과 같음 (키워드, 인원, 연령대, 성별)
@@ -347,5 +351,26 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
 
         // 최대 가중치를 가지는 9개의 레크레이션 리턴
         return recreationList.stream().map(Triple::getLeft).limit(9).collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateTotalStars(Long recreationId) {
+        Float totalStars =
+                queryFactory
+                        .select(
+                                recreationReview
+                                        .stars
+                                        .sum()
+                                        .divide(recreationReview.count())
+                                        .floatValue())
+                        .from(recreationReview)
+                        .where(recreationReview.recreation.id.eq(recreationId))
+                        .fetchOne();
+
+        queryFactory
+                .update(recreation)
+                .set(recreation.totalStars, totalStars)
+                .where(recreation.id.eq(recreationId))
+                .execute();
     }
 }
