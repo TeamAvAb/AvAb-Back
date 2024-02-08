@@ -1,5 +1,7 @@
 package com.avab.avab.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +31,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @Operation(summary = "카카오 로그인 API", description = "카카오 로그인 및 회원 가입을 진행합니다. _by 준환_")
+    @Operation(summary = "카카오 로그인 API", description = "카카오 로그인 및 회원 가입을 진행합니다. _by 제이미_")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
@@ -40,7 +42,7 @@ public class AuthController {
 
     @Operation(
             summary = "JWT Access Token 재발급 API",
-            description = "Refresh Token을 검증하고 새로운 Access Token과 Refresh Token을 응답합니다. _by 준환_")
+            description = "Refresh Token을 검증하고 새로운 Access Token과 Refresh Token을 응답합니다. _by 제이미_")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
@@ -49,12 +51,12 @@ public class AuthController {
         return BaseResponse.onSuccess(authService.refresh(refreshToken));
     }
 
-    @Operation(summary = "로그아웃 API", description = "Refresh Token을 삭제합니다. _by 준환_")
+    @Operation(summary = "로그아웃 API", description = "Refresh Token을 삭제합니다. _by 제이미_")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
     @DeleteMapping("/logout")
-    public BaseResponse<String> logout(@AuthUser User user) {
+    public BaseResponse<String> logout(@Parameter(name = "user", hidden = true) @AuthUser User user) {
         authService.logout(user.getId());
         return BaseResponse.onSuccess("로그아웃에 성공하였습니다.");
     }
