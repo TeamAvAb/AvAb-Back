@@ -82,7 +82,7 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/flows/")
                                 .permitAll()
-                                .requestMatchers(HttpMethod.GET,"/api/recreations")
+                                .requestMatchers(HttpMethod.GET, "/api/recreations")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated());
