@@ -84,11 +84,13 @@ public class RecreationController {
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
+    @Parameter(name = "user", hidden = true)
     @GetMapping("/{recreationId}")
     public BaseResponse<DescriptionDTO> getRecreationDescription(
+            @AuthUser User user,
             @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
         Recreation recreation = recreationService.getRecreationDescription(recreationId);
-        return BaseResponse.onSuccess(RecreationConverter.toDescriptionDTO(recreation));
+        return BaseResponse.onSuccess(RecreationConverter.toDescriptionDTO(recreation, user));
     }
 
     @Operation(summary = "레크레이션 검색 API", description = "검색 키워드와 세부 필터를 이용해 레크레이션을 검색합니다. _by 보노_")
