@@ -1,7 +1,5 @@
 package com.avab.avab.controller;
 
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +16,7 @@ import com.avab.avab.security.handler.annotation.ExtractToken;
 import com.avab.avab.service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -56,7 +55,8 @@ public class AuthController {
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
     @DeleteMapping("/logout")
-    public BaseResponse<String> logout(@Parameter(name = "user", hidden = true) @AuthUser User user) {
+    public BaseResponse<String> logout(
+            @Parameter(name = "user", hidden = true) @AuthUser User user) {
         authService.logout(user.getId());
         return BaseResponse.onSuccess("로그아웃에 성공하였습니다.");
     }

@@ -8,9 +8,9 @@ import com.avab.avab.dto.response.AuthResponseDTO.TokenRefreshResponse;
 
 public class AuthConverter {
 
-    public static User toUser(KakaoProfile kakaoProfile) {
+    public static User toUser(KakaoProfile kakaoProfile, String username) {
         return User.builder()
-                .username(kakaoProfile.getProperties().getNickname())
+                .username(username)
                 .name(kakaoProfile.getKakao_account().getName())
                 .email(kakaoProfile.getKakao_account().getEmail())
                 .socialType(SocialType.KAKAO)

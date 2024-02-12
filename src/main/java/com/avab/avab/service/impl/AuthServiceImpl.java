@@ -19,6 +19,7 @@ import com.avab.avab.repository.UserRepository;
 import com.avab.avab.security.provider.JwtTokenProvider;
 import com.avab.avab.security.provider.KakaoAuthProvider;
 import com.avab.avab.service.AuthService;
+import com.avab.avab.utils.RandomUsername;
 
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
+    private final RandomUsername randomUsername;
 
     @Override
     @Transactional
@@ -51,7 +53,9 @@ public class AuthServiceImpl implements AuthService {
             refreshTokenService.saveToken(refreshToken);
             return AuthConverter.toOAuthResponse(accessToken, refreshToken, true, user);
         } else {
-            User user = userRepository.save(AuthConverter.toUser(kakaoProfile));
+            User user =
+                    userRepository.save(
+                            AuthConverter.toUser(kakaoProfile, randomUsername.generate()));
             String accessToken = jwtTokenProvider.createAccessToken(user.getId());
             String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
             refreshTokenService.saveToken(refreshToken);
