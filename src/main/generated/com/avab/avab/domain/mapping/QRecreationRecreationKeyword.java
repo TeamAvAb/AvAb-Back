@@ -22,6 +22,8 @@ public class QRecreationRecreationKeyword extends EntityPathBase<RecreationRecre
 
     public static final QRecreationRecreationKeyword recreationRecreationKeyword = new QRecreationRecreationKeyword("recreationRecreationKeyword");
 
+    public final com.avab.avab.domain.QCustomRecreation customRecreation;
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final com.avab.avab.domain.QRecreationKeyword keyword;
@@ -46,6 +48,7 @@ public class QRecreationRecreationKeyword extends EntityPathBase<RecreationRecre
 
     public QRecreationRecreationKeyword(Class<? extends RecreationRecreationKeyword> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.customRecreation = inits.isInitialized("customRecreation") ? new com.avab.avab.domain.QCustomRecreation(forProperty("customRecreation"), inits.get("customRecreation")) : null;
         this.keyword = inits.isInitialized("keyword") ? new com.avab.avab.domain.QRecreationKeyword(forProperty("keyword")) : null;
         this.recreation = inits.isInitialized("recreation") ? new com.avab.avab.domain.QRecreation(forProperty("recreation"), inits.get("recreation")) : null;
     }
