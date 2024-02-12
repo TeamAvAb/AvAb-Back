@@ -49,7 +49,6 @@ public class FlowResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class FlowDetailDTO {
-
         Long id;
         Integer totalPlayTime;
         Integer participants;
@@ -73,5 +72,13 @@ public class FlowResponseDTO {
     public static class FlowScrapDTO {
 
         Boolean isScraped;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class DeletedFlowDTO {
+        Long flowId;
     }
 }

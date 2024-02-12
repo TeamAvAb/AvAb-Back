@@ -22,6 +22,7 @@ import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.FlowRecreationKeyword;
 import com.avab.avab.domain.mapping.FlowRecreationPurpose;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.DeletedFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
@@ -223,5 +224,9 @@ public class FlowConverter {
 
     public static FlowFavorite toFlowFavorite(Flow flow, User user) {
         return FlowFavorite.builder().flow(flow).user(user).build();
+    }
+
+    public static DeletedFlowDTO toDeletedFlowDTO(Long flowId) {
+        return DeletedFlowDTO.builder().flowId(flowId).build();
     }
 }

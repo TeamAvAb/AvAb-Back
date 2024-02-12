@@ -23,4 +23,6 @@ public interface FlowService {
     void updateFlowViewCount(Long flowId, Long viewCount);
 
     Boolean toggleScrapeFlow(User user, Long flowId);
+
+    void deleteFlow(Long flowId, User user);
 }

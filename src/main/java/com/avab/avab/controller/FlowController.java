@@ -3,6 +3,7 @@ package com.avab.avab.controller;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import com.avab.avab.converter.FlowConverter;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.User;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.DeletedFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
@@ -93,5 +95,17 @@ public class FlowController {
             @AuthUser User user, @PathVariable("flowId") @ExistFlow Long flowId) {
         Boolean isScraped = flowService.toggleScrapeFlow(user, flowId);
         return BaseResponse.onSuccess(FlowConverter.toFlowScrapDTO(isScraped));
+    }
+
+    @Operation(summary = "플로우 삭제 API", description = "플로우를 삭제합니다. _by 루아_")
+    @ApiResponses({
+        @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+    })
+    @Parameter(name = "user", hidden = true)
+    @DeleteMapping("/delete/{flowId}")
+    public BaseResponse<DeletedFlowDTO> deleteFlow(
+            @AuthUser User user, @PathVariable @ExistFlow Long flowId) {
+        flowService.deleteFlow(flowId, user);
+        return BaseResponse.onSuccess(FlowConverter.toDeletedFlowDTO(flowId));
     }
 }
