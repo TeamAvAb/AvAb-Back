@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import com.avab.avab.domain.CustomRecreation;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationKeyword;
 
@@ -31,6 +32,10 @@ public class RecreationRecreationKeyword {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recreation_id")
     private Recreation recreation;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "custom_recreation_id")
+    private CustomRecreation customRecreation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "keyword_id")
