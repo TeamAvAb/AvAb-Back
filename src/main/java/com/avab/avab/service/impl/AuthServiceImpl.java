@@ -31,6 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
+    private final RandomUsername randomUsername;
 
     @Override
     @Transactional
@@ -52,7 +53,6 @@ public class AuthServiceImpl implements AuthService {
             refreshTokenService.saveToken(refreshToken);
             return AuthConverter.toOAuthResponse(accessToken, refreshToken, true, user);
         } else {
-            RandomUsername randomUsername = new RandomUsername();
             User user =
                     userRepository.save(
                             AuthConverter.toUser(kakaoProfile, randomUsername.generate()));

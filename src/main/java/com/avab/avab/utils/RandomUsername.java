@@ -2,6 +2,9 @@ package com.avab.avab.utils;
 
 import java.util.Random;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class RandomUsername {
 
     private final String[] ADJECTIVES = {
