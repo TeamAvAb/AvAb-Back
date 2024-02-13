@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.User;
 
-public interface FlowRepository extends JpaRepository<Flow, Long> {
+public interface FlowRepository extends JpaRepository<Flow, Long>, FlowCustomRepository {
 
     Page<Flow> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
