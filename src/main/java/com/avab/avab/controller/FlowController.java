@@ -1,5 +1,7 @@
 package com.avab.avab.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +19,10 @@ import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.converter.FlowConverter;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.User;
+import com.avab.avab.domain.enums.Age;
+import com.avab.avab.domain.enums.Gender;
+import com.avab.avab.domain.enums.Keyword;
+import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.DeletedFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
@@ -107,5 +113,24 @@ public class FlowController {
             @AuthUser User user, @PathVariable @ExistFlow Long flowId) {
         flowService.deleteFlow(flowId, user);
         return BaseResponse.onSuccess(FlowConverter.toDeletedFlowDTO(flowId));
+    }
+
+    @Operation(summary = "플로우 추천 API", description = "플로우 생성시 플로우를 추천합니다. _by 수기_")
+    @ApiResponses(@ApiResponse(responseCode = "COMMON200", description = "OK, 성공"))
+    @Parameter(name = "user", hidden = true)
+    @GetMapping("/recommend")
+    public BaseResponse<List<FlowDetailDTO>> recommendFlows(
+            @AuthUser User user,
+            @RequestParam(name = "keyword", required = false) List<Keyword> keywords,
+            @RequestParam(name = "participants", required = false) Integer participants,
+            @RequestParam(name = "playTime") Integer totalPlayTime,
+            @RequestParam(name = "purpose") List<Purpose> purposes,
+            @RequestParam(name = "gender", required = false) List<Gender> genders,
+            @RequestParam(name = "age", required = false) List<Age> ages) {
+        List<Flow> recommendFlows =
+                flowService.recommendFlows(
+                        keywords, participants, totalPlayTime, purposes, genders, ages);
+
+        return BaseResponse.onSuccess(FlowConverter.toFlowDetailListDTO(recommendFlows, user));
     }
 }

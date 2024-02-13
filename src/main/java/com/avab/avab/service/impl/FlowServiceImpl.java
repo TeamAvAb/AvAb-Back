@@ -16,6 +16,10 @@ import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationKeyword;
 import com.avab.avab.domain.RecreationPurpose;
 import com.avab.avab.domain.User;
+import com.avab.avab.domain.enums.Age;
+import com.avab.avab.domain.enums.Gender;
+import com.avab.avab.domain.enums.Keyword;
+import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.redis.service.FlowViewCountService;
@@ -142,5 +146,17 @@ public class FlowServiceImpl implements FlowService {
             throw new FlowException(ErrorStatus.FLOW_DELETE_UNAUTHORIZED);
         }
         flowRepository.delete(flow);
+    }
+
+    @Override
+    public List<Flow> recommendFlows(
+            List<Keyword> keywords,
+            Integer participants,
+            Integer totalPlayTime,
+            List<Purpose> purposes,
+            List<Gender> genders,
+            List<Age> ages) {
+        return flowRepository.recommendFlows(
+                keywords, participants, totalPlayTime, purposes, genders, ages);
     }
 }
