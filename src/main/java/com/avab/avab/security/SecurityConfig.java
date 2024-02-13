@@ -46,8 +46,8 @@ public class SecurityConfig {
         "/api/auth/refresh",
         "/api/flows/{flowId}",
         "/api/users/scrap",
-        "/api/recreations/recommend",
-        "api/flows/recommend",
+        "/api/recreations/recommended",
+        "api/flows/recommended",
     };
 
     @Bean

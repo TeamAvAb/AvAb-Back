@@ -118,7 +118,7 @@ public class FlowController {
     @Operation(summary = "플로우 추천 API", description = "플로우 생성시 플로우를 추천합니다. _by 수기_")
     @ApiResponses(@ApiResponse(responseCode = "COMMON200", description = "OK, 성공"))
     @Parameter(name = "user", hidden = true)
-    @GetMapping("/recommend")
+    @GetMapping("/recommended")
     public BaseResponse<List<FlowDetailDTO>> recommendFlows(
             @AuthUser User user,
             @RequestParam(name = "keyword", required = false) List<Keyword> keywords,
