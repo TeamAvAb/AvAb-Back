@@ -27,7 +27,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    private final String[] securityAllowArray = {
+    private final String[] allowedUrls = {
         "/api/login",
         "/health",
         "/error",
@@ -75,12 +75,12 @@ public class SecurityConfig {
         http.authorizeHttpRequests(
                 (authorize) ->
                         authorize
-                                .requestMatchers(securityAllowArray)
+                                .requestMatchers(allowedUrls)
                                 .permitAll()
                                 .requestMatchers(
                                         HttpMethod.GET, "/api/recreations/{recreationId}/reviews")
                                 .permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/flows/")
+                                .requestMatchers(HttpMethod.GET, "/api/flows")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/recreations")
                                 .permitAll()
