@@ -2,6 +2,8 @@ package com.avab.avab.dto.reqeust;
 
 import java.util.List;
 
+import org.springframework.lang.Nullable;
+
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
@@ -29,7 +31,10 @@ public class FlowRequestDTO {
     @Setter
     public static class RecreationSpec {
         Integer seq;
-        Long recreationId;
-        Integer customPlayTime;
+        @Nullable Long recreationId;
+
+        @Nullable String customTitle;
+        @Nullable Integer customPlayTime;
+        @Nullable List<Keyword> customKeywordList;
     }
 }
