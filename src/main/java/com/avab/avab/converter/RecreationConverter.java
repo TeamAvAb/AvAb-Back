@@ -159,6 +159,7 @@ public class RecreationConverter {
                                                 (recreationFavorite ->
                                                         recreationFavorite.getUser().equals(user)))
                                 : null)
+                .imageUrl(recreation.getImageUrl())
                 .build();
     }
 
