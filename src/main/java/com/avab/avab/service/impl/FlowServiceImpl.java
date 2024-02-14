@@ -1,8 +1,11 @@
 package com.avab.avab.service.impl;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.FlowException;
+import com.avab.avab.apiPayload.exception.RecreationException;
 import com.avab.avab.converter.FlowConverter;
 import com.avab.avab.domain.CustomRecreation;
 import com.avab.avab.domain.Flow;
@@ -105,16 +109,25 @@ public class FlowServiceImpl implements FlowService {
 
     @Transactional
     public Flow postFlow(PostFlowDTO postFlowDTO, User user) {
-
-        List<Recreation> recreationList = new ArrayList<>();
-        List<CustomRecreation> customRecreationList = new ArrayList<>();
+        // Recreation과 CustomRecreation 매핑을 위한 해시맵
+        Map<Long, Recreation> recreationMap = new HashMap<>();
+        Map<String, CustomRecreation> customRecreationMap = new HashMap<>();
 
         for (RecreationSpec spec : postFlowDTO.getRecreationSpecList()) {
             if (spec.getRecreationId() != null) {
-                // 기존 Recreation 조회
-                Recreation recreation = recreationRepository.findById(spec.getRecreationId()).get();
-                recreationList.add(recreation);
+                // 기존 Recreation 조회 및 매핑
+                Recreation recreation =
+                        recreationRepository
+                                .findById(spec.getRecreationId())
+                                .orElseThrow(
+                                        () ->
+                                                new RecreationException(
+                                                        ErrorStatus.RECREATION_NOT_FOUND));
+                if (recreation != null) {
+                    recreationMap.put(spec.getRecreationId(), recreation);
+                }
             } else if (spec.getCustomTitle() != null) {
+                // CustomRecreation 생성 및 매핑
                 List<RecreationKeyword> customRecreationKeywordList =
                         spec.getCustomKeywordList().stream()
                                 .map(
@@ -124,34 +137,46 @@ public class FlowServiceImpl implements FlowService {
                                                         .get())
                                 .toList();
 
-                // 새로운 CustomRecreation 생성
                 CustomRecreation customRecreation =
                         FlowConverter.toCustomRecreation(spec, customRecreationKeywordList);
+
                 customRecreationRepository.save(customRecreation);
-                customRecreationList.add(customRecreation);
+                customRecreationMap.put(spec.getCustomTitle(), customRecreation);
             }
         }
 
         List<RecreationKeyword> recreationKeywordList =
                 postFlowDTO.getKeywordList().stream()
-                        .map(keyword -> recreationKeywordRepository.findByKeyword(keyword).get())
-                        .toList();
+                        .map(
+                                keyword ->
+                                        recreationKeywordRepository
+                                                .findByKeyword(keyword)
+                                                .orElse(null))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
 
         List<RecreationPurpose> recreationPurposeList =
                 postFlowDTO.getPurposeList().stream()
-                        .map(purpose -> recreationPurposeRepository.findByPurpose(purpose).get())
-                        .toList();
+                        .map(
+                                purpose ->
+                                        recreationPurposeRepository
+                                                .findByPurpose(purpose)
+                                                .orElse(null))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
 
+        // Converter 호출 시 해시맵 전달
         Flow flow =
                 FlowConverter.toFlow(
                         postFlowDTO,
                         user,
-                        recreationList,
-                        customRecreationList,
+                        recreationMap,
+                        customRecreationMap,
                         recreationKeywordList,
                         recreationPurposeList);
 
         flowRepository.save(flow);
+
         return flow;
     }
 

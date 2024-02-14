@@ -8,6 +8,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
+import com.avab.avab.validation.annotation.ExistRecreation;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +32,7 @@ public class FlowRequestDTO {
     @Setter
     public static class RecreationSpec {
         Integer seq;
-        @Nullable Long recreationId;
+        @Nullable @ExistRecreation Long recreationId;
 
         @Nullable String customTitle;
         @Nullable Integer customPlayTime;

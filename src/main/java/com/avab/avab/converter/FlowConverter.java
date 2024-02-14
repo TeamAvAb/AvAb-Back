@@ -1,7 +1,8 @@
 package com.avab.avab.converter;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -81,8 +82,8 @@ public class FlowConverter {
     public static Flow toFlow(
             PostFlowDTO postFlowDTO,
             User user,
-            List<Recreation> recreationList,
-            List<CustomRecreation> customRecreationList,
+            Map<Long, Recreation> recreationMap,
+            Map<String, CustomRecreation> customRecreationMap,
             List<RecreationKeyword> recreationKeywordList,
             List<RecreationPurpose> recreationPurposeList) {
 
@@ -94,42 +95,38 @@ public class FlowConverter {
                         .author(user)
                         .build();
 
-        List<FlowRecreation> flowRecreationList = new ArrayList<>();
-        for (RecreationSpec spec : postFlowDTO.getRecreationSpecList()) {
-            if (spec.getRecreationId() != null) {
-                // 기존 Recreation에 대한 FlowRecreation 생성
-                Recreation recreation =
-                        recreationList.stream()
-                                .filter(r -> r.getId().equals(spec.getRecreationId()))
-                                .findFirst()
-                                .orElse(null);
-                if (recreation != null) {
-                    flowRecreationList.add(
-                            FlowRecreation.builder()
-                                    .flow(flow)
-                                    .recreation(recreation)
-                                    .customPlayTime(spec.getCustomPlayTime())
-                                    .seq(spec.getSeq())
-                                    .build());
-                }
-            } else if (spec.getCustomTitle() != null) {
-                // CustomRecreation에 대한 FlowRecreation 생성
-                CustomRecreation customRecreation =
-                        customRecreationList.stream()
-                                .filter(cr -> cr.getTitle().equals(spec.getCustomTitle()))
-                                .findFirst()
-                                .orElse(null);
-                if (customRecreation != null) {
-                    flowRecreationList.add(
-                            FlowRecreation.builder()
-                                    .flow(flow)
-                                    .customRecreation(customRecreation)
-                                    .customPlayTime(spec.getCustomPlayTime())
-                                    .seq(spec.getSeq())
-                                    .build());
-                }
-            }
-        }
+        // FlowRecreation 객체들 생성
+        List<FlowRecreation> flowRecreationList =
+                postFlowDTO.getRecreationSpecList().stream()
+                        .map(
+                                spec -> {
+                                    if (spec.getRecreationId() != null
+                                            && recreationMap.containsKey(spec.getRecreationId())) {
+                                        // 기존 Recreation에 대한 FlowRecreation 생성
+                                        return FlowRecreation.builder()
+                                                .flow(flow)
+                                                .recreation(
+                                                        recreationMap.get(spec.getRecreationId()))
+                                                .customPlayTime(spec.getCustomPlayTime())
+                                                .seq(spec.getSeq())
+                                                .build();
+                                    } else if (spec.getCustomTitle() != null
+                                            && customRecreationMap.containsKey(
+                                                    spec.getCustomTitle())) {
+                                        // CustomRecreation에 대한 FlowRecreation 생성
+                                        return FlowRecreation.builder()
+                                                .flow(flow)
+                                                .customRecreation(
+                                                        customRecreationMap.get(
+                                                                spec.getCustomTitle()))
+                                                .customPlayTime(spec.getCustomPlayTime())
+                                                .seq(spec.getSeq())
+                                                .build();
+                                    }
+                                    return null;
+                                })
+                        .filter(Objects::nonNull)
+                        .toList();
 
         List<FlowRecreationKeyword> flowRecreationKeywordList =
                 recreationKeywordList.stream()
