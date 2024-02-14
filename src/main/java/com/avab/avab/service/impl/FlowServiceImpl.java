@@ -109,13 +109,11 @@ public class FlowServiceImpl implements FlowService {
 
     @Transactional
     public Flow postFlow(PostFlowDTO postFlowDTO, User user) {
-        // Recreation과 CustomRecreation 매핑을 위한 해시맵
         Map<Long, Recreation> recreationMap = new HashMap<>();
         Map<String, CustomRecreation> customRecreationMap = new HashMap<>();
 
         for (RecreationSpec spec : postFlowDTO.getRecreationSpecList()) {
             if (spec.getRecreationId() != null) {
-                // 기존 Recreation 조회 및 매핑
                 Recreation recreation =
                         recreationRepository
                                 .findById(spec.getRecreationId())
@@ -127,7 +125,6 @@ public class FlowServiceImpl implements FlowService {
                     recreationMap.put(spec.getRecreationId(), recreation);
                 }
             } else if (spec.getCustomTitle() != null) {
-                // CustomRecreation 생성 및 매핑
                 List<RecreationKeyword> customRecreationKeywordList =
                         spec.getCustomKeywordList().stream()
                                 .map(
@@ -165,7 +162,6 @@ public class FlowServiceImpl implements FlowService {
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList());
 
-        // Converter 호출 시 해시맵 전달
         Flow flow =
                 FlowConverter.toFlow(
                         postFlowDTO,

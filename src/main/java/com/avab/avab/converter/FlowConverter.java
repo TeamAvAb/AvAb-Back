@@ -95,7 +95,6 @@ public class FlowConverter {
                         .author(user)
                         .build();
 
-        // FlowRecreation 객체들 생성
         List<FlowRecreation> flowRecreationList =
                 postFlowDTO.getRecreationSpecList().stream()
                         .map(
