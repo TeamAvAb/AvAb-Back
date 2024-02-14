@@ -60,6 +60,11 @@ public class RecreationConverter {
 
     public static RecreationFlowDTO toRecreationFlowDTO(FlowRecreation flowRecreation, User user) {
         Recreation recreation = flowRecreation.getRecreation();
+        Integer playTime =
+                (flowRecreation.getCustomPlayTime() != null)
+                        ? flowRecreation.getCustomPlayTime()
+                        : recreation.getPlayTime();
+
         return RecreationFlowDTO.builder()
                 .id(recreation.getId())
                 .title(recreation.getTitle())
@@ -76,7 +81,7 @@ public class RecreationConverter {
                                                         .getKeyword()
                                                         .getKeyword())
                                 .toList())
-                .playTime(flowRecreation.getCustomPlayTime())
+                .playTime(playTime)
                 .isCustom(false)
                 .build();
     }
