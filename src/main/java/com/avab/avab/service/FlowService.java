@@ -12,7 +12,7 @@ public interface FlowService {
 
     Page<Flow> getFlows(Integer page);
 
-    Flow postFlow(PostFlowDTO postFlowDTO, User user);
+    Flow postFlow(PostFlowDTO request, User user);
 
     Flow getFlowDetail(Long flowId);
 

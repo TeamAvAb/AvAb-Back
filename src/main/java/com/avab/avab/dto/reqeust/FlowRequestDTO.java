@@ -2,6 +2,8 @@ package com.avab.avab.dto.reqeust;
 
 import java.util.List;
 
+import jakarta.validation.constraints.Size;
+
 import org.springframework.lang.Nullable;
 
 import com.avab.avab.domain.enums.Age;
@@ -18,6 +20,7 @@ public class FlowRequestDTO {
     @Getter
     @Setter
     public static class PostFlowDTO {
+
         String title;
         List<RecreationSpec> recreationSpecList;
         Integer totalPlayTime;
@@ -31,11 +34,14 @@ public class FlowRequestDTO {
     @Getter
     @Setter
     public static class RecreationSpec {
+
         Integer seq;
         @Nullable @ExistRecreation Long recreationId;
 
         @Nullable String customTitle;
         @Nullable Integer customPlayTime;
-        @Nullable List<Keyword> customKeywordList;
+
+        @Size(min = 1, message = "키워드는 하나라도 존재해야합니다.")
+        List<Keyword> customKeywordList;
     }
 }

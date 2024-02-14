@@ -3,9 +3,7 @@ package com.avab.avab.service.impl;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +22,6 @@ import com.avab.avab.domain.RecreationPurpose;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
-import com.avab.avab.dto.reqeust.FlowRequestDTO.RecreationSpec;
 import com.avab.avab.redis.service.FlowViewCountService;
 import com.avab.avab.repository.CustomRecreationRepository;
 import com.avab.avab.repository.FlowFavoriteRepository;
@@ -108,63 +105,55 @@ public class FlowServiceImpl implements FlowService {
     }
 
     @Transactional
-    public Flow postFlow(PostFlowDTO postFlowDTO, User user) {
-        Map<Long, Recreation> recreationMap = new HashMap<>();
-        Map<String, CustomRecreation> customRecreationMap = new HashMap<>();
+    public Flow postFlow(PostFlowDTO request, User user) {
+        Map<Integer, Recreation> recreationMap = new HashMap<>();
+        Map<Integer, CustomRecreation> customRecreationMap = new HashMap<>();
 
-        for (RecreationSpec spec : postFlowDTO.getRecreationSpecList()) {
-            if (spec.getRecreationId() != null) {
-                Recreation recreation =
-                        recreationRepository
-                                .findById(spec.getRecreationId())
-                                .orElseThrow(
-                                        () ->
-                                                new RecreationException(
-                                                        ErrorStatus.RECREATION_NOT_FOUND));
-                if (recreation != null) {
-                    recreationMap.put(spec.getRecreationId(), recreation);
-                }
-            } else if (spec.getCustomTitle() != null) {
-                List<RecreationKeyword> customRecreationKeywordList =
-                        spec.getCustomKeywordList().stream()
-                                .map(
-                                        keyword ->
-                                                recreationKeywordRepository
-                                                        .findByKeyword(keyword)
-                                                        .get())
-                                .toList();
+        request.getRecreationSpecList()
+                .forEach(
+                        spec -> {
+                            if (spec.getRecreationId() != null) {
+                                Recreation recreation =
+                                        recreationRepository
+                                                .findById(spec.getRecreationId())
+                                                .orElseThrow(
+                                                        () ->
+                                                                new RecreationException(
+                                                                        ErrorStatus
+                                                                                .RECREATION_NOT_FOUND));
+                                recreationMap.put(spec.getSeq(), recreation);
+                            }
 
-                CustomRecreation customRecreation =
-                        FlowConverter.toCustomRecreation(spec, customRecreationKeywordList);
+                            List<RecreationKeyword> customRecreationKeywordList =
+                                    spec.getCustomKeywordList().stream()
+                                            .map(
+                                                    keyword ->
+                                                            recreationKeywordRepository
+                                                                    .findByKeyword(keyword)
+                                                                    .get())
+                                            .toList();
 
-                customRecreationRepository.save(customRecreation);
-                customRecreationMap.put(spec.getCustomTitle(), customRecreation);
-            }
-        }
+                            CustomRecreation customRecreation =
+                                    FlowConverter.toCustomRecreation(
+                                            spec, customRecreationKeywordList);
+
+                            customRecreationRepository.save(customRecreation);
+                            customRecreationMap.put(spec.getSeq(), customRecreation);
+                        });
 
         List<RecreationKeyword> recreationKeywordList =
-                postFlowDTO.getKeywordList().stream()
-                        .map(
-                                keyword ->
-                                        recreationKeywordRepository
-                                                .findByKeyword(keyword)
-                                                .orElse(null))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
+                request.getKeywordList().stream()
+                        .map(keyword -> recreationKeywordRepository.findByKeyword(keyword).get())
+                        .toList();
 
         List<RecreationPurpose> recreationPurposeList =
-                postFlowDTO.getPurposeList().stream()
-                        .map(
-                                purpose ->
-                                        recreationPurposeRepository
-                                                .findByPurpose(purpose)
-                                                .orElse(null))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
+                request.getPurposeList().stream()
+                        .map(purpose -> recreationPurposeRepository.findByPurpose(purpose).get())
+                        .toList();
 
         Flow flow =
                 FlowConverter.toFlow(
-                        postFlowDTO,
+                        request,
                         user,
                         recreationMap,
                         customRecreationMap,
