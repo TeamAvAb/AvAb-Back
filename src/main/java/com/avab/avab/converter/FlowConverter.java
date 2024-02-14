@@ -27,6 +27,7 @@ import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.RecreationSpec;
 import com.avab.avab.dto.response.FlowResponseDTO.DeletedFlowDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowCreatedDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
@@ -217,27 +218,24 @@ public class FlowConverter {
 
         User author = flow.getAuthor();
 
-        FlowDetailDTO flowDetailDTO =
-                FlowDetailDTO.builder()
-                        .id(flow.getId())
-                        .totalPlayTime(flow.getTotalPlayTime())
-                        .participants(flow.getParticipants())
-                        .viewCount(flow.getViewCount())
-                        .title(flow.getTitle())
-                        .age(ageList)
-                        .keywordList(keywordList)
-                        .gender(genderList)
-                        .recreations(recreationPreviewListDTO)
-                        .purposeList(purposeList)
-                        .author(
-                                AuthorDTO.builder()
-                                        .userId(author.getId())
-                                        .username(author.getUsername())
-                                        .build())
-                        .isFavorite(isScraped)
-                        .build();
-
-        return flowDetailDTO;
+        return FlowDetailDTO.builder()
+                .id(flow.getId())
+                .totalPlayTime(flow.getTotalPlayTime())
+                .participants(flow.getParticipants())
+                .viewCount(flow.getViewCount())
+                .title(flow.getTitle())
+                .age(ageList)
+                .keywordList(keywordList)
+                .gender(genderList)
+                .recreations(recreationPreviewListDTO)
+                .purposeList(purposeList)
+                .author(
+                        AuthorDTO.builder()
+                                .userId(author.getId())
+                                .username(author.getUsername())
+                                .build())
+                .isFavorite(isScraped)
+                .build();
     }
 
     public static List<FlowDetailDTO> toFlowDetailListDTO(List<Flow> flows, User user) {
@@ -254,5 +252,9 @@ public class FlowConverter {
 
     public static DeletedFlowDTO toDeletedFlowDTO(Long flowId) {
         return DeletedFlowDTO.builder().flowId(flowId).build();
+    }
+
+    public static FlowCreatedDTO toFlowCreatedDTO(Flow flow) {
+        return FlowCreatedDTO.builder().flowId(flow.getId()).build();
     }
 }

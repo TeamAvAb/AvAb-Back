@@ -25,8 +25,8 @@ import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.DeletedFlowDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowCreatedDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
-import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowScrapDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;
@@ -94,10 +94,10 @@ public class FlowController {
     @Parameter(name = "user", hidden = true)
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public BaseResponse<FlowPreviewDTO> postFlow(
+    public BaseResponse<FlowCreatedDTO> postFlow(
             @AuthUser User user, @RequestBody PostFlowDTO request) {
         Flow flow = flowService.postFlow(request, user);
-        return BaseResponse.onSuccess(FlowConverter.toFlowPreviewDTO(flow, user));
+        return BaseResponse.onSuccess(FlowConverter.toFlowCreatedDTO(flow));
     }
 
     @Operation(
