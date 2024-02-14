@@ -48,6 +48,15 @@ public class FlowResponseDTO {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class FlowDetailPageDTO {
+        FlowDetailDTO flowDetail;
+        List<RecreationFlowDTO> recreations;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class FlowDetailDTO {
         Long id;
         Integer totalPlayTime;
@@ -57,9 +66,9 @@ public class FlowResponseDTO {
         List<Age> age;
         List<Keyword> keywordList;
         List<Gender> gender;
-        List<RecreationFlowDTO> recreations;
         List<Purpose> purposeList;
         AuthorDTO author;
+        Integer scrapCount;
 
         @Schema(description = "즐겨찾기 여부, 미로그인시 null")
         Boolean isFavorite;

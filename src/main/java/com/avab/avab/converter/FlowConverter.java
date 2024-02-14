@@ -24,6 +24,7 @@ import com.avab.avab.domain.mapping.FlowRecreationPurpose;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.DeletedFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailPageDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowScrapDTO;
@@ -154,7 +155,7 @@ public class FlowConverter {
         return flow;
     }
 
-    public static FlowDetailDTO toFlowDetailDTO(Flow flow, User user) {
+    public static FlowDetailPageDTO toFlowDetailDTO(Flow flow, User user) {
         List<Age> ageList =
                 flow.getAgeList().stream().map(FlowAge::getAge).collect(Collectors.toList());
 
@@ -197,30 +198,56 @@ public class FlowConverter {
 
         User author = flow.getAuthor();
 
-        FlowDetailDTO flowDetailDTO =
-                FlowDetailDTO.builder()
-                        .id(flow.getId())
-                        .totalPlayTime(flow.getTotalPlayTime())
-                        .participants(flow.getParticipants())
-                        .viewCount(flow.getViewCount())
-                        .title(flow.getTitle())
-                        .age(ageList)
-                        .keywordList(keywordList)
-                        .gender(genderList)
-                        .recreations(recreationFlowListDTO)
-                        .purposeList(purposeList)
-                        .author(
-                                AuthorDTO.builder()
-                                        .userId(author.getId())
-                                        .username(author.getUsername())
+        Integer scrapCount = flow.getFlowFavoriteList().size();
+
+        FlowDetailPageDTO flowDetailPageDTO =
+                FlowDetailPageDTO.builder()
+                        .flowDetail(
+                                FlowDetailDTO.builder()
+                                        .id(flow.getId())
+                                        .totalPlayTime(flow.getTotalPlayTime())
+                                        .participants(flow.getParticipants())
+                                        .viewCount(flow.getViewCount())
+                                        .title(flow.getTitle())
+                                        .age(ageList)
+                                        .keywordList(keywordList)
+                                        .gender(genderList)
+                                        .purposeList(purposeList)
+                                        .author(
+                                                AuthorDTO.builder()
+                                                        .userId(author.getId())
+                                                        .username(author.getUsername())
+                                                        .build())
+                                        .isFavorite(isScraped)
+                                        .scrapCount(scrapCount)
                                         .build())
-                        .isFavorite(isScraped)
+                        .recreations(recreationFlowListDTO)
                         .build();
 
-        return flowDetailDTO;
+        //        FlowDetailDTO flowDetailDTO =
+        //                FlowDetailDTO.builder()
+        //                        .id(flow.getId())
+        //                        .totalPlayTime(flow.getTotalPlayTime())
+        //                        .participants(flow.getParticipants())
+        //                        .viewCount(flow.getViewCount())
+        //                        .title(flow.getTitle())
+        //                        .age(ageList)
+        //                        .keywordList(keywordList)
+        //                        .gender(genderList)
+        //                        .recreations(recreationFlowListDTO)
+        //                        .purposeList(purposeList)
+        //                        .author(
+        //                                AuthorDTO.builder()
+        //                                        .userId(author.getId())
+        //                                        .username(author.getUsername())
+        //                                        .build())
+        //                        .isFavorite(isScraped)
+        //                        .build();
+
+        return flowDetailPageDTO;
     }
 
-    public static List<FlowDetailDTO> toFlowDetailListDTO(List<Flow> flows, User user) {
+    public static List<FlowDetailPageDTO> toFlowDetailListDTO(List<Flow> flows, User user) {
         return flows.stream().map(flow -> toFlowDetailDTO(flow, user)).toList();
     }
 

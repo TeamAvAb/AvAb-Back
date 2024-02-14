@@ -19,7 +19,7 @@ import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.User;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.DeletedFlowDTO;
-import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailPageDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowScrapDTO;
@@ -50,7 +50,7 @@ public class FlowController {
     })
     @Parameter(name = "user", hidden = true)
     @GetMapping("{flowId}")
-    public BaseResponse<FlowDetailDTO> getFlowDetail(
+    public BaseResponse<FlowDetailPageDTO> getFlowDetail(
             @AuthUser User user, @ExistFlow @PathVariable("flowId") Long flowId) {
 
         Flow flow = flowService.getFlowDetail(flowId);
