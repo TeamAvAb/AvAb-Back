@@ -192,6 +192,7 @@ public class RecreationConverter {
                                 .map(recreation -> toRecreationReviewDTO(recreation, user))
                                 .toList())
                 .totalPages(reviewPage.getTotalPages())
+                .totalReviews(reviewPage.getTotalElements())
                 .build();
     }
 
