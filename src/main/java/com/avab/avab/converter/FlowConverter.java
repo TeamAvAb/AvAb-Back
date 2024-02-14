@@ -2,6 +2,7 @@ package com.avab.avab.converter;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,7 @@ import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowScrapDTO;
-import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationFlowDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
 
 @Component
@@ -174,8 +175,25 @@ public class FlowConverter {
                         .map(FlowRecreation::getRecreation)
                         .collect(Collectors.toList());
 
-        List<RecreationPreviewDTO> recreationPreviewListDTO =
-                RecreationConverter.toRecreationPreviewListDTO(recreationList, user);
+        List<RecreationFlowDTO> recreationFlowListDTO =
+                flow.getFlowRecreationList().stream()
+                        .flatMap(
+                                flowRecreation -> {
+                                    // 기존 Recreation 처리
+                                    if (flowRecreation.getRecreation() != null) {
+                                        return Stream.of(
+                                                RecreationConverter.toRecreationFlowDTO(
+                                                        flowRecreation, user));
+                                    }
+                                    // CustomRecreation 처리
+                                    else if (flowRecreation.getCustomRecreation() != null) {
+                                        return Stream.of(
+                                                RecreationConverter.toCustomRecreationFlowDTO(
+                                                        flowRecreation, user));
+                                    }
+                                    return Stream.empty();
+                                })
+                        .collect(Collectors.toList());
 
         List<Purpose> purposeList =
                 flow.getFlowRecreationPurposeList().stream()
@@ -201,7 +219,7 @@ public class FlowConverter {
                         .age(ageList)
                         .keywordList(keywordList)
                         .gender(genderList)
-                        .recreations(recreationPreviewListDTO)
+                        .recreations(recreationFlowListDTO)
                         .purposeList(purposeList)
                         .author(
                                 AuthorDTO.builder()

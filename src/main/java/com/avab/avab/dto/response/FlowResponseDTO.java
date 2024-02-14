@@ -6,7 +6,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
-import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationFlowDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -57,7 +57,7 @@ public class FlowResponseDTO {
         List<Age> age;
         List<Keyword> keywordList;
         List<Gender> gender;
-        List<RecreationPreviewDTO> recreations;
+        List<RecreationFlowDTO> recreations;
         List<Purpose> purposeList;
         AuthorDTO author;
 
