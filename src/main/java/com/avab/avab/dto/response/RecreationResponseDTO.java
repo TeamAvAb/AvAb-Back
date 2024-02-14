@@ -141,6 +141,7 @@ public class RecreationResponseDTO {
 
         List<RecreationReviewDTO> reviewList;
         Integer totalPages;
+        Long totalReviews;
     }
 
     @Builder
