@@ -41,6 +41,7 @@ public class FlowRequestDTO {
         @Nullable String customTitle;
         @Nullable Integer customPlayTime;
 
+        @Nullable
         @Size(min = 1, message = "키워드는 하나라도 존재해야합니다.")
         List<Keyword> customKeywordList;
     }
