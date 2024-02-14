@@ -57,7 +57,7 @@ public class RecreationResponseDTO {
         String title;
         String summary;
         Integer playTime;
-        String ImageUrl;
+        String imageUrl;
         List<String> hashTagList;
         List<Keyword> keywordList;
         List<Purpose> purposeList;
