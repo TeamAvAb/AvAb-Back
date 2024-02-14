@@ -78,7 +78,16 @@ public class FlowController {
         return BaseResponse.onSuccess(FlowConverter.toFlowPreviewPageDTO(flowPage, user));
     }
 
-    @Operation(summary = "플로우 생성 API", description = "플로우를 생성합니다. _by 루아_")
+    @Operation(
+            summary = "플로우 생성 API",
+            description =
+                    """
+                플로우를 생성합니다. \n
+                seq는 플로우에 들어갈 레크레이션의 순서이고 필수입니다. \n
+                원래 있는 레크레이션은 recreationId를 넣어주시면 되고, \n
+                사용자가 직접 입력한 레크레이션은 customTitle, customKeywordList를 넣어주시면 됩니다. \n
+                _by 루아_
+                """)
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON201", description = "게시 성공"),
     })
@@ -86,8 +95,8 @@ public class FlowController {
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public BaseResponse<FlowPreviewDTO> postFlow(
-            @AuthUser User user, @RequestBody PostFlowDTO postFlowDTO) {
-        Flow flow = flowService.postFlow(postFlowDTO, user);
+            @AuthUser User user, @RequestBody PostFlowDTO request) {
+        Flow flow = flowService.postFlow(request, user);
         return BaseResponse.onSuccess(FlowConverter.toFlowPreviewDTO(flow, user));
     }
 
