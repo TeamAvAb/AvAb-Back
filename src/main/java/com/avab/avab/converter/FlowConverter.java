@@ -2,7 +2,6 @@ package com.avab.avab.converter;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -170,30 +169,19 @@ public class FlowConverter {
                         .map(FlowGender::getGender)
                         .collect(Collectors.toList());
 
-        List<Recreation> recreationList =
-                flow.getFlowRecreationList().stream()
-                        .map(FlowRecreation::getRecreation)
-                        .collect(Collectors.toList());
-
         List<RecreationFlowDTO> recreationFlowListDTO =
                 flow.getFlowRecreationList().stream()
-                        .flatMap(
+                        .map(
                                 flowRecreation -> {
                                     // 기존 Recreation 처리
                                     if (flowRecreation.getRecreation() != null) {
-                                        return Stream.of(
-                                                RecreationConverter.toRecreationFlowDTO(
-                                                        flowRecreation, user));
+                                        return RecreationConverter.toRecreationFlowDTO(
+                                                flowRecreation, user);
                                     }
-                                    // CustomRecreation 처리
-                                    else if (flowRecreation.getCustomRecreation() != null) {
-                                        return Stream.of(
-                                                RecreationConverter.toCustomRecreationFlowDTO(
-                                                        flowRecreation, user));
-                                    }
-                                    return Stream.empty();
+                                    return RecreationConverter.toCustomRecreationFlowDTO(
+                                            flowRecreation, user);
                                 })
-                        .collect(Collectors.toList());
+                        .toList();
 
         List<Purpose> purposeList =
                 flow.getFlowRecreationPurposeList().stream()
