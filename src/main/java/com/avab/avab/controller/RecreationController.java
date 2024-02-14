@@ -34,7 +34,7 @@ import com.avab.avab.domain.enums.Place;
 import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.CreateRecreationDTO;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
-import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationCreatedDTO;
@@ -216,7 +216,7 @@ public class RecreationController {
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
     @GetMapping("/{recreationId}/related/flows")
-    public BaseResponse<List<FlowDetailDTO>> relatedFlow(
+    public BaseResponse<List<FlowDetailPageDTO>> relatedFlow(
             @AuthUser User user,
             @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
         List<Flow> relatedFlow = recreationService.findRelatedFlows(recreationId);

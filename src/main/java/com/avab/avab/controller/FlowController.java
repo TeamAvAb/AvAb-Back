@@ -26,7 +26,7 @@ import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.DeletedFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowCreatedDTO;
-import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailPageDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowScrapDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;
@@ -56,7 +56,7 @@ public class FlowController {
     })
     @Parameter(name = "user", hidden = true)
     @GetMapping("{flowId}")
-    public BaseResponse<FlowDetailDTO> getFlowDetail(
+    public BaseResponse<FlowDetailPageDTO> getFlowDetail(
             @AuthUser User user, @ExistFlow @PathVariable("flowId") Long flowId) {
 
         Flow flow = flowService.getFlowDetail(flowId);
@@ -128,7 +128,7 @@ public class FlowController {
     @ApiResponses(@ApiResponse(responseCode = "COMMON200", description = "OK, 성공"))
     @Parameter(name = "user", hidden = true)
     @GetMapping("/recommended")
-    public BaseResponse<List<FlowDetailDTO>> recommendFlows(
+    public BaseResponse<List<FlowDetailPageDTO>> recommendFlows(
             @AuthUser User user,
             @RequestParam(name = "keyword", required = false) List<Keyword> keywords,
             @RequestParam(name = "participants", required = false) Integer participants,
