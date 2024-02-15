@@ -2,6 +2,7 @@ package com.avab.avab.controller;
 
 import java.util.List;
 
+import com.avab.avab.dto.response.FlowResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -17,8 +18,8 @@ import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.DeletedFlowDTO;
-import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
-import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowCreatedDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailPageDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowScrapDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;
@@ -48,7 +49,7 @@ public class FlowController {
     })
     @Parameter(name = "user", hidden = true)
     @GetMapping("{flowId}")
-    public BaseResponse<FlowDetailDTO> getFlowDetail(
+    public BaseResponse<FlowDetailPageDTO> getFlowDetail(
             @AuthUser User user, @ExistFlow @PathVariable("flowId") Long flowId) {
 
         Flow flow = flowService.getFlowDetail(flowId);
@@ -86,10 +87,10 @@ public class FlowController {
     @Parameter(name = "user", hidden = true)
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public BaseResponse<FlowPreviewDTO> postFlow(
+    public BaseResponse<FlowCreatedDTO> postFlow(
             @AuthUser User user, @RequestBody PostFlowDTO request) {
         Flow flow = flowService.postFlow(request, user);
-        return BaseResponse.onSuccess(FlowConverter.toFlowPreviewDTO(flow, user));
+        return BaseResponse.onSuccess(FlowConverter.toFlowCreatedDTO(flow));
     }
 
     @Operation(
@@ -120,7 +121,7 @@ public class FlowController {
     @ApiResponses(@ApiResponse(responseCode = "COMMON200", description = "OK, 성공"))
     @Parameter(name = "user", hidden = true)
     @GetMapping("/recommended")
-    public BaseResponse<List<FlowDetailDTO>> recommendFlows(
+    public BaseResponse<List<FlowDetailPageDTO>> recommendFlows(
             @AuthUser User user,
             @RequestParam(name = "keyword", required = false) List<Keyword> keywords,
             @RequestParam(name = "participants", required = false) Integer participants,
@@ -141,7 +142,7 @@ public class FlowController {
             @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
     @PatchMapping("{flowId}")
-    public BaseResponse<FlowPreviewDTO> updateFlow(
+    public BaseResponse<FlowResponseDTO.FlowPreviewDTO> updateFlow(
             @Parameter(name = "user", hidden = true) @AuthUser User user, @RequestBody PostFlowDTO request, @PathVariable(name = "flowId") Long flowId) {
         Flow flow = flowService.updateFlow(request, user, flowId);
         return BaseResponse.onSuccess(FlowConverter.toFlowPreviewDTO(flow, user));

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 
+import com.avab.avab.domain.CustomRecreation;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationAge;
 import com.avab.avab.domain.RecreationGender;
@@ -23,6 +24,7 @@ import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
 import com.avab.avab.domain.enums.Purpose;
+import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.domain.mapping.RecreationRecreationPurpose;
@@ -33,6 +35,7 @@ import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.DescriptionDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationCreatedDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationFlowDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
@@ -52,6 +55,51 @@ public class RecreationConverter {
                                 .map(recreation -> toRecreationPreviewDTO(recreation, user))
                                 .toList())
                 .totalPages(recreationPage.getTotalPages())
+                .build();
+    }
+
+    public static RecreationFlowDTO toRecreationFlowDTO(FlowRecreation flowRecreation, User user) {
+        Recreation recreation = flowRecreation.getRecreation();
+        Integer playTime =
+                (flowRecreation.getCustomPlayTime() != null)
+                        ? flowRecreation.getCustomPlayTime()
+                        : recreation.getPlayTime();
+
+        return RecreationFlowDTO.builder()
+                .id(recreation.getId())
+                .title(recreation.getTitle())
+                .totalStars(recreation.getTotalStars())
+                .hashtagList(
+                        recreation.getRecreationHashTagsList().stream()
+                                .map(RecreationHashtag::getHashtag)
+                                .toList())
+                .keywordList(
+                        recreation.getRecreationRecreationKeywordList().stream()
+                                .map(
+                                        recreationRecreationKeyword ->
+                                                recreationRecreationKeyword
+                                                        .getKeyword()
+                                                        .getKeyword())
+                                .toList())
+                .playTime(playTime)
+                .isCustom(false)
+                .build();
+    }
+
+    public static RecreationFlowDTO toCustomRecreationFlowDTO(
+            FlowRecreation flowRecreation, User user) {
+        CustomRecreation customRecreation = flowRecreation.getCustomRecreation();
+        return RecreationFlowDTO.builder()
+                .id(customRecreation.getId())
+                .title(customRecreation.getTitle())
+                .keywordList(
+                        customRecreation.getRecreationRecreationKeywordList().stream()
+                                .map(
+                                        customRecreationKeyword ->
+                                                customRecreationKeyword.getKeyword().getKeyword())
+                                .toList())
+                .playTime(flowRecreation.getCustomPlayTime())
+                .isCustom(true)
                 .build();
     }
 
@@ -159,6 +207,7 @@ public class RecreationConverter {
                                                 (recreationFavorite ->
                                                         recreationFavorite.getUser().equals(user)))
                                 : null)
+                .imageUrl(recreation.getImageUrl())
                 .build();
     }
 
@@ -192,6 +241,7 @@ public class RecreationConverter {
                                 .map(recreation -> toRecreationReviewDTO(recreation, user))
                                 .toList())
                 .totalPages(reviewPage.getTotalPages())
+                .totalReviews(reviewPage.getTotalElements())
                 .build();
     }
 

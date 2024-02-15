@@ -14,6 +14,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.avab.avab.domain.common.BaseEntity;
 import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.domain.mapping.FlowRecreation;
@@ -31,6 +34,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@DynamicUpdate
+@DynamicInsert
 public class Flow extends BaseEntity {
 
     @Id

@@ -15,7 +15,8 @@ public class UserResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class UserResponse {
-        private Long id;
+
+        private Long userId;
 
         private String email;
 

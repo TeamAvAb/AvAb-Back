@@ -1,5 +1,6 @@
 package com.avab.avab.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,13 +131,17 @@ public class FlowServiceImpl implements FlowService {
                                 recreationMap.put(spec.getSeq(), recreation);
                             } else {
                                 List<RecreationKeyword> customRecreationKeywordList =
-                                        spec.getCustomKeywordList().stream()
-                                                .map(
-                                                        keyword ->
-                                                                recreationKeywordRepository
-                                                                        .findByKeyword(keyword)
-                                                                        .get())
-                                                .toList();
+                                        new ArrayList<>();
+                                if (spec.getCustomKeywordList() != null) {
+                                    customRecreationKeywordList =
+                                            spec.getCustomKeywordList().stream()
+                                                    .map(
+                                                            keyword ->
+                                                                    recreationKeywordRepository
+                                                                            .findByKeyword(keyword)
+                                                                            .get())
+                                                    .toList();
+                                }
 
                                 CustomRecreation customRecreation =
                                         FlowConverter.toCustomRecreation(
@@ -226,13 +231,17 @@ public class FlowServiceImpl implements FlowService {
                                 recreationMap.put(spec.getSeq(), recreation);
                             } else {
                                 List<RecreationKeyword> customRecreationKeywordList =
-                                        spec.getCustomKeywordList().stream()
-                                                .map(
-                                                        keyword ->
-                                                                recreationKeywordRepository
-                                                                        .findByKeyword(keyword)
-                                                                        .get())
-                                                .toList();
+                                        new ArrayList<>();
+                                if (spec.getCustomKeywordList() != null) {
+                                    customRecreationKeywordList =
+                                            spec.getCustomKeywordList().stream()
+                                                    .map(
+                                                            keyword ->
+                                                                    recreationKeywordRepository
+                                                                            .findByKeyword(keyword)
+                                                                            .get())
+                                                    .toList();
+                                }
 
                                 CustomRecreation customRecreation =
                                         FlowConverter.toCustomRecreation(

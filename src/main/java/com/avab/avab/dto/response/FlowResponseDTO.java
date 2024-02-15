@@ -6,7 +6,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
-import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationFlowDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -48,7 +48,17 @@ public class FlowResponseDTO {
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class FlowDetailPageDTO {
+        FlowDetailDTO flowDetail;
+        List<RecreationFlowDTO> recreations;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class FlowDetailDTO {
+
         Long id;
         Integer totalPlayTime;
         Integer participants;
@@ -57,9 +67,9 @@ public class FlowResponseDTO {
         List<Age> age;
         List<Keyword> keywordList;
         List<Gender> gender;
-        List<RecreationPreviewDTO> recreations;
         List<Purpose> purposeList;
         AuthorDTO author;
+        Integer scrapCount;
 
         @Schema(description = "즐겨찾기 여부, 미로그인시 null")
         Boolean isFavorite;
@@ -79,6 +89,16 @@ public class FlowResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class DeletedFlowDTO {
+
+        Long flowId;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class FlowCreatedDTO {
+
         Long flowId;
     }
 }

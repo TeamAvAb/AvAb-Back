@@ -27,11 +27,13 @@ import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.RecreationSpec;
 import com.avab.avab.dto.response.FlowResponseDTO.DeletedFlowDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowCreatedDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailDTO;
+import com.avab.avab.dto.response.FlowResponseDTO.FlowDetailPageDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowScrapDTO;
-import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationFlowDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
 
 @Component
@@ -180,7 +182,8 @@ public class FlowConverter {
         return customRecreation;
     }
 
-    public static FlowDetailDTO toFlowDetailDTO(Flow flow, User user) {
+    public static FlowDetailPageDTO toFlowDetailDTO(Flow flow, User user) {
+
         List<Age> ageList =
                 flow.getAgeList().stream().map(FlowAge::getAge).collect(Collectors.toList());
 
@@ -195,13 +198,19 @@ public class FlowConverter {
                         .map(FlowGender::getGender)
                         .collect(Collectors.toList());
 
-        List<Recreation> recreationList =
+        List<RecreationFlowDTO> recreationFlowListDTO =
                 flow.getFlowRecreationList().stream()
-                        .map(FlowRecreation::getRecreation)
-                        .collect(Collectors.toList());
-
-        List<RecreationPreviewDTO> recreationPreviewListDTO =
-                RecreationConverter.toRecreationPreviewListDTO(recreationList, user);
+                        .map(
+                                flowRecreation -> {
+                                    // 기존 Recreation 처리
+                                    if (flowRecreation.getRecreation() != null) {
+                                        return RecreationConverter.toRecreationFlowDTO(
+                                                flowRecreation, user);
+                                    }
+                                    return RecreationConverter.toCustomRecreationFlowDTO(
+                                            flowRecreation, user);
+                                })
+                        .toList();
 
         List<Purpose> purposeList =
                 flow.getFlowRecreationPurposeList().stream()
@@ -217,30 +226,36 @@ public class FlowConverter {
 
         User author = flow.getAuthor();
 
-        FlowDetailDTO flowDetailDTO =
-                FlowDetailDTO.builder()
-                        .id(flow.getId())
-                        .totalPlayTime(flow.getTotalPlayTime())
-                        .participants(flow.getParticipants())
-                        .viewCount(flow.getViewCount())
-                        .title(flow.getTitle())
-                        .age(ageList)
-                        .keywordList(keywordList)
-                        .gender(genderList)
-                        .recreations(recreationPreviewListDTO)
-                        .purposeList(purposeList)
-                        .author(
-                                AuthorDTO.builder()
-                                        .userId(author.getId())
-                                        .username(author.getUsername())
+        Integer scrapCount = flow.getFlowFavoriteList().size();
+
+        FlowDetailPageDTO flowDetailPageDTO =
+                FlowDetailPageDTO.builder()
+                        .flowDetail(
+                                FlowDetailDTO.builder()
+                                        .id(flow.getId())
+                                        .totalPlayTime(flow.getTotalPlayTime())
+                                        .participants(flow.getParticipants())
+                                        .viewCount(flow.getViewCount())
+                                        .title(flow.getTitle())
+                                        .age(ageList)
+                                        .keywordList(keywordList)
+                                        .gender(genderList)
+                                        .purposeList(purposeList)
+                                        .author(
+                                                AuthorDTO.builder()
+                                                        .userId(author.getId())
+                                                        .username(author.getUsername())
+                                                        .build())
+                                        .isFavorite(isScraped)
+                                        .scrapCount(scrapCount)
                                         .build())
-                        .isFavorite(isScraped)
+                        .recreations(recreationFlowListDTO)
                         .build();
 
-        return flowDetailDTO;
+        return flowDetailPageDTO;
     }
 
-    public static List<FlowDetailDTO> toFlowDetailListDTO(List<Flow> flows, User user) {
+    public static List<FlowDetailPageDTO> toFlowDetailListDTO(List<Flow> flows, User user) {
         return flows.stream().map(flow -> toFlowDetailDTO(flow, user)).toList();
     }
 
@@ -254,6 +269,10 @@ public class FlowConverter {
 
     public static DeletedFlowDTO toDeletedFlowDTO(Long flowId) {
         return DeletedFlowDTO.builder().flowId(flowId).build();
+    }
+
+    public static FlowCreatedDTO toFlowCreatedDTO(Flow flow) {
+        return FlowCreatedDTO.builder().flowId(flow.getId()).build();
     }
 
     public static Flow toUpdateFlow(Long flowId, PostFlowDTO request, User user, Map<Integer, Recreation> recreationMap, Map<Integer, CustomRecreation> customRecreationMap, List<RecreationKeyword> recreationKeywordList, List<RecreationPurpose> recreationPurposeList) {

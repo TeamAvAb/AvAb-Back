@@ -8,6 +8,7 @@ import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
 import com.avab.avab.domain.enums.Purpose;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
 import com.avab.avab.dto.response.RecreationReviewResponseDTO.RecommendationDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -57,6 +58,7 @@ public class RecreationResponseDTO {
         String title;
         String summary;
         Integer playTime;
+        String imageUrl;
         List<String> hashTagList;
         List<Keyword> keywordList;
         List<Purpose> purposeList;
@@ -140,6 +142,7 @@ public class RecreationResponseDTO {
 
         List<RecreationReviewDTO> reviewList;
         Integer totalPages;
+        Long totalReviews;
     }
 
     @Builder
@@ -149,5 +152,19 @@ public class RecreationResponseDTO {
     public static class RecreationCreatedDTO {
 
         Long id;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RecreationFlowDTO {
+        Long id;
+        String title;
+        Integer playTime;
+        List<Keyword> keywordList;
+        List<String> hashtagList;
+        Float totalStars;
+        Boolean isCustom;
     }
 }
