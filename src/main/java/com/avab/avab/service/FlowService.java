@@ -37,4 +37,6 @@ public interface FlowService {
             List<Purpose> purposes,
             List<Gender> genders,
             List<Age> ages);
+
+    Flow updateFlow(PostFlowDTO request, User user, Long flowId);
 }

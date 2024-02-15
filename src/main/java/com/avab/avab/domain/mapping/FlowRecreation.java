@@ -1,13 +1,6 @@
 package com.avab.avab.domain.mapping;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
 import com.avab.avab.domain.CustomRecreation;
 import com.avab.avab.domain.Flow;
@@ -34,7 +27,7 @@ public class FlowRecreation {
     @JoinColumn(name = "recreation_id")
     private Recreation recreation;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "custom_recreation_id")
     private CustomRecreation customRecreation;
 

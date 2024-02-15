@@ -255,4 +255,77 @@ public class FlowConverter {
     public static DeletedFlowDTO toDeletedFlowDTO(Long flowId) {
         return DeletedFlowDTO.builder().flowId(flowId).build();
     }
+
+    public static Flow toUpdateFlow(Long flowId, PostFlowDTO request, User user, Map<Integer, Recreation> recreationMap, Map<Integer, CustomRecreation> customRecreationMap, List<RecreationKeyword> recreationKeywordList, List<RecreationPurpose> recreationPurposeList) {
+        Flow flow =
+                Flow.builder()
+                        .id(flowId)
+                        .participants(request.getParticipants())
+                        .totalPlayTime(request.getTotalPlayTime())
+                        .title(request.getTitle())
+                        .author(user)
+                        .build();
+
+        List<FlowRecreation> flowRecreationList =
+                request.getRecreationSpecList().stream()
+                        .map(
+                                spec -> {
+                                    // Recreation에 대한 FlowRecreation 생성
+                                    if (recreationMap.containsKey(spec.getSeq())) {
+                                        return FlowRecreation.builder()
+                                                .flow(flow)
+                                                .recreation(recreationMap.get(spec.getSeq()))
+                                                .customPlayTime(spec.getCustomPlayTime())
+                                                .seq(spec.getSeq())
+                                                .build();
+                                    }
+                                    // CustomRecreation에 대한 FlowRecreation 생성
+                                    return FlowRecreation.builder()
+                                            .flow(flow)
+                                            .customRecreation(
+                                                    customRecreationMap.get(spec.getSeq()))
+                                            .customPlayTime(spec.getCustomPlayTime())
+                                            .seq(spec.getSeq())
+                                            .build();
+                                })
+                        .toList();
+
+        List<FlowRecreationKeyword> flowRecreationKeywordList =
+                recreationKeywordList.stream()
+                        .map(
+                                recreationKeyword ->
+                                        FlowRecreationKeyword.builder()
+                                                .flow(flow)
+                                                .keyword(recreationKeyword)
+                                                .build())
+                        .toList();
+
+        List<FlowRecreationPurpose> flowRecreationPurposeList =
+                recreationPurposeList.stream()
+                        .map(
+                                recreationPurpose ->
+                                        FlowRecreationPurpose.builder()
+                                                .flow(flow)
+                                                .purpose(recreationPurpose)
+                                                .build())
+                        .toList();
+
+        List<FlowAge> flowAgeList =
+                request.getAgeList().stream()
+                        .map(age -> FlowAge.builder().age(age).flow(flow).build())
+                        .toList();
+
+        List<FlowGender> flowGenderList =
+                request.getGenderList().stream()
+                        .map(gender -> FlowGender.builder().flow(flow).gender(gender).build())
+                        .toList();
+
+        flow.getFlowRecreationList().addAll(flowRecreationList);
+        flow.getFlowRecreationKeywordList().addAll(flowRecreationKeywordList);
+        flow.getFlowRecreationPurposeList().addAll(flowRecreationPurposeList);
+        flow.getAgeList().addAll(flowAgeList);
+        flow.getGenderList().addAll(flowGenderList);
+
+        return flow;
+    }
 }
