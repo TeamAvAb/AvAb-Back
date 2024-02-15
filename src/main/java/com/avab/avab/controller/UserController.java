@@ -94,4 +94,12 @@ public class UserController {
 
         return BaseResponse.onSuccess(FlowConverter.toFlowPreviewPageDTO(flowPage, user));
     }
+
+    @Operation(summary = "내 정보 조회", description = "인증된 사용자의 정보를 응답합니다.")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
+    @Parameter(name = "user", hidden = true)
+    @GetMapping("/me")
+    public BaseResponse<UserResponse> getMyInfo(@AuthUser User user) {
+        return BaseResponse.onSuccess(UserConverter.toUserResponse(user));
+    }
 }
