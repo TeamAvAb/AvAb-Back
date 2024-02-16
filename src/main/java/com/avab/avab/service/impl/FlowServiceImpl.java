@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.avab.avab.domain.mapping.FlowRecreation;
+import com.avab.avab.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -28,12 +31,6 @@ import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.redis.service.FlowViewCountService;
-import com.avab.avab.repository.CustomRecreationRepository;
-import com.avab.avab.repository.FlowFavoriteRepository;
-import com.avab.avab.repository.FlowRepository;
-import com.avab.avab.repository.RecreationKeywordRepository;
-import com.avab.avab.repository.RecreationPurposeRepository;
-import com.avab.avab.repository.RecreationRepository;
 import com.avab.avab.service.FlowService;
 
 import lombok.RequiredArgsConstructor;
@@ -50,6 +47,11 @@ public class FlowServiceImpl implements FlowService {
     private final RecreationPurposeRepository recreationPurposeRepository;
     private final RecreationKeywordRepository recreationKeywordRepository;
     private final CustomRecreationRepository customRecreationRepository;
+    private final FlowAgeRepository flowAgeRepository;
+    private final FlowRecreationPurposeRepository flowRecreationPurposeRepository;
+    private final FlowRecreationKeywordRepository flowRecreationKeywordRepository;
+    private final FlowGenderRepository flowGenderRepository;
+    private final FlowRecreationRepository flowRecreationRepository;
 
     private final Integer FLOW_LIST_PAGE_SIZE = 6;
 
@@ -196,5 +198,80 @@ public class FlowServiceImpl implements FlowService {
             List<Age> ages) {
         return flowRepository.recommendFlows(
                 keywords, participants, totalPlayTime, purposes, genders, ages);
+    }
+
+    @Override
+    @Transactional
+    public Flow updateFlow(PostFlowDTO request, User user, Long flowId) {
+        Flow flow = flowRepository.findById(flowId).orElseThrow(()-> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
+
+        // custom, ageList, purposeList, genderList, keywordList는 시작하자마자 삭제 (일단 모두 삭제로 구현)
+        flowRecreationKeywordRepository.deleteAllByFlow(flow);
+        flowRecreationPurposeRepository.deleteAllByFlow(flow);
+        flowGenderRepository.deleteAllByFlow(flow);
+        flowAgeRepository.deleteAllByFlow(flow);
+        flowRecreationRepository.deleteAllByFlow(flow);
+
+
+        Map<Integer, Recreation> recreationMap = new HashMap<>();
+        Map<Integer, CustomRecreation> customRecreationMap = new HashMap<>();
+
+        request.getRecreationSpecList()
+                .forEach(
+                        spec -> {
+                            if (spec.getRecreationId() != null) {
+                                Recreation recreation =
+                                        recreationRepository
+                                                .findById(spec.getRecreationId())
+                                                .orElseThrow(
+                                                        () ->
+                                                                new RecreationException(
+                                                                        ErrorStatus
+                                                                                .RECREATION_NOT_FOUND));
+                                recreationMap.put(spec.getSeq(), recreation);
+                            } else {
+                                List<RecreationKeyword> customRecreationKeywordList =
+                                        new ArrayList<>();
+                                if (spec.getCustomKeywordList() != null) {
+                                    customRecreationKeywordList =
+                                            spec.getCustomKeywordList().stream()
+                                                    .map(
+                                                            keyword ->
+                                                                    recreationKeywordRepository
+                                                                            .findByKeyword(keyword)
+                                                                            .get())
+                                                    .toList();
+                                }
+
+                                CustomRecreation customRecreation =
+                                        FlowConverter.toCustomRecreation(
+                                                spec, customRecreationKeywordList);
+
+                                customRecreationRepository.save(customRecreation);
+                                customRecreationMap.put(spec.getSeq(), customRecreation);
+                            }
+                        });
+
+        List<RecreationKeyword> recreationKeywordList =
+                request.getKeywordList().stream()
+                        .map(keyword -> recreationKeywordRepository.findByKeyword(keyword).get())
+                        .toList();
+
+        List<RecreationPurpose> recreationPurposeList =
+                request.getPurposeList().stream()
+                        .map(purpose -> recreationPurposeRepository.findByPurpose(purpose).get())
+                        .toList();
+
+        Flow updateFlow =
+                FlowConverter.toUpdateFlow(
+                        flowId,
+                        request,
+                        user,
+                        recreationMap,
+                        customRecreationMap,
+                        recreationKeywordList,
+                        recreationPurposeList);
+
+        return flowRepository.save(updateFlow);
     }
 }

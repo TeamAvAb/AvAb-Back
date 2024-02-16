@@ -2,18 +2,11 @@ package com.avab.avab.controller;
 
 import java.util.List;
 
+import com.avab.avab.dto.response.FlowResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.converter.FlowConverter;
@@ -141,5 +134,17 @@ public class FlowController {
                         keywords, participants, totalPlayTime, purposes, genders, ages);
 
         return BaseResponse.onSuccess(FlowConverter.toFlowDetailListDTO(recommendFlows, user));
+    }
+
+    @Operation(
+            summary = "플로우 수정 API",description = "플로우 수정 합니다. _by 제이미_")
+    @ApiResponses({
+            @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
+    })
+    @PatchMapping("{flowId}")
+    public BaseResponse<FlowResponseDTO.FlowPreviewDTO> updateFlow(
+            @Parameter(name = "user", hidden = true) @AuthUser User user, @RequestBody PostFlowDTO request, @PathVariable(name = "flowId") Long flowId) {
+        Flow flow = flowService.updateFlow(request, user, flowId);
+        return BaseResponse.onSuccess(FlowConverter.toFlowPreviewDTO(flow, user));
     }
 }
