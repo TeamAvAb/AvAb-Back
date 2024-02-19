@@ -5,10 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import com.avab.avab.domain.mapping.FlowRecreation;
-import com.avab.avab.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -31,6 +28,7 @@ import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.redis.service.FlowViewCountService;
+import com.avab.avab.repository.*;
 import com.avab.avab.service.FlowService;
 
 import lombok.RequiredArgsConstructor;
@@ -203,7 +201,10 @@ public class FlowServiceImpl implements FlowService {
     @Override
     @Transactional
     public Flow updateFlow(PostFlowDTO request, User user, Long flowId) {
-        Flow flow = flowRepository.findById(flowId).orElseThrow(()-> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
+        Flow flow =
+                flowRepository
+                        .findById(flowId)
+                        .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
 
         // custom, ageList, purposeList, genderList, keywordList는 시작하자마자 삭제 (일단 모두 삭제로 구현)
         flowRecreationKeywordRepository.deleteAllByFlow(flow);
@@ -211,7 +212,6 @@ public class FlowServiceImpl implements FlowService {
         flowGenderRepository.deleteAllByFlow(flow);
         flowAgeRepository.deleteAllByFlow(flow);
         flowRecreationRepository.deleteAllByFlow(flow);
-
 
         Map<Integer, Recreation> recreationMap = new HashMap<>();
         Map<Integer, CustomRecreation> customRecreationMap = new HashMap<>();
