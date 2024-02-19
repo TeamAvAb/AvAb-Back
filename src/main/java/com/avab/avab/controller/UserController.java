@@ -18,7 +18,7 @@ import com.avab.avab.converter.UserConverter;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
-import com.avab.avab.dto.reqeust.UserRequestDTO.UpdateUserNameDTO;
+import com.avab.avab.dto.reqeust.UserRequestDTO.UpdateUserDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
 import com.avab.avab.dto.response.UserResponseDTO.UserResponse;
@@ -59,10 +59,10 @@ public class UserController {
     @Operation(summary = "회원 정보 수정 API", description = "회원 정보를 수정합니다. _by 루아_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
-    @PatchMapping("/me/name")
-    public BaseResponse<UserResponse> updateUserName(
-            @RequestBody @Valid UpdateUserNameDTO updateUserNameDTO, @AuthUser User user) {
-        User updatedUser = userService.updateUserName(updateUserNameDTO.getName(), user);
+    @PatchMapping("/me")
+    public BaseResponse<UserResponse> updateUser(
+            @RequestBody @Valid UpdateUserDTO request, @AuthUser User user) {
+        User updatedUser = userService.updateUser(request, user);
         return BaseResponse.onSuccess(UserConverter.toUserResponse(updatedUser));
     }
 

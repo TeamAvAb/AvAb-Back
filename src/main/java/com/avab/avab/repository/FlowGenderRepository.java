@@ -1,8 +1,9 @@
 package com.avab.avab.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.FlowGender;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FlowGenderRepository extends JpaRepository<FlowGender, Long> {
 

@@ -275,7 +275,14 @@ public class FlowConverter {
         return FlowCreatedDTO.builder().flowId(flow.getId()).build();
     }
 
-    public static Flow toUpdateFlow(Long flowId, PostFlowDTO request, User user, Map<Integer, Recreation> recreationMap, Map<Integer, CustomRecreation> customRecreationMap, List<RecreationKeyword> recreationKeywordList, List<RecreationPurpose> recreationPurposeList) {
+    public static Flow toUpdateFlow(
+            Long flowId,
+            PostFlowDTO request,
+            User user,
+            Map<Integer, Recreation> recreationMap,
+            Map<Integer, CustomRecreation> customRecreationMap,
+            List<RecreationKeyword> recreationKeywordList,
+            List<RecreationPurpose> recreationPurposeList) {
         Flow flow =
                 Flow.builder()
                         .id(flowId)

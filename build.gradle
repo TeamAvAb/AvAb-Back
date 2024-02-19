@@ -22,6 +22,16 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    set('springCloudVersion', "2023.0.0")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -61,6 +71,9 @@ dependencies {
 
     // batch
     implementation 'org.springframework.boot:spring-boot-starter-batch'
+
+    // feign client
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 }
 
 def querydslSrcDir = 'src/main/generated'

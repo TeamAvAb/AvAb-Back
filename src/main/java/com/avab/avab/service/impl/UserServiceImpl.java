@@ -12,6 +12,7 @@ import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.domain.mapping.RecreationFavorite;
+import com.avab.avab.dto.reqeust.UserRequestDTO.UpdateUserDTO;
 import com.avab.avab.repository.FlowFavoriteRepository;
 import com.avab.avab.repository.FlowRepository;
 import com.avab.avab.repository.RecreationFavoriteRepository;
@@ -47,9 +48,11 @@ public class UserServiceImpl implements UserService {
         return favoritesPage.map(RecreationFavorite::getRecreation);
     }
 
-    public User updateUserName(String username, User user) {
+    @Override
+    @Transactional
+    public User updateUser(UpdateUserDTO request, User user) {
 
-        user.updateUserName(username);
+        user.setUsername(request.getUsername());
         return user;
     }
 
