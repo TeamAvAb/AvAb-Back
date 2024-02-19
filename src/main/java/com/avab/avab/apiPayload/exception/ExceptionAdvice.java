@@ -194,11 +194,11 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     private DiscordMessage createMessage(Exception e, WebRequest request) {
         return DiscordMessage.builder()
-                .content("# 🔥 에러가 발생 비이이이이사아아아앙🚨")
+                .content("# 🚨 에러 발생 비이이이이사아아아앙")
                 .embeds(
                         List.of(
                                 Embed.builder()
-                                        .title("## 에러 정보")
+                                        .title("ℹ️ 에러 정보")
                                         .description(
                                                 "### 🕖 발생 시간\n"
                                                         + LocalDateTime.now()
