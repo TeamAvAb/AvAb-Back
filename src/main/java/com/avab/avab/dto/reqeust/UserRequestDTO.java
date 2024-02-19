@@ -9,9 +9,9 @@ public class UserRequestDTO {
 
     @Getter
     @Setter
-    public static class UpdateUserNameDTO {
+    public static class UpdateUserDTO {
 
-        @NotBlank(message = "이름을 입력해주세요.")
-        private String name;
+        @NotBlank(message = "닉네임을 입력해주세요.")
+        private String username;
     }
 }

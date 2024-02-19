@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
+import com.avab.avab.dto.reqeust.UserRequestDTO.UpdateUserDTO;
 
 public interface UserService {
 
@@ -12,7 +13,7 @@ public interface UserService {
 
     Page<Recreation> getFavoriteRecreations(User user, Integer page);
 
-    User updateUserName(String username, User user);
+    User updateUser(UpdateUserDTO request, User user);
 
     Page<Flow> getMyFlows(User user, Integer page);
 
