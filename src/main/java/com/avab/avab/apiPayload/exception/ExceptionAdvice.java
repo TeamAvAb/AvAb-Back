@@ -1,6 +1,11 @@
 package com.avab.avab.apiPayload.exception;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -8,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -24,12 +30,20 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.apiPayload.code.ErrorReasonDTO;
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
+import com.avab.avab.feign.discord.dto.DiscordMessage;
+import com.avab.avab.feign.discord.dto.DiscordMessage.Embed;
+import com.avab.avab.feign.discord.service.DiscordClient;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice(annotations = {RestController.class})
+@RequiredArgsConstructor
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
+
+    private final DiscordClient discordClient;
+    private final Environment environment;
 
     @Override
     protected ResponseEntity<Object> handleTypeMismatch(
@@ -97,6 +111,10 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<Object> exception(Exception e, WebRequest request) {
         e.printStackTrace();
+
+        if (!Arrays.asList(environment.getActiveProfiles()).contains("local")) {
+            sendDiscordAlarm(e, request);
+        }
 
         return handleExceptionInternalFalse(
                 e,
@@ -168,5 +186,49 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
         return super.handleExceptionInternal(
                 e, body, headers, errorStatus.getHttpStatus(), request);
+    }
+
+    private void sendDiscordAlarm(Exception e, WebRequest request) {
+        discordClient.sendAlarm(createMessage(e, request));
+    }
+
+    private DiscordMessage createMessage(Exception e, WebRequest request) {
+        return DiscordMessage.builder()
+                .content("# 🔥 에러가 발생 비이이이이사아아아앙🚨")
+                .embeds(
+                        List.of(
+                                Embed.builder()
+                                        .title("## 에러 정보")
+                                        .description(
+                                                "### 🕖 발생 시간\n"
+                                                        + LocalDateTime.now()
+                                                        + "\n"
+                                                        + "### 🔗 요청 URL\n"
+                                                        + createRequestFullPath(request)
+                                                        + "\n"
+                                                        + "### 📄 Stack Trace\n"
+                                                        + "```\n"
+                                                        + getStackTrace(e).substring(0, 1000)
+                                                        + "\n```")
+                                        .build()))
+                .build();
+    }
+
+    private String createRequestFullPath(WebRequest webRequest) {
+        HttpServletRequest request = ((ServletWebRequest) webRequest).getRequest();
+        String fullPath = request.getMethod() + " " + request.getRequestURL();
+
+        String queryString = request.getQueryString();
+        if (queryString != null) {
+            fullPath += "?" + queryString;
+        }
+
+        return fullPath;
+    }
+
+    private String getStackTrace(Exception e) {
+        StringWriter stringWriter = new StringWriter();
+        e.printStackTrace(new PrintWriter(stringWriter));
+        return stringWriter.toString();
     }
 }
