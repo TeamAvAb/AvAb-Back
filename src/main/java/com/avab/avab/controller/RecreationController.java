@@ -2,6 +2,8 @@ package com.avab.avab.controller;
 
 import java.util.List;
 
+import com.avab.avab.dto.response.RecreationResponseDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationRecommendDTO;
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -229,7 +231,7 @@ public class RecreationController {
             description = "키워드, 목적 등 여러 request 정보를 통해 추천 레크레이션을 만듭니다. _by 제이미_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @GetMapping("/recommended")
-    public BaseResponse<List<RecreationPreviewDTO>> recommendRecreations(
+    public BaseResponse<List<RecreationRecommendDTO>> recommendRecreations(
             @Parameter(name = "user", hidden = true) @AuthUser User user,
             @RequestParam(name = "keyword", required = false) List<Keyword> keywords,
             @RequestParam(name = "participants", required = false) Integer participants,
@@ -243,7 +245,7 @@ public class RecreationController {
                         keywords, participants, playTime, purposes, genders, ages);
 
         return BaseResponse.onSuccess(
-                RecreationConverter.toRecreationPreviewListDTO(recommendRecreations, user));
+                RecreationConverter.toRecreationRecommendListDTO(recommendRecreations, user));
     }
 
     @Operation(summary = "최신 레크레이션 API", description = "최신 레크레이션 목록을 가져옵니다. _by 수기_")

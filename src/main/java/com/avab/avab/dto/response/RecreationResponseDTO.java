@@ -167,4 +167,23 @@ public class RecreationResponseDTO {
         Float totalStars;
         Boolean isCustom;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class RecreationRecommendDTO {
+
+        Long id;
+        List<String> hashtagList;
+        String title;
+        Float totalStars;
+        List<Keyword> keywordList;
+        String imageUrl;
+        String summary;
+        Integer playTime;
+
+        @Schema(description = "즐겨찾기 여부, 미로그인시 null")
+        Boolean isFavorite;
+    }
 }
