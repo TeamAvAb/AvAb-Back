@@ -251,8 +251,8 @@ public class FlowConverter {
                                                         .build())
                                         .isFavorite(isScraped)
                                         .scrapCount(scrapCount)
+                                        .imageUrl(flow.getImageUrl())
                                         .build())
-                        .imageUrl(flow.getImageUrl())
                         .recreations(recreationFlowListDTO)
                         .build();
 
