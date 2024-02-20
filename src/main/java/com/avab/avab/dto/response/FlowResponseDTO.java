@@ -51,7 +51,6 @@ public class FlowResponseDTO {
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class FlowDetailPageDTO {
         FlowDetailDTO flowDetail;
-        String imageUrl;
         List<RecreationFlowDTO> recreations;
     }
 
@@ -70,6 +69,7 @@ public class FlowResponseDTO {
         List<Keyword> keywordList;
         List<Gender> gender;
         List<Purpose> purposeList;
+        String imageUrl;
         AuthorDTO author;
         Integer scrapCount;
 
