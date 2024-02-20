@@ -2,8 +2,6 @@ package com.avab.avab.controller;
 
 import java.util.List;
 
-import com.avab.avab.dto.response.RecreationResponseDTO;
-import com.avab.avab.dto.response.RecreationResponseDTO.RecreationRecommendDTO;
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -42,6 +40,7 @@ import com.avab.avab.dto.response.RecreationResponseDTO.FavoriteDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationCreatedDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationRecommendDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewPageDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;

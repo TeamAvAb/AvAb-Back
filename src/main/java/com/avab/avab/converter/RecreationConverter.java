@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.avab.avab.dto.response.RecreationResponseDTO;
-import com.avab.avab.dto.response.RecreationResponseDTO.RecreationRecommendDTO;
 import org.springframework.data.domain.Page;
 
 import com.avab.avab.domain.CustomRecreation;
@@ -40,6 +38,7 @@ import com.avab.avab.dto.response.RecreationResponseDTO.RecreationCreatedDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationFlowDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationRecommendDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewCreatedDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
@@ -418,7 +417,8 @@ public class RecreationConverter {
                 .toList();
     }
 
-    private static RecreationRecommendDTO toRecreationRecommendDTO(Recreation recreation, User user) {
+    private static RecreationRecommendDTO toRecreationRecommendDTO(
+            Recreation recreation, User user) {
         return RecreationRecommendDTO.builder()
                 .id(recreation.getId())
                 .hashtagList(
@@ -428,9 +428,9 @@ public class RecreationConverter {
                 .isFavorite(
                         user != null
                                 ? recreation.getRecreationFavoriteList().stream()
-                                .anyMatch(
-                                        (recreationFavorite ->
-                                                recreationFavorite.getUser().equals(user)))
+                                        .anyMatch(
+                                                (recreationFavorite ->
+                                                        recreationFavorite.getUser().equals(user)))
                                 : null)
                 .imageUrl(recreation.getImageUrl())
                 .keywordList(
