@@ -51,6 +51,9 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "VARCHAR(10)")
     private SocialType socialType;
 
+    @Column(length = 300)
+    private String profileImage;
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Recreation> recreationList = new ArrayList<>();
 

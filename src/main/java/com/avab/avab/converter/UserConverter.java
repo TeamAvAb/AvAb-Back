@@ -22,6 +22,7 @@ public class UserConverter {
                 .name(user.getName())
                 .username(user.getUsername())
                 .socialType(user.getSocialType())
+                .profileImage(user.getProfileImage())
                 .build();
     }
 
