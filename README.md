@@ -10,10 +10,10 @@
 
 # 🐧 아브아브란?
 <a href="https://www.instagram.com/avab.ovo" target="_blank"><img src="https://img.shields.io/badge/Instagram-E4405F?style=flat-square&logo=instagram&logoColor=white"/></a>
-<div>
-  <img width=500 src="https://github.com/TeamAvAb/AvAb-Back/assets/52905679/af642895-6e5c-4d81-a905-4bd6ef66ba24"/>
-  <img width=500 src="https://github.com/TeamAvAb/AvAb-Back/assets/52905679/ce33769d-8331-405a-ac13-315252d91489"/>
-  <img width=500 src="https://github.com/TeamAvAb/AvAb-Back/assets/52905679/a80855a6-3f9f-48a5-bd59-085df81f2c82"/>
+<div align="center">
+  <img width=600 src="https://github.com/TeamAvAb/AvAb-Back/assets/52905679/af642895-6e5c-4d81-a905-4bd6ef66ba24"/>
+  <img width=600 src="https://github.com/TeamAvAb/AvAb-Back/assets/52905679/ce33769d-8331-405a-ac13-315252d91489"/>
+  <img width=600 src="https://github.com/TeamAvAb/AvAb-Back/assets/52905679/a80855a6-3f9f-48a5-bd59-085df81f2c82"/>
 </div>
 
 # 😎 **백엔드** 팀 소개
