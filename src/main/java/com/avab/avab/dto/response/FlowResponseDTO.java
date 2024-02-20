@@ -37,6 +37,7 @@ public class FlowResponseDTO {
         Long id;
         List<Purpose> purpose;
         String title;
+        String imageUrl;
         Integer totalPlayTime;
         Long viewCount;
         AuthorDTO author;
@@ -50,6 +51,7 @@ public class FlowResponseDTO {
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class FlowDetailPageDTO {
         FlowDetailDTO flowDetail;
+        String imageUrl;
         List<RecreationFlowDTO> recreations;
     }
 

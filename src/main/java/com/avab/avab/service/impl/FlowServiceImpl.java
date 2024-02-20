@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -50,6 +51,15 @@ public class FlowServiceImpl implements FlowService {
     private final FlowRecreationKeywordRepository flowRecreationKeywordRepository;
     private final FlowGenderRepository flowGenderRepository;
     private final FlowRecreationRepository flowRecreationRepository;
+
+
+    private final String[] flowImageUrl = {
+            "https://avab-bucket.s3.ap-northeast-3.amazonaws.com/flow/thumbnail/flow1.png",
+            "https://avab-bucket.s3.ap-northeast-3.amazonaws.com/flow/thumbnail/flow2.png",
+            "https://avab-bucket.s3.ap-northeast-3.amazonaws.com/flow/thumbnail/flow3.png",
+            "https://avab-bucket.s3.ap-northeast-3.amazonaws.com/flow/thumbnail/flow4.png"
+    };
+    private final Random flowNumber = new Random();
 
     private final Integer FLOW_LIST_PAGE_SIZE = 6;
 
@@ -160,10 +170,12 @@ public class FlowServiceImpl implements FlowService {
                         .map(purpose -> recreationPurposeRepository.findByPurpose(purpose).get())
                         .toList();
 
+        int num = flowNumber.nextInt(4);
         Flow flow =
                 FlowConverter.toFlow(
                         request,
                         user,
+                        flowImageUrl[num],
                         recreationMap,
                         customRecreationMap,
                         recreationKeywordList,
@@ -262,11 +274,13 @@ public class FlowServiceImpl implements FlowService {
                         .map(purpose -> recreationPurposeRepository.findByPurpose(purpose).get())
                         .toList();
 
+        int num = flowNumber.nextInt(4);
         Flow updateFlow =
                 FlowConverter.toUpdateFlow(
                         flowId,
                         request,
                         user,
+                        flowImageUrl[num],
                         recreationMap,
                         customRecreationMap,
                         recreationKeywordList,
