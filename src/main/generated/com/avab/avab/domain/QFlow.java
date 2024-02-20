@@ -43,6 +43,8 @@ public class QFlow extends EntityPathBase<Flow> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final StringPath imageUrl = createString("imageUrl");
+
     public final NumberPath<Integer> participants = createNumber("participants", Integer.class);
 
     public final NumberPath<Long> scrapCount = createNumber("scrapCount", Long.class);

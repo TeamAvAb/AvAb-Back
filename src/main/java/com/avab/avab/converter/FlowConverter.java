@@ -76,6 +76,7 @@ public class FlowConverter {
                 .isScraped(isScraped)
                 .totalPlayTime(flow.getTotalPlayTime())
                 .scrapCount(flow.getScrapCount())
+                .imageUrl(flow.getImageUrl())
                 .viewCount(flow.getViewCount())
                 .build();
     }
@@ -83,6 +84,7 @@ public class FlowConverter {
     public static Flow toFlow(
             PostFlowDTO request,
             User user,
+            String imageUrl,
             Map<Integer, Recreation> recreationMap,
             Map<Integer, CustomRecreation> customRecreationMap,
             List<RecreationKeyword> recreationKeywordList,
@@ -93,6 +95,7 @@ public class FlowConverter {
                         .participants(request.getParticipants())
                         .totalPlayTime(request.getTotalPlayTime())
                         .title(request.getTitle())
+                        .imageUrl(imageUrl)
                         .author(user)
                         .build();
 
@@ -249,6 +252,7 @@ public class FlowConverter {
                                         .isFavorite(isScraped)
                                         .scrapCount(scrapCount)
                                         .build())
+                        .imageUrl(flow.getImageUrl())
                         .recreations(recreationFlowListDTO)
                         .build();
 
@@ -279,6 +283,7 @@ public class FlowConverter {
             Long flowId,
             PostFlowDTO request,
             User user,
+            String imageUrl,
             Map<Integer, Recreation> recreationMap,
             Map<Integer, CustomRecreation> customRecreationMap,
             List<RecreationKeyword> recreationKeywordList,
@@ -288,6 +293,7 @@ public class FlowConverter {
                         .id(flowId)
                         .participants(request.getParticipants())
                         .totalPlayTime(request.getTotalPlayTime())
+                        .imageUrl(imageUrl)
                         .title(request.getTitle())
                         .author(user)
                         .build();
