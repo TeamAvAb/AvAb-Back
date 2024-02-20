@@ -25,5 +25,7 @@ public class UserResponseDTO {
         private String username;
 
         private SocialType socialType;
+
+        private String profileImage;
     }
 }

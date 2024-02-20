@@ -35,6 +35,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath name = createString("name");
 
+    public final StringPath profileImage = createString("profileImage");
+
     public final ListPath<com.avab.avab.domain.mapping.RecreationFavorite, com.avab.avab.domain.mapping.QRecreationFavorite> recreationFavoriteList = this.<com.avab.avab.domain.mapping.RecreationFavorite, com.avab.avab.domain.mapping.QRecreationFavorite>createList("recreationFavoriteList", com.avab.avab.domain.mapping.RecreationFavorite.class, com.avab.avab.domain.mapping.QRecreationFavorite.class, PathInits.DIRECT2);
 
     public final ListPath<Recreation, QRecreation> recreationList = this.<Recreation, QRecreation>createList("recreationList", Recreation.class, QRecreation.class, PathInits.DIRECT2);
