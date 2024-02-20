@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.avab.avab.dto.response.RecreationResponseDTO;
+import com.avab.avab.dto.response.RecreationResponseDTO.RecreationRecommendDTO;
 import org.springframework.data.domain.Page;
 
 import com.avab.avab.domain.CustomRecreation;
@@ -407,5 +409,42 @@ public class RecreationConverter {
 
     public static RecreationCreatedDTO toRecreationCreatedDTO(Recreation recreation) {
         return RecreationCreatedDTO.builder().id(recreation.getId()).build();
+    }
+
+    public static List<RecreationRecommendDTO> toRecreationRecommendListDTO(
+            List<Recreation> recreations, User user) {
+        return recreations.stream()
+                .map(recreation -> toRecreationRecommendDTO(recreation, user))
+                .toList();
+    }
+
+    private static RecreationRecommendDTO toRecreationRecommendDTO(Recreation recreation, User user) {
+        return RecreationRecommendDTO.builder()
+                .id(recreation.getId())
+                .hashtagList(
+                        recreation.getRecreationHashTagsList().stream()
+                                .map(RecreationHashtag::getHashtag)
+                                .toList())
+                .isFavorite(
+                        user != null
+                                ? recreation.getRecreationFavoriteList().stream()
+                                .anyMatch(
+                                        (recreationFavorite ->
+                                                recreationFavorite.getUser().equals(user)))
+                                : null)
+                .imageUrl(recreation.getImageUrl())
+                .keywordList(
+                        recreation.getRecreationRecreationKeywordList().stream()
+                                .map(
+                                        recreationRecreationKeyword ->
+                                                recreationRecreationKeyword
+                                                        .getKeyword()
+                                                        .getKeyword())
+                                .toList())
+                .title(recreation.getTitle())
+                .totalStars(recreation.getTotalStars())
+                .summary(recreation.getSummary())
+                .playTime(recreation.getPlayTime())
+                .build();
     }
 }
