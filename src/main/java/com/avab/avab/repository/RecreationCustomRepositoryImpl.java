@@ -96,8 +96,8 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
         return participants != null
                 ? recreation
                         .minParticipants
-                        .goe(participants)
-                        .and(recreation.maxParticipants.loe(participants))
+                        .loe(participants)
+                        .and(recreation.maxParticipants.goe(participants))
                 : null;
     }
 
