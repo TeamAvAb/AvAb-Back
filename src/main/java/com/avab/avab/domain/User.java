@@ -1,8 +1,11 @@
 package com.avab.avab.domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.avab.avab.domain.enums.UserStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,6 +28,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Builder
@@ -54,6 +58,13 @@ public class User extends BaseEntity {
     @Column(length = 300)
     private String profileImage;
 
+    @ColumnDefault("'A'")
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
+
+    @ColumnDefault("null")
+    private LocalDate deletedTime;
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Recreation> recreationList = new ArrayList<>();
 
@@ -72,4 +83,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<FlowFavorite> flowFavoriteList = new ArrayList<>();
+
+    public void deleteUser() {
+        this.deletedTime = LocalDate.now();
+        this.userStatus = UserStatus.D;
+    }
 }

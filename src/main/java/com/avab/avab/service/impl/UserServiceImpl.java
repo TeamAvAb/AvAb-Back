@@ -1,5 +1,6 @@
 package com.avab.avab.service.impl;
 
+import com.avab.avab.domain.enums.UserStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,17 @@ public class UserServiceImpl implements UserService {
         return flowFavoriteRepository
                 .findByUser(user, PageRequest.of(page, FLOWS_PAGE_SIZE))
                 .map(FlowFavorite::getFlow);
+    }
+
+    @Override
+    @Transactional
+    public User deleteUser(User user) {
+        if (user.getUserStatus().equals(UserStatus.D)) {
+            throw new UserException(ErrorStatus.USER_ALREADY_DELETE);
+        }
+
+        user.deleteUser();
+        return user;
     }
 
     @Override

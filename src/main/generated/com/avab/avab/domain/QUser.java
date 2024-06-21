@@ -25,6 +25,8 @@ public class QUser extends EntityPathBase<User> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final DatePath<java.time.LocalDate> deletedTime = createDate("deletedTime", java.time.LocalDate.class);
+
     public final StringPath email = createString("email");
 
     public final ListPath<com.avab.avab.domain.mapping.FlowFavorite, com.avab.avab.domain.mapping.QFlowFavorite> flowFavoriteList = this.<com.avab.avab.domain.mapping.FlowFavorite, com.avab.avab.domain.mapping.QFlowFavorite>createList("flowFavoriteList", com.avab.avab.domain.mapping.FlowFavorite.class, com.avab.avab.domain.mapping.QFlowFavorite.class, PathInits.DIRECT2);
@@ -51,6 +53,8 @@ public class QUser extends EntityPathBase<User> {
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public final StringPath username = createString("username");
+
+    public final EnumPath<com.avab.avab.domain.enums.UserStatus> userStatus = createEnum("userStatus", com.avab.avab.domain.enums.UserStatus.class);
 
     public QUser(String variable) {
         super(User.class, forVariable(variable));

@@ -1,5 +1,6 @@
 package com.avab.avab.controller;
 
+import com.avab.avab.dto.response.UserResponseDTO;
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -101,5 +102,14 @@ public class UserController {
     @GetMapping("/me")
     public BaseResponse<UserResponse> getMyInfo(@AuthUser User user) {
         return BaseResponse.onSuccess(UserConverter.toUserResponse(user));
+    }
+
+    @Operation(summary = "회원 탈퇴", description = "회원을 비활성화 시키고 이 상태가 한달동안 유지될 시 삭제됩니다.")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
+    @Parameter(name = "user", hidden = true)
+    @PatchMapping("/delete")
+    public BaseResponse<UserResponseDTO.UserResponse> deleteUser(@AuthUser User user) {
+        User deletedUser = userService.deleteUser(user);
+        return BaseResponse.onSuccess(UserConverter.toUserResponse(deletedUser));
     }
 }
