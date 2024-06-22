@@ -21,6 +21,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 
     @Modifying
-    @Query("SELECT u FROM User u WHERE u.userStatus = 'D' AND u.deletedTime <= :threshold")
+    @Query("SELECT u FROM User u WHERE u.userStatus = 'DELETED' AND u.deletedTime <= :threshold")
     Optional<List<User>> findOldUsers(@Param("threshold") LocalDate threshold);
 }

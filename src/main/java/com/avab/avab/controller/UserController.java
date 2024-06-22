@@ -104,7 +104,7 @@ public class UserController {
         return BaseResponse.onSuccess(UserConverter.toUserResponse(user));
     }
 
-    @Operation(summary = "회원 탈퇴", description = "회원을 비활성화 시키고 이 상태가 한달동안 유지될 시 삭제됩니다.")
+    @Operation(summary = "회원 탈퇴", description = "회원을 비활성화 시키고 이 상태가 한달동안 유지될 시 삭제됩니다. _by 제이미_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
     @PatchMapping("/delete")

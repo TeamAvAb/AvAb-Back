@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User deleteUser(User user) {
-        if (user.getUserStatus().equals(UserStatus.D)) {
+        if (user.getUserStatus().equals(UserStatus.DELETED)) {
             throw new UserException(ErrorStatus.USER_ALREADY_DELETE);
         }
 

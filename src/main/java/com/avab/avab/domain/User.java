@@ -1,7 +1,6 @@
 package com.avab.avab.domain;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +28,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Builder
 @Getter
 @Setter
+@DynamicInsert
+@SQLRestriction("user_status = 'ENABLED'")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
@@ -58,7 +61,7 @@ public class User extends BaseEntity {
     @Column(length = 300)
     private String profileImage;
 
-    @ColumnDefault("'A'")
+    @ColumnDefault("'ENABLED'")
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus;
 
@@ -86,6 +89,6 @@ public class User extends BaseEntity {
 
     public void deleteUser() {
         this.deletedTime = LocalDate.now();
-        this.userStatus = UserStatus.D;
+        this.userStatus = UserStatus.DELETED;
     }
 }
