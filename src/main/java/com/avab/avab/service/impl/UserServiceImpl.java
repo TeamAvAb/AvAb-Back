@@ -1,5 +1,6 @@
 package com.avab.avab.service.impl;
 
+import com.avab.avab.domain.enums.UserStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,10 @@ import com.avab.avab.repository.UserRepository;
 import com.avab.avab.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -64,8 +69,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public User deleteUser(User user) {
+        if (user.getUserStatus().equals(UserStatus.DELETED)) {
+            throw new UserException(ErrorStatus.USER_ALREADY_DELETE);
+        }
+
+        user.deleteUser();
+        return user;
+    }
+
+    @Override
     public Page<Flow> getMyFlows(User user, Integer page) {
         return flowRepository.findAllByAuthorOrderByCreatedAtDesc(
                 user, PageRequest.of(page, FLOWS_PAGE_SIZE));
+    }
+
+    @Override
+    @Transactional
+    public void hardDeleteOldUser(LocalDate threshold) {
+        Optional<List<User>> userList = userRepository.findOldUsers(threshold);
+        userList.ifPresent(userRepository::deleteAll);
     }
 }
