@@ -62,10 +62,6 @@ kakao:
   auth:
     client: ${CLIENT_ID}
     redirect-uri: ${REDIRECT_URI}
-#hard delete time
-schedule:
-  use: ${DELETE_USE}
-  cron: ${DELETE_TIME}
 ---
 # Dev Profile
 spring:
@@ -119,8 +115,4 @@ kakao:
   auth:
     client: ${CLIENT_ID}
     redirect-uri: ${REDIRECT_URI}
-#hard delete time
-schedule:
-  use: ${DELETE_USE}
-  cron: ${DELETE_TIME}
 ---

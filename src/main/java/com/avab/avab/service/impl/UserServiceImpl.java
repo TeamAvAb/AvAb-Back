@@ -22,6 +22,10 @@ import com.avab.avab.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -79,5 +83,12 @@ public class UserServiceImpl implements UserService {
     public Page<Flow> getMyFlows(User user, Integer page) {
         return flowRepository.findAllByAuthorOrderByCreatedAtDesc(
                 user, PageRequest.of(page, FLOWS_PAGE_SIZE));
+    }
+
+    @Override
+    @Transactional
+    public void hardDeleteOldUser(LocalDate threshold) {
+        Optional<List<User>> userList = userRepository.findOldUsers(threshold);
+        userList.ifPresent(userRepository::deleteAll);
     }
 }

@@ -7,6 +7,8 @@ import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
 import com.avab.avab.dto.reqeust.UserRequestDTO.UpdateUserDTO;
 
+import java.time.LocalDate;
+
 public interface UserService {
 
     User findUserById(Long userId);
@@ -20,4 +22,6 @@ public interface UserService {
     Page<Flow> getScrapFlows(User user, Integer page);
 
     User deleteUser(User user);
+
+    void hardDeleteOldUser(LocalDate threshold);
 }
