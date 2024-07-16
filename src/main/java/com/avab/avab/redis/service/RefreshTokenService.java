@@ -34,6 +34,7 @@ public class RefreshTokenService {
                 RefreshToken.builder()
                         .id(jwtTokenProvider.getId(refreshToken))
                         .token(refreshToken)
+                        .expiration(jwtTokenProvider.getExpireTime(refreshToken))
                         .build();
         refreshTokenRepository.save(newRefreshToken);
     }
