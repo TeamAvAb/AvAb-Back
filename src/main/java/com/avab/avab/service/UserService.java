@@ -1,13 +1,13 @@
 package com.avab.avab.service;
 
+import java.time.LocalDate;
+
 import org.springframework.data.domain.Page;
 
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
 import com.avab.avab.dto.reqeust.UserRequestDTO.UpdateUserDTO;
-
-import java.time.LocalDate;
 
 public interface UserService {
 

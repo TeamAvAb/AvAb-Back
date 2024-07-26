@@ -63,7 +63,7 @@ public class JwtTokenProvider {
     public Long getId(String token) {
         return getClaims(token).getBody().get("id", Long.class);
     }
-    
+
     public Long getExpireTime(String token) {
         Date expirationDate = getClaims(token).getBody().getExpiration();
         // refresh token의 TimeToLive는 기본이 초단위이기 때문

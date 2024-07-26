@@ -2,9 +2,9 @@ package com.avab.avab.redis.domain;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 
 import lombok.*;
-import org.springframework.data.redis.core.TimeToLive;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -14,6 +14,5 @@ import org.springframework.data.redis.core.TimeToLive;
 public class RefreshToken {
     @Id private Long id;
     private String token;
-    @TimeToLive
-    private Long expiration;
+    @TimeToLive private Long expiration;
 }
