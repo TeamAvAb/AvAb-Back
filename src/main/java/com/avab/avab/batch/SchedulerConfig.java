@@ -3,12 +3,8 @@ package com.avab.avab.batch;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.avab.avab.domain.User;
-import com.avab.avab.repository.UserRepository;
-import com.avab.avab.service.UserService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -23,10 +19,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import com.avab.avab.redis.service.FlowViewCountService;
 import com.avab.avab.service.FlowService;
+import com.avab.avab.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 @EnableScheduling
@@ -73,7 +69,6 @@ public class SchedulerConfig {
 
         log.info("플로우 조회수 업데이트 완료");
     }
-
 
     @Scheduled(cron = "0 0 0 * * *")
     public void hardDeleteUser() {
