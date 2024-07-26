@@ -9,12 +9,15 @@ import java.util.Random;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.TypedSort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.FlowException;
 import com.avab.avab.apiPayload.exception.RecreationException;
+import com.avab.avab.controller.enums.SortCondition;
 import com.avab.avab.converter.FlowConverter;
 import com.avab.avab.domain.CustomRecreation;
 import com.avab.avab.domain.Flow;
@@ -26,6 +29,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
+import com.avab.avab.domain.enums.UserStatus;
 import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.redis.service.FlowViewCountService;
@@ -63,9 +67,18 @@ public class FlowServiceImpl implements FlowService {
     private final Integer FLOW_LIST_PAGE_SIZE = 6;
 
     @Override
-    public Page<Flow> getFlows(Integer page) {
-        return flowRepository.findAllByOrderByCreatedAtDesc(
-                PageRequest.of(page, FLOW_LIST_PAGE_SIZE));
+    public Page<Flow> getFlows(Integer page, SortCondition sortCondition) {
+        TypedSort<Flow> flowSort = Sort.sort(Flow.class);
+        Sort sort;
+        switch (sortCondition) {
+            case SCRAP -> sort = flowSort.by(Flow::getScrapCount).descending();
+            case VIEW -> sort = flowSort.by(Flow::getViewCount).descending();
+            case RECENT -> sort = flowSort.by(Flow::getCreatedAt).descending();
+            default -> throw new FlowException(ErrorStatus.INVALID_SORT_CONDITION);
+        }
+
+        return flowRepository.findAllByAuthor_UserStatus(
+                PageRequest.of(page, FLOW_LIST_PAGE_SIZE, sort), UserStatus.ENABLED);
     }
 
     public Flow getFlowDetail(Long flowId) {
