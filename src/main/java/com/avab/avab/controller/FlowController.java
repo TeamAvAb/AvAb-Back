@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.avab.avab.apiPayload.BaseResponse;
+import com.avab.avab.controller.enums.SortCondition;
 import com.avab.avab.converter.FlowConverter;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.User;
@@ -56,7 +57,7 @@ public class FlowController {
         return BaseResponse.onSuccess(FlowConverter.toFlowDetailDTO(flow, user));
     }
 
-    @Operation(summary = "플로우 목록 조회 API", description = "최신순으로 플로우를 조회합니다. _by 보노_")
+    @Operation(summary = "플로우 목록 조회 API", description = "정렬 조건에 맞추어 플로우를 조회합니다. _by 보노_")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
@@ -65,8 +66,10 @@ public class FlowController {
     public BaseResponse<FlowPreviewPageDTO> getFlows(
             @AuthUser User user,
             @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
-                    Integer page) {
-        Page<Flow> flowPage = flowService.getFlows(page);
+                    Integer page,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "recent")
+                    SortCondition sortCondition) {
+        Page<Flow> flowPage = flowService.getFlows(page, sortCondition);
 
         return BaseResponse.onSuccess(FlowConverter.toFlowPreviewPageDTO(flowPage, user));
     }
