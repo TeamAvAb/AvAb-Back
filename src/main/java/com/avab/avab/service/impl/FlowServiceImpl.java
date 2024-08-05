@@ -72,7 +72,7 @@ public class FlowServiceImpl implements FlowService {
         Sort sort;
         switch (sortCondition) {
             case SCRAP -> sort = flowSort.by(Flow::getScrapCount).descending();
-            case VIEW -> sort = flowSort.by(Flow::getViewCount).descending();
+            case VIEW -> sort = flowSort.by(Flow::getViewCountLast7Days).descending();
             case RECENT -> sort = flowSort.by(Flow::getCreatedAt).descending();
             default -> throw new FlowException(ErrorStatus.INVALID_SORT_CONDITION);
         }
