@@ -6,8 +6,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.avab.avab.apiPayload.exception.FlowException;
+import com.avab.avab.controller.enums.SortCondition;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -140,10 +143,21 @@ public class RecreationServiceImpl implements RecreationService {
             List<Purpose> purposes,
             List<Gender> genders,
             List<Age> ages,
-            Integer page) {
+            Integer page,
+            SortCondition sortCondition
+    ) {
         if (!isAtLeastOneConditionNotNull(
                 searchKeyword, keywords, participants, playTime, places, purposes, genders, ages)) {
             throw new RecreationException(ErrorStatus.SEARCH_CONDITION_INVALID);
+        }
+
+        Sort.TypedSort<Recreation> recreationSort = Sort.sort(Recreation.class);
+        Sort sort;
+        switch (sortCondition) {
+            case SCRAP -> sort = recreationSort.by(Recreation::getTotalStars).descending();
+            case VIEW -> sort = recreationSort.by(Recreation::getViewCountLast7Days).descending();
+            case RECENT -> sort = recreationSort.by(Recreation::getCreatedAt).descending();
+            default -> throw new FlowException(ErrorStatus.INVALID_SORT_CONDITION);
         }
 
         return recreationRepository.searchRecreations(
@@ -155,7 +169,7 @@ public class RecreationServiceImpl implements RecreationService {
                 purposes,
                 genders,
                 ages,
-                PageRequest.of(page, SEARCH_PAGE_SIZE));
+                PageRequest.of(page, SEARCH_PAGE_SIZE, sort));
     }
 
     private Boolean isAtLeastOneConditionNotNull(

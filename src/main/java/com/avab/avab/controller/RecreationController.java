@@ -2,6 +2,7 @@ package com.avab.avab.controller;
 
 import java.util.List;
 
+import com.avab.avab.controller.enums.SortCondition;
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -109,7 +110,9 @@ public class RecreationController {
             @RequestParam(name = "gender", required = false) List<Gender> genders,
             @RequestParam(name = "age", required = false) List<Age> ages,
             @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
-                    Integer page) {
+                    Integer page,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "recent")
+            SortCondition sortCondition) {
         Page<Recreation> recreationPage =
                 recreationService.searchRecreations(
                         user,
@@ -121,7 +124,9 @@ public class RecreationController {
                         purposes,
                         genders,
                         ages,
-                        page);
+                        page,
+                        sortCondition
+                );
 
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationPreviewPageDTO(recreationPage, user));
