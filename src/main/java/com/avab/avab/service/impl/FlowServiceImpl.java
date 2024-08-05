@@ -33,17 +33,7 @@ import com.avab.avab.domain.enums.UserStatus;
 import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.redis.service.FlowViewCountService;
-import com.avab.avab.repository.CustomRecreationRepository;
-import com.avab.avab.repository.FlowAgeRepository;
-import com.avab.avab.repository.FlowFavoriteRepository;
-import com.avab.avab.repository.FlowGenderRepository;
-import com.avab.avab.repository.FlowRecreationKeywordRepository;
-import com.avab.avab.repository.FlowRecreationPurposeRepository;
-import com.avab.avab.repository.FlowRecreationRepository;
-import com.avab.avab.repository.FlowRepository;
-import com.avab.avab.repository.RecreationKeywordRepository;
-import com.avab.avab.repository.RecreationPurposeRepository;
-import com.avab.avab.repository.RecreationRepository;
+import com.avab.avab.repository.*;
 import com.avab.avab.service.FlowService;
 
 import lombok.RequiredArgsConstructor;
@@ -98,7 +88,6 @@ public class FlowServiceImpl implements FlowService {
                         .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
 
         flowViewCountService.incrementViewCount(flowId);
-        flowViewCountService.incrementViewCountLast7Days(flowId);
 
         return flow;
     }
@@ -310,11 +299,5 @@ public class FlowServiceImpl implements FlowService {
                         recreationPurposeList);
 
         return flowRepository.save(updateFlow);
-    }
-
-    @Override
-    @Transactional
-    public void updateFlowViewCountLast7Days(Long flowId, Long viewCount) {
-        flowRepository.updateViewCountLast7DaysById(flowId, viewCount);
     }
 }

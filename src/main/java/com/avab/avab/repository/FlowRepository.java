@@ -32,8 +32,4 @@ public interface FlowRepository extends JpaRepository<Flow, Long>, FlowCustomRep
     @Modifying
     @Query("UPDATE Flow f SET f.scrapCount = f.scrapCount - 1 WHERE f.id = :id")
     void decrementScrapCountById(@Param("id") Long id);
-
-    @Modifying
-    @Query("UPDATE Flow f SET f.viewCountLast7Days = :viewCount WHERE f.id = :id")
-    void updateViewCountLast7DaysById(@Param("id") Long id, @Param("viewCount") Long viewCount);
 }

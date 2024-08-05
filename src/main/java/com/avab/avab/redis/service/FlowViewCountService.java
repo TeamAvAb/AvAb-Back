@@ -9,10 +9,4 @@ public interface FlowViewCountService {
     Long getViewCount(Long id);
 
     List<Long> getAllFlowIds();
-
-    void incrementViewCountLast7Days(Long id);
-
-    Long getTotalViewCountLast7Days(Long id);
-
-    List<Long> getAllFlowIdsToUpdateViewCountLast7Days();
 }
