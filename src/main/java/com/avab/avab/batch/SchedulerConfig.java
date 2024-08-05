@@ -70,6 +70,26 @@ public class SchedulerConfig {
         log.info("플로우 조회수 업데이트 완료");
     }
 
+    // 매 1시간 마다 수행
+    @Scheduled(cron = "0 0 * * * *")
+    public void updateFlowViewCountLast7Days() {
+        log.info("플로우 7일간 조회수 업데이트 시작");
+
+        List<Long> flowIdList = flowViewCountService.getAllFlowIdsToUpdateViewCountLast7Days();
+        log.info(
+                "업데이트 대상 플로우: {}",
+                flowIdList.stream().map(Object::toString).collect(Collectors.joining(", ")));
+
+        flowIdList.parallelStream()
+                .forEach(
+                        id -> {
+                            Long viewCount = flowViewCountService.getTotalViewCountLast7Days(id);
+                            flowService.updateFlowViewCountLast7Days(id, viewCount);
+                        });
+
+        log.info("플로우 7일간 조회수 업데이트 완료");
+    }
+
     @Scheduled(cron = "0 0 0 * * *")
     public void hardDeleteUser() {
         log.info("user hard delete 작동");

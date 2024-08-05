@@ -40,4 +40,6 @@ public interface FlowService {
             List<Age> ages);
 
     Flow updateFlow(PostFlowDTO request, User user, Long flowId);
+
+    void updateFlowViewCountLast7Days(Long flowId, Long viewCount);
 }
