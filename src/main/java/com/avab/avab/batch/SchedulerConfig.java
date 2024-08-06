@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.avab.avab.redis.service.RecreationViewCountService;
+import com.avab.avab.service.RecreationService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -34,7 +36,9 @@ public class SchedulerConfig {
     private final Job updateRecreationViewCountJob;
 
     private final FlowViewCountService flowViewCountService;
+    private final RecreationViewCountService recreationViewCountService;
     private final FlowService flowService;
+    private final RecreationService recreationService;
     private final UserService userService;
 
     // 매 30분 마다 수행
@@ -78,5 +82,24 @@ public class SchedulerConfig {
         userService.hardDeleteOldUser(threshold);
 
         log.info("user hard delete 완료");
+    }
+
+    @Scheduled(cron = "0 0 * * * *")
+    public void updateFlowViewCountLast7Days() {
+        log.info("레크레이션 7일간 조회수 업데이트 시작");
+
+        List<Long> recreationIdList = recreationViewCountService.getAllFlowIdsToUpdateViewCountLast7Days();
+        log.info(
+                "업데이트 대상 레크레이션: {}",
+                recreationIdList.stream().map(Object::toString).collect(Collectors.joining(", ")));
+
+        recreationIdList.parallelStream()
+                .forEach(
+                        id -> {
+                            Long viewCount = recreationViewCountService.getTotalViewCountLast7Days(id);
+                            recreationService.updateFlowViewCountLast7Days(id, viewCount);
+                        });
+
+        log.info("레크레이션 7일간 조회수 업데이트 완료");
     }
 }

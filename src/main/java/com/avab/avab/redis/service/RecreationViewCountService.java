@@ -9,4 +9,10 @@ public interface RecreationViewCountService {
     Long getViewCount(Long recreationId);
 
     List<Long> getAllRecreationIds();
+
+    void incrementViewCountLast7Days(Long id);
+
+    Long getTotalViewCountLast7Days(Long id);
+
+    List<Long> getAllFlowIdsToUpdateViewCountLast7Days();
 }

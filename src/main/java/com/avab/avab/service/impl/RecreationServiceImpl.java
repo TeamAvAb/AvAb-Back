@@ -74,7 +74,8 @@ public class RecreationServiceImpl implements RecreationService {
                         .orElseThrow(
                                 () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
 
-        recreationViewCountService.incrementViewCount(recreation.getId());
+        recreationViewCountService.incrementViewCount(recreationId);
+        recreationViewCountService.incrementViewCountLast7Days(recreationId);
 
         return recreation;
     }
@@ -284,5 +285,11 @@ public class RecreationServiceImpl implements RecreationService {
             List<Age> ages) {
         return recreationRepository.recommendRecreations(
                 purposes, keywords, genders, ages, participants, playTime);
+    }
+
+    @Override
+    @Transactional
+    public void updateFlowViewCountLast7Days(Long flowId, Long viewCount) {
+        recreationRepository.updateViewCountLast7DaysById(flowId, viewCount);
     }
 }

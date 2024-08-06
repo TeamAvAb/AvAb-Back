@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.avab.avab.controller.enums.SortCondition;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.avab.avab.domain.Flow;
@@ -63,4 +64,6 @@ public interface RecreationService {
             List<Age> ages);
 
     Page<Recreation> getRecentRecreation(Integer page);
+
+    void updateFlowViewCountLast7Days(Long flowId, Long viewCount);
 }
