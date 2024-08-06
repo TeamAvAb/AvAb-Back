@@ -1,6 +1,5 @@
 package com.avab.avab.controller;
 
-import com.avab.avab.dto.response.UserResponseDTO;
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -22,6 +21,7 @@ import com.avab.avab.domain.User;
 import com.avab.avab.dto.reqeust.UserRequestDTO.UpdateUserDTO;
 import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
+import com.avab.avab.dto.response.UserResponseDTO;
 import com.avab.avab.dto.response.UserResponseDTO.UserResponse;
 import com.avab.avab.security.handler.annotation.AuthUser;
 import com.avab.avab.service.UserService;

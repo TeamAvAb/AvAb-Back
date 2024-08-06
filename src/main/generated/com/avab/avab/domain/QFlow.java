@@ -58,6 +58,8 @@ public class QFlow extends EntityPathBase<Flow> {
 
     public final NumberPath<Long> viewCount = createNumber("viewCount", Long.class);
 
+    public final NumberPath<Long> viewCountLast7Days = createNumber("viewCountLast7Days", Long.class);
+
     public QFlow(String variable) {
         this(Flow.class, forVariable(variable), INITS);
     }

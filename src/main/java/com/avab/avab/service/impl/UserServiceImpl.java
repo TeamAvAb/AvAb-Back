@@ -1,6 +1,9 @@
 package com.avab.avab.service.impl;
 
-import com.avab.avab.domain.enums.UserStatus;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -11,6 +14,7 @@ import com.avab.avab.apiPayload.exception.UserException;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.User;
+import com.avab.avab.domain.enums.UserStatus;
 import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.dto.reqeust.UserRequestDTO.UpdateUserDTO;
@@ -21,10 +25,6 @@ import com.avab.avab.repository.UserRepository;
 import com.avab.avab.service.UserService;
 
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

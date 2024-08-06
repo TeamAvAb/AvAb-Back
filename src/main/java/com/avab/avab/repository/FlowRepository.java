@@ -11,10 +11,11 @@ import org.springframework.data.repository.query.Param;
 
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.User;
+import com.avab.avab.domain.enums.UserStatus;
 
 public interface FlowRepository extends JpaRepository<Flow, Long>, FlowCustomRepository {
 
-    Page<Flow> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    Page<Flow> findAllByAuthor_UserStatus(Pageable pageable, UserStatus userStatus);
 
     Page<Flow> findAllByAuthorOrderByCreatedAtDesc(User user, Pageable pageable);
 

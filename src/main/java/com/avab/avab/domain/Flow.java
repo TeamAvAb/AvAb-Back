@@ -48,6 +48,8 @@ public class Flow extends BaseEntity {
 
     private Long viewCount;
 
+    private Long viewCountLast7Days;
+
     @Column(length = 100)
     private String title;
 
