@@ -70,8 +70,8 @@ public class SchedulerConfig {
         log.info("플로우 조회수 업데이트 완료");
     }
 
-    // 매 1시간 마다 수행
-    @Scheduled(cron = "0 0 * * * *")
+    // 매일 0시, 8시, 16시에 수행
+    @Scheduled(cron = "0 0 0,8,16 * * *")
     public void updateFlowViewCountLast7Days() {
         log.info("플로우 7일간 조회수 업데이트 시작");
 
