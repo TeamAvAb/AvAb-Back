@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -48,6 +49,8 @@ public class Flow extends BaseEntity {
 
     private Long viewCount;
 
+    @ColumnDefault("0")
+    @Column(name = "view_count_last_7_days")
     private Long viewCountLast7Days;
 
     @Column(length = 100)

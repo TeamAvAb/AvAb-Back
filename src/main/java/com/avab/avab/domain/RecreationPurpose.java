@@ -26,7 +26,7 @@ public class RecreationPurpose extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(30)")
