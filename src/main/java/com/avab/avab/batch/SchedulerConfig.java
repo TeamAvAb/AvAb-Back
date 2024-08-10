@@ -84,7 +84,7 @@ public class SchedulerConfig {
         log.info("user hard delete 완료");
     }
 
-    @Scheduled(cron = "0 0 * * * *")
+    @Scheduled(cron = "0 0 0,8,16 * * *")
     public void updateFlowViewCountLast7Days() {
         log.info("레크레이션 7일간 조회수 업데이트 시작");
 
