@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -63,6 +64,8 @@ public class Recreation extends BaseEntity {
 
     private Long weeklyViewCount;
 
+    @ColumnDefault("0")
+    @Column(name = "view_count_last_7_days")
     private Long viewCountLast7Days;
 
     @ManyToOne(fetch = FetchType.LAZY)
