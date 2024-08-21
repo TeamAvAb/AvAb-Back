@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.avab.avab.redis.service.RecreationViewCountService;
-import com.avab.avab.service.RecreationService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -20,7 +18,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.avab.avab.redis.service.FlowViewCountService;
+import com.avab.avab.redis.service.RecreationViewCountService;
 import com.avab.avab.service.FlowService;
+import com.avab.avab.service.RecreationService;
 import com.avab.avab.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -108,7 +108,8 @@ public class SchedulerConfig {
     public void updateRecreationViewCountLast7Days() {
         log.info("레크레이션 7일간 조회수 업데이트 시작");
 
-        List<Long> recreationIdList = recreationViewCountService.getAllFlowIdsToUpdateViewCountLast7Days();
+        List<Long> recreationIdList =
+                recreationViewCountService.getAllFlowIdsToUpdateViewCountLast7Days();
         log.info(
                 "업데이트 대상 레크레이션: {}",
                 recreationIdList.stream().map(Object::toString).collect(Collectors.joining(", ")));
@@ -116,7 +117,8 @@ public class SchedulerConfig {
         recreationIdList.parallelStream()
                 .forEach(
                         id -> {
-                            Long viewCount = recreationViewCountService.getTotalViewCountLast7Days(id);
+                            Long viewCount =
+                                    recreationViewCountService.getTotalViewCountLast7Days(id);
                             recreationService.updateFlowViewCountLast7Days(id, viewCount);
                         });
 

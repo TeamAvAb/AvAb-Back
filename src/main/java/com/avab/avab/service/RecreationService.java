@@ -2,11 +2,10 @@ package com.avab.avab.service;
 
 import java.util.List;
 
-import com.avab.avab.controller.enums.SortCondition;
 import org.springframework.data.domain.Page;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.avab.avab.controller.enums.SortCondition;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationReview;
@@ -34,8 +33,7 @@ public interface RecreationService {
             List<Gender> gender,
             List<Age> age,
             Integer page,
-            SortCondition sortCondition
-    );
+            SortCondition sortCondition);
 
     Recreation getRecreationDescription(Long recreationId);
 

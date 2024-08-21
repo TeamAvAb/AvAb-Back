@@ -2,7 +2,6 @@ package com.avab.avab.controller;
 
 import java.util.List;
 
-import com.avab.avab.controller.enums.SortCondition;
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -22,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.apiPayload.code.status.SuccessStatus;
+import com.avab.avab.controller.enums.SortCondition;
 import com.avab.avab.converter.FlowConverter;
 import com.avab.avab.converter.RecreationConverter;
 import com.avab.avab.domain.Flow;
@@ -112,7 +112,7 @@ public class RecreationController {
             @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
                     Integer page,
             @RequestParam(name = "sortBy", required = false, defaultValue = "recent")
-            SortCondition sortCondition) {
+                    SortCondition sortCondition) {
         Page<Recreation> recreationPage =
                 recreationService.searchRecreations(
                         user,
@@ -125,8 +125,7 @@ public class RecreationController {
                         genders,
                         ages,
                         page,
-                        sortCondition
-                );
+                        sortCondition);
 
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationPreviewPageDTO(recreationPage, user));
