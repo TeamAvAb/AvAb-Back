@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.avab.avab.apiPayload.exception.FlowException;
-import com.avab.avab.controller.enums.SortCondition;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -16,9 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
+import com.avab.avab.apiPayload.exception.FlowException;
 import com.avab.avab.apiPayload.exception.RecreationException;
 import com.avab.avab.apiPayload.exception.S3Exception;
 import com.avab.avab.aws.s3.AmazonS3Manager;
+import com.avab.avab.controller.enums.SortCondition;
 import com.avab.avab.converter.RecreationConverter;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
@@ -145,8 +145,7 @@ public class RecreationServiceImpl implements RecreationService {
             List<Gender> genders,
             List<Age> ages,
             Integer page,
-            SortCondition sortCondition
-    ) {
+            SortCondition sortCondition) {
         if (!isAtLeastOneConditionNotNull(
                 searchKeyword, keywords, participants, playTime, places, purposes, genders, ages)) {
             throw new RecreationException(ErrorStatus.SEARCH_CONDITION_INVALID);

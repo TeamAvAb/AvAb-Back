@@ -1,9 +1,9 @@
 package com.avab.avab.redis.repository;
 
-import org.joda.time.LocalDate;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.joda.time.LocalDate;
 
 public interface RecreationViewCountRepository {
 
