@@ -1,0 +1,26 @@
+package com.avab.avab.converter;
+
+import com.avab.avab.domain.Recreation;
+import com.avab.avab.domain.Report;
+import com.avab.avab.domain.User;
+import com.avab.avab.domain.enums.ReportType;
+import com.avab.avab.dto.reqeust.ReportRequestDTO.ReportRecreationRequestDTO;
+import com.avab.avab.dto.response.ReportResponseDTO.ReportCreatedResponseDTO;
+
+public class ReportConverter {
+
+    public static ReportCreatedResponseDTO toReportCreatedResponseDTO(Report report) {
+        return ReportCreatedResponseDTO.builder().reportId(report.getId()).build();
+    }
+
+    public static Report toReport(
+            User reporter, ReportRecreationRequestDTO request, Recreation targetRecreation) {
+        return Report.builder()
+                .reporter(reporter)
+                .reportType(ReportType.RECREATION)
+                .targetRecreation(targetRecreation)
+                .reason(request.getReason())
+                .extraReason(request.getExtraReason())
+                .build();
+    }
+}
