@@ -1,6 +1,7 @@
 package com.avab.avab.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +70,11 @@ public class User extends BaseEntity {
     @ColumnDefault("null")
     private LocalDate deletedTime;
 
+    @ColumnDefault("0")
+    private Integer reportCount;
+
+    private LocalDateTime disabledAt;
+
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Recreation> recreationList = new ArrayList<>();
 
@@ -91,5 +97,14 @@ public class User extends BaseEntity {
     public void deleteUser() {
         this.deletedTime = LocalDate.now();
         this.userStatus = UserStatus.DELETED;
+    }
+
+    public void incrementReportCount() {
+        this.reportCount++;
+    }
+
+    public void disableUser() {
+        this.disabledAt = LocalDateTime.now();
+        this.userStatus = UserStatus.DISABLED;
     }
 }
