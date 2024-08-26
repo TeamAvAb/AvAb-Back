@@ -43,12 +43,6 @@ public class ReportController {
     @ResponseStatus(code = HttpStatus.CREATED)
     public BaseResponse<ReportCreatedResponseDTO> reportRecreation(
             @AuthUser User user, @RequestBody @Valid ReportRecreationRequestDTO request) {
-        //        RecreationReviewRecommendation recommendation =
-        //            recreationReviewService.toggleRecommendation(user, reviewId, request);
-        //
-        //        return BaseResponse.of(
-        //            SuccessStatus._CREATED,
-        //            RecreationReviewConverter.toRecommendationDTO(recommendation));
 
         Report report = reportService.reportRecreation(user, request);
 
