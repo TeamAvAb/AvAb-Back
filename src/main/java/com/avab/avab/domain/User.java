@@ -38,7 +38,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @DynamicInsert
-@SQLRestriction("user_status = 'ENABLED'")
+@SQLRestriction("user_status = 'ENABLED' OR user_status = 'DISABLED'")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
@@ -63,8 +63,8 @@ public class User extends BaseEntity {
     @Column(length = 300)
     private String profileImage;
 
-    @ColumnDefault("'ENABLED'")
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(10)")
     private UserStatus userStatus;
 
     @ColumnDefault("null")
@@ -106,5 +106,14 @@ public class User extends BaseEntity {
     public void disableUser() {
         this.disabledAt = LocalDateTime.now();
         this.userStatus = UserStatus.DISABLED;
+    }
+
+    public void enableUser() {
+        this.disabledAt = null;
+        this.userStatus = UserStatus.ENABLED;
+    }
+
+    public Boolean isDisabled() {
+        return this.userStatus == UserStatus.DISABLED;
     }
 }

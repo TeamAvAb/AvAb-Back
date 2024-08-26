@@ -48,6 +48,9 @@ public class AuthServiceImpl implements AuthService {
         // 가입자 혹은 비가입자 체크해서 로그인 처리
         if (queryUser.isPresent()) {
             User user = queryUser.get();
+            if (user.isDisabled()) {
+                throw new AuthException(ErrorStatus.USER_DISABLED);
+            }
             String accessToken = jwtTokenProvider.createAccessToken(user.getId());
             String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
             refreshTokenService.saveToken(refreshToken);
