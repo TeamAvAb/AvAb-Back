@@ -95,6 +95,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<FlowFavorite> flowFavoriteList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL)
+    private List<Report> reportList = new ArrayList<>();
+
     public void deleteUser() {
         this.deletedTime = LocalDate.now();
         this.userStatus = UserStatus.DELETED;

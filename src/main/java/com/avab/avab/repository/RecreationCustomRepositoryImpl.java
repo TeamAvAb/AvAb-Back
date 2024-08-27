@@ -23,15 +23,18 @@ import com.avab.avab.domain.QFlow;
 import com.avab.avab.domain.QRecreation;
 import com.avab.avab.domain.QRecreationAge;
 import com.avab.avab.domain.QRecreationGender;
+import com.avab.avab.domain.QReport;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
 import com.avab.avab.domain.enums.Purpose;
+import com.avab.avab.domain.enums.ReportType;
 import com.avab.avab.domain.mapping.QRecreationRecreationKeyword;
 import com.avab.avab.domain.mapping.QRecreationRecreationPurpose;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -215,16 +218,34 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
     }
 
     @Override
-    public List<Flow> findRelatedFlows(Long recreationId) {
+    public List<Flow> findRelatedFlows(Long recreationId, Long userId) {
         QFlow flow = QFlow.flow;
+        QReport report = QReport.report;
         List<Flow> randFlows = new ArrayList<>();
 
-        List<Flow> flows =
-                queryFactory
-                        .select(flow)
-                        .from(flow)
-                        .where(flow.flowRecreationList.any().recreation.id.eq(recreationId))
-                        .fetch();
+        BooleanExpression condition =
+                flow.flowRecreationList
+                        .any()
+                        .recreation
+                        .id
+                        .eq(recreationId)
+                        .and(flow.deletedAt.isNull());
+        if (userId != null) {
+            condition =
+                    condition.and(
+                            flow.id.notIn(
+                                    JPAExpressions.select(report.targetFlow.id)
+                                            .from(report)
+                                            .where(
+                                                    report.reporter
+                                                            .id
+                                                            .eq(userId)
+                                                            .and(
+                                                                    report.reportType.eq(
+                                                                            ReportType.FLOW)))));
+        }
+
+        List<Flow> flows = queryFactory.select(flow).from(flow).where(condition).fetch();
 
         // flow 사이즈가 2를 넘으면 랜덤으로 2개 리턴하기
         if (flows.size() > 2) {

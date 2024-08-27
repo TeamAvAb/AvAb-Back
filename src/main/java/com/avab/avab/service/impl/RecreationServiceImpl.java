@@ -270,8 +270,9 @@ public class RecreationServiceImpl implements RecreationService {
     }
 
     @Override
-    public List<Flow> findRelatedFlows(Long recreationId) {
-        return recreationRepository.findRelatedFlows(recreationId);
+    public List<Flow> findRelatedFlows(Long recreationId, User user) {
+        return recreationRepository.findRelatedFlows(
+                recreationId, user != null ? user.getId() : null);
     }
 
     @Override

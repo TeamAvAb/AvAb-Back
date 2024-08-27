@@ -224,7 +224,7 @@ public class RecreationController {
     public BaseResponse<List<FlowDetailPageDTO>> relatedFlow(
             @AuthUser User user,
             @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
-        List<Flow> relatedFlow = recreationService.findRelatedFlows(recreationId);
+        List<Flow> relatedFlow = recreationService.findRelatedFlows(recreationId, user);
 
         return BaseResponse.onSuccess(FlowConverter.toFlowDetailListDTO(relatedFlow, user));
     }

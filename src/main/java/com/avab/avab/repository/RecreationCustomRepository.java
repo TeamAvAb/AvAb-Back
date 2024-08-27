@@ -33,7 +33,7 @@ public interface RecreationCustomRepository {
             Integer maxParticipants,
             List<Age> age);
 
-    List<Flow> findRelatedFlows(Long recreationId);
+    List<Flow> findRelatedFlows(Long recreationId, Long userId);
 
     List<Recreation> recommendRecreations(
             List<Purpose> purposes,
