@@ -4,5 +4,5 @@ public enum ReportType {
     USER,
     RECREATION,
     FLOW,
-    REVIEW
+    RECREATION_REVIEW
 }
