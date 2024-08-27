@@ -66,6 +66,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    @Transactional
     public Report reportFlow(User user, ReportFlowRequestDTO request) {
         Flow targetFlow =
                 flowRepository
@@ -93,6 +94,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    @Transactional
     public Report reportRecreationReview(User user, ReportRecreationReviewDTO request) {
         RecreationReview targetRecreationReview =
                 recreationReviewRepository
