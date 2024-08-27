@@ -1,5 +1,6 @@
 package com.avab.avab.domain;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +49,8 @@ public class RecreationReview extends BaseEntity {
 
     private Integer badCount;
 
+    private LocalDateTime deletedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recreation_id")
     private Recreation recreation;
@@ -59,4 +62,15 @@ public class RecreationReview extends BaseEntity {
     @OneToMany(mappedBy = "recreationReview", cascade = CascadeType.ALL)
     private List<RecreationReviewRecommendation> recreationReviewRecommendationList =
             new ArrayList<>();
+
+    @OneToMany(mappedBy = "targetRecreationReview", cascade = CascadeType.ALL)
+    private List<Report> reportList = new ArrayList<>();
+
+    public Integer getReportCount() {
+        return reportList.size();
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }
