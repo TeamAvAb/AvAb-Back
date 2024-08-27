@@ -1,5 +1,6 @@
 package com.avab.avab.domain;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +62,8 @@ public class Flow extends BaseEntity {
     @Column(length = 300)
     private String imageUrl;
 
+    @Column private LocalDateTime deletedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;
@@ -88,4 +91,12 @@ public class Flow extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL)
     private List<FlowFavorite> flowFavoriteList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "targetFlow", cascade = CascadeType.ALL)
+    private List<Report> reportList = new ArrayList<>();
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
+    }
 }

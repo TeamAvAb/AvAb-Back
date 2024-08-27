@@ -15,6 +15,7 @@ import com.avab.avab.apiPayload.code.status.SuccessStatus;
 import com.avab.avab.converter.ReportConverter;
 import com.avab.avab.domain.Report;
 import com.avab.avab.domain.User;
+import com.avab.avab.dto.reqeust.ReportRequestDTO.ReportFlowRequestDTO;
 import com.avab.avab.dto.reqeust.ReportRequestDTO.ReportRecreationRequestDTO;
 import com.avab.avab.dto.response.ReportResponseDTO.ReportCreatedResponseDTO;
 import com.avab.avab.security.handler.annotation.AuthUser;
@@ -43,14 +44,22 @@ public class ReportController {
     @ResponseStatus(code = HttpStatus.CREATED)
     public BaseResponse<ReportCreatedResponseDTO> reportRecreation(
             @AuthUser User user, @RequestBody @Valid ReportRecreationRequestDTO request) {
-        //        RecreationReviewRecommendation recommendation =
-        //            recreationReviewService.toggleRecommendation(user, reviewId, request);
-        //
-        //        return BaseResponse.of(
-        //            SuccessStatus._CREATED,
-        //            RecreationReviewConverter.toRecommendationDTO(recommendation));
 
         Report report = reportService.reportRecreation(user, request);
+
+        return BaseResponse.of(
+                SuccessStatus._CREATED, ReportConverter.toReportCreatedResponseDTO(report));
+    }
+
+    @Operation(summary = "플로우 신고 API", description = "플로우를 신고합니다 _by 보노_")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON201", description = "신고 성공")})
+    @Parameter(name = "user", hidden = true)
+    @PostMapping("/flows")
+    @ResponseStatus(code = HttpStatus.CREATED)
+    public BaseResponse<ReportCreatedResponseDTO> reportRecreation(
+            @AuthUser User user, @RequestBody @Valid ReportFlowRequestDTO request) {
+
+        Report report = reportService.reportFlow(user, request);
 
         return BaseResponse.of(
                 SuccessStatus._CREATED, ReportConverter.toReportCreatedResponseDTO(report));
