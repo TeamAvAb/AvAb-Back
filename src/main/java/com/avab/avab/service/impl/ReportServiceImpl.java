@@ -52,7 +52,7 @@ public class ReportServiceImpl implements ReportService {
         Report report = ReportConverter.toReport(user, request, targetRecreation);
         reportRepository.save(report);
 
-        if (targetRecreation.getReportList().size() == SOFT_DELETE_THRESHOLD) {
+        if (targetRecreation.getReportCount().equals(SOFT_DELETE_THRESHOLD)) {
             targetRecreation.softDelete();
         }
 
@@ -79,7 +79,7 @@ public class ReportServiceImpl implements ReportService {
         Report report = ReportConverter.toReport(user, request, targetFlow);
         reportRepository.save(report);
 
-        if (targetFlow.getReportList().size() == SOFT_DELETE_THRESHOLD) {
+        if (targetFlow.getReportCount().equals(SOFT_DELETE_THRESHOLD)) {
             targetFlow.softDelete();
         }
 
