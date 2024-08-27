@@ -91,11 +91,4 @@ public class UserServiceImpl implements UserService {
         Optional<List<User>> userList = userRepository.findOldUsers(threshold);
         userList.ifPresent(userRepository::deleteAll);
     }
-
-    @Override
-    @Transactional
-    public void enableUser(User user) {
-        user.enableUser();
-        userRepository.save(user);
-    }
 }

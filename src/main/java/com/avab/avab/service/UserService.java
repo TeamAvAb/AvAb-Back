@@ -24,6 +24,4 @@ public interface UserService {
     User deleteUser(User user);
 
     void hardDeleteOldUser(LocalDate threshold);
-
-    void enableUser(User user);
 }
