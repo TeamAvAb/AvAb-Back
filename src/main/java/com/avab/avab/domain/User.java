@@ -19,6 +19,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.SQLRestriction;
 
+import com.avab.avab.constant.UserConstant;
 import com.avab.avab.domain.common.BaseEntity;
 import com.avab.avab.domain.enums.SocialType;
 import com.avab.avab.domain.enums.UserStatus;
@@ -115,5 +116,12 @@ public class User extends BaseEntity {
 
     public Boolean isDisabled() {
         return this.userStatus == UserStatus.DISABLED;
+    }
+
+    public Boolean isCanBeEnabled() {
+        return this.disabledAt != null
+                && this.disabledAt
+                        .plusDays(UserConstant.USER_DISABLE_PERIOD_DAYS)
+                        .isBefore(LocalDateTime.now());
     }
 }

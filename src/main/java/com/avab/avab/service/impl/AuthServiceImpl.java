@@ -49,7 +49,11 @@ public class AuthServiceImpl implements AuthService {
         if (queryUser.isPresent()) {
             User user = queryUser.get();
             if (user.isDisabled()) {
-                throw new AuthException(ErrorStatus.USER_DISABLED);
+                if (user.isCanBeEnabled()) {
+                    enableUser(user);
+                } else {
+                    throw new AuthException(ErrorStatus.USER_DISABLED);
+                }
             }
             String accessToken = jwtTokenProvider.createAccessToken(user.getId());
             String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
@@ -85,5 +89,12 @@ public class AuthServiceImpl implements AuthService {
 
     public void logout(Long userId) {
         refreshTokenService.deleteToken(userId);
+    }
+
+    @Override
+    @Transactional
+    public void enableUser(User user) {
+        user.enableUser();
+        userRepository.save(user);
     }
 }
