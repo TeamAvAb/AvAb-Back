@@ -15,7 +15,11 @@ import com.avab.avab.domain.enums.UserStatus;
 
 public interface FlowRepository extends JpaRepository<Flow, Long>, FlowCustomRepository {
 
-    Page<Flow> findAllByAuthor_UserStatus(Pageable pageable, UserStatus userStatus);
+    Page<Flow> findAllByIdNotInAndDeletedAtIsNullAndAuthor_UserStatusNot(
+            List<Long> notInIds, UserStatus userStatus, Pageable pageable);
+
+    Page<Flow> findAllByDeletedAtIsNullAndAuthor_UserStatusNot(
+            UserStatus userStatus, Pageable pageable);
 
     Page<Flow> findAllByAuthorOrderByCreatedAtDesc(User user, Pageable pageable);
 
