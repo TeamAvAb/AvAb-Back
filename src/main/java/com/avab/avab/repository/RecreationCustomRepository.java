@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
+import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
@@ -16,6 +17,7 @@ import com.avab.avab.domain.enums.Purpose;
 public interface RecreationCustomRepository {
 
     Page<Recreation> searchRecreations(
+            User user,
             String searchKeyword,
             List<Keyword> keywords,
             Integer participants,
@@ -33,7 +35,7 @@ public interface RecreationCustomRepository {
             Integer maxParticipants,
             List<Age> age);
 
-    List<Flow> findRelatedFlows(Long recreationId, Long userId);
+    List<Flow> findRelatedFlows(Long recreationId, User user);
 
     List<Recreation> recommendRecreations(
             List<Purpose> purposes,

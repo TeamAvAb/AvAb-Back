@@ -161,6 +161,7 @@ public class RecreationServiceImpl implements RecreationService {
         }
 
         return recreationRepository.searchRecreations(
+                user,
                 searchKeyword,
                 keywords,
                 participants,
@@ -271,8 +272,7 @@ public class RecreationServiceImpl implements RecreationService {
 
     @Override
     public List<Flow> findRelatedFlows(Long recreationId, User user) {
-        return recreationRepository.findRelatedFlows(
-                recreationId, user != null ? user.getId() : null);
+        return recreationRepository.findRelatedFlows(recreationId, user);
     }
 
     @Override
