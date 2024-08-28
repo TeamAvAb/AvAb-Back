@@ -11,12 +11,4 @@ public enum ReportReason {
     VIOLENCE,
     COPYRIGHT_VIOLATION,
     OTHER;
-
-    public static ReportReason fromString(String reason) {
-        try {
-            return ReportReason.valueOf(reason.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-    }
 }
