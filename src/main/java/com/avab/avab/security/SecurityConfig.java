@@ -13,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.avab.avab.security.filter.AuthExceptionHandlingFilter;
+import com.avab.avab.security.filter.DisabledUserFilter;
 import com.avab.avab.security.filter.JwtRequestFilter;
 import com.avab.avab.security.handler.JwtAccessDeniedHandler;
 import com.avab.avab.security.handler.JwtAuthenticationEntryPoint;
@@ -26,8 +27,10 @@ public class SecurityConfig {
 
     private final JwtRequestFilter jwtRequestFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final AuthExceptionHandlingFilter authExceptionHandlingFilter;
+    private final DisabledUserFilter disabledUserFilter;
 
     private final String[] allowedUrls = {
         "/api/login",
@@ -92,7 +95,8 @@ public class SecurityConfig {
                                 .authenticated());
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(authExceptionHandlingFilter, JwtRequestFilter.class);
+                .addFilterBefore(authExceptionHandlingFilter, JwtRequestFilter.class)
+                .addFilterAfter(disabledUserFilter, JwtRequestFilter.class);
 
         return http.build();
     }

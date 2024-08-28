@@ -1,6 +1,7 @@
 package com.avab.avab.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.SQLRestriction;
 
+import com.avab.avab.constant.UserConstant;
 import com.avab.avab.domain.common.BaseEntity;
 import com.avab.avab.domain.enums.SocialType;
 import com.avab.avab.domain.enums.UserStatus;
@@ -37,7 +39,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @DynamicInsert
-@SQLRestriction("user_status = 'ENABLED'")
+@SQLRestriction("user_status = 'ENABLED' OR user_status = 'DISABLED'")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
@@ -62,12 +64,17 @@ public class User extends BaseEntity {
     @Column(length = 300)
     private String profileImage;
 
-    @ColumnDefault("'ENABLED'")
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(10)")
     private UserStatus userStatus;
 
     @ColumnDefault("null")
     private LocalDate deletedTime;
+
+    @ColumnDefault("0")
+    private Integer reportCount;
+
+    private LocalDateTime disabledAt;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Recreation> recreationList = new ArrayList<>();
@@ -91,5 +98,30 @@ public class User extends BaseEntity {
     public void deleteUser() {
         this.deletedTime = LocalDate.now();
         this.userStatus = UserStatus.DELETED;
+    }
+
+    public void incrementReportCount() {
+        this.reportCount++;
+    }
+
+    public void disableUser() {
+        this.disabledAt = LocalDateTime.now();
+        this.userStatus = UserStatus.DISABLED;
+    }
+
+    public void enableUser() {
+        this.disabledAt = null;
+        this.userStatus = UserStatus.ENABLED;
+    }
+
+    public Boolean isDisabled() {
+        return this.userStatus == UserStatus.DISABLED;
+    }
+
+    public Boolean isCanBeEnabled() {
+        return this.disabledAt != null
+                && this.disabledAt
+                        .plusDays(UserConstant.USER_DISABLE_PERIOD_DAYS)
+                        .isBefore(LocalDateTime.now());
     }
 }
