@@ -108,11 +108,27 @@ public class FlowServiceImpl implements FlowService {
                         PageRequest.of(page, FLOW_LIST_PAGE_SIZE, sort));
     }
 
-    public Flow getFlowDetail(Long flowId) {
+    public Flow getFlowDetail(User user, Long flowId) {
+        List<Long> reportedFlowIds = new ArrayList<>();
+        if (user != null) {
+            reportedFlowIds =
+                    user.getReportList().stream()
+                            .filter(report -> report.getReportType() == ReportType.FLOW)
+                            .map(Report::getTargetFlow)
+                            .map(Flow::getId)
+                            .toList();
+        }
+
         Flow flow =
-                flowRepository
-                        .findById(flowId)
-                        .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
+                reportedFlowIds.isEmpty()
+                        ? flowRepository
+                                .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                                        flowId, UserStatus.DELETED)
+                                .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND))
+                        : flowRepository
+                                .findByIdAndDeletedAtIsNullAndIdNotInAndAuthor_UserStatusNot(
+                                        flowId, reportedFlowIds, UserStatus.DELETED)
+                                .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
 
         flowViewCountService.incrementViewCount(flowId);
         flowViewCountService.incrementViewCountLast7Days(flowId);

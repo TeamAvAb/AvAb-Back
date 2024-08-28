@@ -19,7 +19,7 @@ public interface FlowService {
 
     Flow postFlow(PostFlowDTO request, User user);
 
-    Flow getFlowDetail(Long flowId);
+    Flow getFlowDetail(User user, Long flowId);
 
     Boolean existsByFlowId(Long flowId);
 

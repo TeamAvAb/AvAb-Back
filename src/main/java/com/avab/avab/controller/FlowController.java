@@ -62,7 +62,7 @@ public class FlowController {
     public BaseResponse<FlowDetailPageDTO> getFlowDetail(
             @AuthUser User user, @ExistFlow @PathVariable("flowId") Long flowId) {
 
-        Flow flow = flowService.getFlowDetail(flowId);
+        Flow flow = flowService.getFlowDetail(user, flowId);
         return BaseResponse.onSuccess(FlowConverter.toFlowDetailDTO(flow, user));
     }
 

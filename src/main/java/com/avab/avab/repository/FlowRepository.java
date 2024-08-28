@@ -1,6 +1,7 @@
 package com.avab.avab.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,12 @@ import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.UserStatus;
 
 public interface FlowRepository extends JpaRepository<Flow, Long>, FlowCustomRepository {
+
+    Optional<Flow> findByIdAndDeletedAtIsNullAndIdNotInAndAuthor_UserStatusNot(
+            Long id, List<Long> notInIds, UserStatus userStatus);
+
+    Optional<Flow> findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
+            Long id, UserStatus userStatus);
 
     Page<Flow> findAllByIdNotInAndDeletedAtIsNullAndAuthor_UserStatusNot(
             List<Long> notInIds, UserStatus userStatus, Pageable pageable);
