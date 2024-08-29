@@ -32,6 +32,7 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_REQUEST_INFO(HttpStatus.UNAUTHORIZED, "AUTH_006", "카카오 정보 불러오기에 실패하였습니다."),
     NOT_EQUAL_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_007", "리프레시 토큰이 다릅니다."),
     NOT_CONTAIN_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH_008", "해당하는 토큰이 저장되어있지 않습니다."),
+    USER_DISABLED(HttpStatus.FORBIDDEN, "AUTH_009", "활동 정지된 사용자입니다."),
 
     // User 관련
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "AUTH_004", "존재하지 않는 사용자입니다."),
@@ -47,6 +48,9 @@ public enum ErrorStatus implements BaseErrorCode {
     // Flow 관련
     FLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "FLO_001", "존재하지 않는 플로우입니다."),
     FLOW_DELETE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "FLOW_002", "삭제 권한이 없습니다."),
+
+    // Report 관련
+    ALREADY_REPORTED(HttpStatus.BAD_REQUEST, "REP_001", "이미 신고되었습니다."),
 
     // FeignClient 관련
     FEIGN_400_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "FEI_001", "FeignClient 400번대 에러 발생"),

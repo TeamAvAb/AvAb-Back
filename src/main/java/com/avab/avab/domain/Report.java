@@ -37,7 +37,7 @@ public class Report extends BaseEntity {
     private User reporter;
 
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(10)")
+    @Column(columnDefinition = "VARCHAR(20)")
     private ReportType reportType;
 
     @ManyToOne(fetch = FetchType.LAZY)

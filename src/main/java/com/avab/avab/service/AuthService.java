@@ -1,5 +1,6 @@
 package com.avab.avab.service;
 
+import com.avab.avab.domain.User;
 import com.avab.avab.dto.response.AuthResponseDTO.OAuthResponse;
 import com.avab.avab.dto.response.AuthResponseDTO.TokenRefreshResponse;
 
@@ -10,4 +11,6 @@ public interface AuthService {
     TokenRefreshResponse refresh(String refreshToken);
 
     void logout(Long userId);
+
+    void enableUser(User user);
 }
