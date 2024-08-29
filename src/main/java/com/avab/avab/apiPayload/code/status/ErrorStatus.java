@@ -49,6 +49,9 @@ public enum ErrorStatus implements BaseErrorCode {
     FLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "FLO_001", "존재하지 않는 플로우입니다."),
     FLOW_DELETE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "FLOW_002", "삭제 권한이 없습니다."),
 
+    // Report 관련
+    ALREADY_REPORTED(HttpStatus.BAD_REQUEST, "REP_001", "이미 신고되었습니다."),
+
     // FeignClient 관련
     FEIGN_400_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "FEI_001", "FeignClient 400번대 에러 발생"),
     FEIGN_500_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "FEI_002", "FeignClient 500번대 에러 발생"),
