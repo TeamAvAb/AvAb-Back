@@ -52,7 +52,7 @@ public class ReportServiceImpl implements ReportService {
         Report report = ReportConverter.toReport(user, request, targetRecreation);
         reportRepository.save(report);
 
-        if (targetRecreation.getReportCount().equals(SOFT_DELETE_THRESHOLD)) {
+        if (targetRecreation.getReportList().size() == SOFT_DELETE_THRESHOLD) {
             targetRecreation.softDelete();
         }
 
