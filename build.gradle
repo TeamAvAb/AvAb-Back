@@ -97,7 +97,9 @@ jar {
 tasks.register('addGitHooks', Copy) {
     from new File(rootProject.rootDir, '.script/pre-commit')
     into { new File(rootProject.rootDir, '.git/hooks') }
-    Runtime.getRuntime().exec("chmod -R +x .git/hooks/");
+    doLast {
+        new File(rootProject.rootDir, '.git/hooks/pre-commit').setExecutable(true)
+    }
 }
 
 tasks.named('compileJava') {
