@@ -9,12 +9,15 @@ import com.avab.avab.apiPayload.exception.RecreationException;
 import com.avab.avab.converter.ReportConverter;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
+import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.Report;
 import com.avab.avab.domain.User;
 import com.avab.avab.dto.reqeust.ReportRequestDTO.ReportFlowRequestDTO;
 import com.avab.avab.dto.reqeust.ReportRequestDTO.ReportRecreationRequestDTO;
+import com.avab.avab.dto.reqeust.ReportRequestDTO.ReportRecreationReviewDTO;
 import com.avab.avab.repository.FlowRepository;
 import com.avab.avab.repository.RecreationRepository;
+import com.avab.avab.repository.RecreationReviewRepository;
 import com.avab.avab.repository.ReportRepository;
 import com.avab.avab.service.ReportService;
 
@@ -31,6 +34,7 @@ public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
     private final RecreationRepository recreationRepository;
     private final FlowRepository flowRepository;
+    private final RecreationReviewRepository recreationReviewRepository;
 
     @Override
     @Transactional
@@ -48,7 +52,7 @@ public class ReportServiceImpl implements ReportService {
         Report report = ReportConverter.toReport(user, request, targetRecreation);
         reportRepository.save(report);
 
-        if (targetRecreation.getReportList().size() == SOFT_DELETE_THRESHOLD) {
+        if (targetRecreation.getReportCount().equals(SOFT_DELETE_THRESHOLD)) {
             targetRecreation.softDelete();
         }
 
@@ -62,6 +66,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    @Transactional
     public Report reportFlow(User user, ReportFlowRequestDTO request) {
         Flow targetFlow =
                 flowRepository
@@ -75,11 +80,40 @@ public class ReportServiceImpl implements ReportService {
         Report report = ReportConverter.toReport(user, request, targetFlow);
         reportRepository.save(report);
 
-        if (targetFlow.getReportList().size() == SOFT_DELETE_THRESHOLD) {
+        if (targetFlow.getReportCount().equals(SOFT_DELETE_THRESHOLD)) {
             targetFlow.softDelete();
         }
 
         User author = targetFlow.getAuthor();
+        author.incrementReportCount();
+        if (author.getReportCount().equals(USER_DISABLE_THRESHOLD)) {
+            author.disableUser();
+        }
+
+        return report;
+    }
+
+    @Override
+    @Transactional
+    public Report reportRecreationReview(User user, ReportRecreationReviewDTO request) {
+        RecreationReview targetRecreationReview =
+                recreationReviewRepository
+                        .findById(request.getRecreationReviewId())
+                        .orElseThrow(() -> new RecreationException(ErrorStatus.REVIEW_NOT_FOUND));
+
+        if (reportRepository.existsByReporterAndTargetRecreationReview(
+                user, targetRecreationReview)) {
+            throw new RecreationException(ErrorStatus.ALREADY_REPORTED);
+        }
+
+        Report report = ReportConverter.toReport(user, request, targetRecreationReview);
+        reportRepository.save(report);
+
+        if (targetRecreationReview.getReportCount().equals(SOFT_DELETE_THRESHOLD)) {
+            targetRecreationReview.softDelete();
+        }
+
+        User author = targetRecreationReview.getAuthor();
         author.incrementReportCount();
         if (author.getReportCount().equals(USER_DISABLE_THRESHOLD)) {
             author.disableUser();

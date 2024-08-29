@@ -126,4 +126,8 @@ public class Recreation extends BaseEntity {
     public void softDelete() {
         this.deletedAt = LocalDateTime.now();
     }
+
+    public Integer getReportCount() {
+        return reportList.size();
+    }
 }
