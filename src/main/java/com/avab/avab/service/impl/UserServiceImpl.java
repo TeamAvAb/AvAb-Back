@@ -2,7 +2,6 @@ package com.avab.avab.service.impl;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -88,7 +87,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void hardDeleteOldUser(LocalDate threshold) {
-        Optional<List<User>> userList = userRepository.findOldUsers(threshold);
-        userList.ifPresent(userRepository::deleteAll);
+        List<User> oldUsers =
+                userRepository.findByUserStatusAndDeletedTimeLessThanEqual(
+                        UserStatus.DELETED, threshold);
+        userRepository.deleteAll(oldUsers);
     }
 }
