@@ -24,11 +24,13 @@ import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationKeyword;
 import com.avab.avab.domain.RecreationPurpose;
+import com.avab.avab.domain.Report;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
+import com.avab.avab.domain.enums.ReportType;
 import com.avab.avab.domain.enums.UserStatus;
 import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
@@ -77,7 +79,7 @@ public class FlowServiceImpl implements FlowService {
     private final Integer FLOW_LIST_PAGE_SIZE = 6;
 
     @Override
-    public Page<Flow> getFlows(Integer page, SortCondition sortCondition) {
+    public Page<Flow> getFlows(User user, Integer page, SortCondition sortCondition) {
         TypedSort<Flow> flowSort = Sort.sort(Flow.class);
         Sort sort;
         switch (sortCondition) {
@@ -87,15 +89,46 @@ public class FlowServiceImpl implements FlowService {
             default -> throw new FlowException(ErrorStatus.INVALID_SORT_CONDITION);
         }
 
-        return flowRepository.findAllByAuthor_UserStatus(
-                PageRequest.of(page, FLOW_LIST_PAGE_SIZE, sort), UserStatus.ENABLED);
+        List<Long> reportedFlowIds = new ArrayList<>();
+        if (user != null) {
+            reportedFlowIds =
+                    user.getReportList().stream()
+                            .filter(report -> report.getReportType() == ReportType.FLOW)
+                            .map(Report::getTargetFlow)
+                            .map(Flow::getId)
+                            .toList();
+        }
+
+        return reportedFlowIds.isEmpty()
+                ? flowRepository.findAllByDeletedAtIsNullAndAuthor_UserStatusNot(
+                        UserStatus.DELETED, PageRequest.of(page, FLOW_LIST_PAGE_SIZE, sort))
+                : flowRepository.findAllByIdNotInAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                        reportedFlowIds,
+                        UserStatus.DELETED,
+                        PageRequest.of(page, FLOW_LIST_PAGE_SIZE, sort));
     }
 
-    public Flow getFlowDetail(Long flowId) {
+    public Flow getFlowDetail(User user, Long flowId) {
+        List<Long> reportedFlowIds = new ArrayList<>();
+        if (user != null) {
+            reportedFlowIds =
+                    user.getReportList().stream()
+                            .filter(report -> report.getReportType() == ReportType.FLOW)
+                            .map(Report::getTargetFlow)
+                            .map(Flow::getId)
+                            .toList();
+        }
+
         Flow flow =
-                flowRepository
-                        .findById(flowId)
-                        .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
+                reportedFlowIds.isEmpty()
+                        ? flowRepository
+                                .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                                        flowId, UserStatus.DELETED)
+                                .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND))
+                        : flowRepository
+                                .findByIdAndDeletedAtIsNullAndIdNotInAndAuthor_UserStatusNot(
+                                        flowId, reportedFlowIds, UserStatus.DELETED)
+                                .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
 
         flowViewCountService.incrementViewCount(flowId);
         flowViewCountService.incrementViewCountLast7Days(flowId);

@@ -1,10 +1,11 @@
 package com.avab.avab.repository;
 
+import static com.avab.avab.domain.QFlow.flow;
 import static com.avab.avab.domain.QRecreation.recreation;
 import static com.avab.avab.domain.QRecreationReview.recreationReview;
+import static com.avab.avab.domain.QReport.report;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,19 +20,23 @@ import org.springframework.stereotype.Repository;
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.RecreationException;
 import com.avab.avab.domain.Flow;
-import com.avab.avab.domain.QFlow;
 import com.avab.avab.domain.QRecreation;
 import com.avab.avab.domain.QRecreationAge;
 import com.avab.avab.domain.QRecreationGender;
+import com.avab.avab.domain.QReport;
 import com.avab.avab.domain.Recreation;
+import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
 import com.avab.avab.domain.enums.Purpose;
+import com.avab.avab.domain.enums.ReportType;
 import com.avab.avab.domain.mapping.QRecreationRecreationKeyword;
 import com.avab.avab.domain.mapping.QRecreationRecreationPurpose;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -44,6 +49,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
 
     @Override
     public Page<Recreation> searchRecreations(
+            User user,
             String searchKeyword,
             List<Keyword> keywords,
             Integer participants,
@@ -67,7 +73,9 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                                 inPlace(places),
                                 inPurpose(purposes),
                                 inGender(genders),
-                                inAge(ages))
+                                inAge(ages),
+                                notReportedByUser(user),
+                                notSoftDeleted())
                         .limit(pageable.getPageSize())
                         .offset(pageable.getOffset())
                         .fetch();
@@ -121,6 +129,23 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
 
     private BooleanExpression inAge(List<Age> ages) {
         return ages != null ? recreation.recreationAgeList.any().age.in(ages) : null;
+    }
+
+    private BooleanExpression notSoftDeleted() {
+        return recreation.deletedAt.isNull();
+    }
+
+    private BooleanExpression notReportedByUser(User user) {
+        QReport report = QReport.report;
+        if (user == null) {
+            return null;
+        }
+        return recreation.id.notIn(
+                JPAExpressions.select(report.targetRecreation.id)
+                        .from(report)
+                        .where(
+                                report.reportType.eq(ReportType.RECREATION),
+                                report.reporter.eq(user)));
     }
 
     @Override
@@ -215,28 +240,37 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
     }
 
     @Override
-    public List<Flow> findRelatedFlows(Long recreationId) {
-        QFlow flow = QFlow.flow;
-        List<Flow> randFlows = new ArrayList<>();
+    public List<Flow> findRelatedFlows(Long recreationId, User user) {
 
-        List<Flow> flows =
-                queryFactory
-                        .select(flow)
-                        .from(flow)
-                        .where(flow.flowRecreationList.any().recreation.id.eq(recreationId))
-                        .fetch();
+        return queryFactory
+                .select(flow)
+                .from(flow)
+                .where(
+                        notSoftDeletedFlow(),
+                        isRecreationUsedInFlow(recreationId),
+                        notReportedFlowByUser(user))
+                .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+                .limit(2)
+                .fetch();
+    }
 
-        // flow 사이즈가 2를 넘으면 랜덤으로 2개 리턴하기
-        if (flows.size() > 2) {
-            List<Flow> shuffledFlows = new ArrayList<>(flows);
-            Collections.shuffle(shuffledFlows);
+    private BooleanExpression isRecreationUsedInFlow(Long recreationId) {
+        return flow.flowRecreationList.any().recreation.id.eq(recreationId);
+    }
 
-            randFlows.add(shuffledFlows.get(0));
-            randFlows.add(shuffledFlows.get(1));
-            return randFlows;
-        } else {
-            return flows;
+    private BooleanExpression notSoftDeletedFlow() {
+        return flow.deletedAt.isNull();
+    }
+
+    private BooleanExpression notReportedFlowByUser(User user) {
+        if (user == null) {
+            return null;
         }
+
+        return flow.id.notIn(
+                JPAExpressions.select(report.targetFlow.id)
+                        .from(report)
+                        .where(report.reportType.eq(ReportType.FLOW), report.reporter.eq(user)));
     }
 
     // 목적, 시간, 나머지는 연관 레크레이션과 같음 (키워드, 인원, 연령대, 성별)
@@ -297,7 +331,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             long keywordMatchSize =
                     keyword != null
                             ? keyword.stream().filter(keywordsForComparison::contains).count()
-                            : 0l;
+                            : 0L;
 
             // 인원
             int participantsMatch =
@@ -314,7 +348,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                             .fetch();
 
             long ageMatchList =
-                    age != null ? ageForComparison.stream().filter(age::contains).count() : 0l;
+                    age != null ? ageForComparison.stream().filter(age::contains).count() : 0L;
 
             // 겹치는 성별 확인
             List<Gender> genderForComparison =
@@ -327,7 +361,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             long genderMatchList =
                     gender != null
                             ? genderForComparison.stream().filter(gender::contains).count()
-                            : 0l;
+                            : 0L;
 
             // List에 추가
             recreationList.add(

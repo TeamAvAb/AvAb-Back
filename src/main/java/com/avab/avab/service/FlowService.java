@@ -15,11 +15,11 @@ import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 
 public interface FlowService {
 
-    Page<Flow> getFlows(Integer page, SortCondition sortCondition);
+    Page<Flow> getFlows(User user, Integer page, SortCondition sortCondition);
 
     Flow postFlow(PostFlowDTO request, User user);
 
-    Flow getFlowDetail(Long flowId);
+    Flow getFlowDetail(User user, Long flowId);
 
     Boolean existsByFlowId(Long flowId);
 

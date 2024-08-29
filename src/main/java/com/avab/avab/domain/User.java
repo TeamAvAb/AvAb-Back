@@ -17,7 +17,6 @@ import jakarta.persistence.OneToMany;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.SQLRestriction;
 
 import com.avab.avab.constant.UserConstant;
 import com.avab.avab.domain.common.BaseEntity;
@@ -39,7 +38,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @DynamicInsert
-@SQLRestriction("user_status = 'ENABLED' OR user_status = 'DISABLED'")
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
@@ -94,6 +92,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<FlowFavorite> flowFavoriteList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL)
+    private List<Report> reportList = new ArrayList<>();
 
     public void deleteUser() {
         this.deletedTime = LocalDate.now();

@@ -45,7 +45,7 @@ public interface RecreationService {
 
     List<Recreation> findRelatedRecreations(User user, Long recreationId);
 
-    List<Flow> findRelatedFlows(Long recreationId);
+    List<Flow> findRelatedFlows(Long recreationId, User user);
 
     Recreation createRecreation(
             User user,
