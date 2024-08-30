@@ -12,8 +12,6 @@ import com.avab.avab.domain.Recreation;
 public interface RecreationRepository
         extends JpaRepository<Recreation, Long>, RecreationCustomRepository {
 
-    Page<Recreation> findTop9ByOrderByWeeklyViewCountDesc(Pageable pageable);
-
     Page<Recreation> findByOrderByCreatedAtDesc(Pageable pageable);
 
     @Modifying

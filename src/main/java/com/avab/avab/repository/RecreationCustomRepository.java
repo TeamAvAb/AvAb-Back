@@ -47,4 +47,6 @@ public interface RecreationCustomRepository {
             User user);
 
     void updateTotalStars(Long recreationId);
+
+    Page<Recreation> findTop9ByOrderByWeeklyViewCountDesc(Pageable page, User user);
 }

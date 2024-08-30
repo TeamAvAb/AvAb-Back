@@ -76,7 +76,8 @@ public class RecreationController {
     @GetMapping("/popular")
     public BaseResponse<RecreationPreviewPageDTO> getTop9RecreationsByWeeklyViewCount(
             @AuthUser User user) {
-        Page<Recreation> topRecreations = recreationService.getTop9RecreationsByWeeklyViewCount();
+        Page<Recreation> topRecreations =
+                recreationService.getTop9RecreationsByWeeklyViewCount(user);
 
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationPreviewPageDTO(topRecreations, user));

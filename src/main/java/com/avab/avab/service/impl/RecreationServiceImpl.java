@@ -62,8 +62,9 @@ public class RecreationServiceImpl implements RecreationService {
     private final Integer SEARCH_PAGE_SIZE = 9;
     private final Integer REVIEW_PAGE_SIZE = 2;
 
-    public Page<Recreation> getTop9RecreationsByWeeklyViewCount() {
-        return recreationRepository.findTop9ByOrderByWeeklyViewCountDesc(PageRequest.of(0, 9));
+    public Page<Recreation> getTop9RecreationsByWeeklyViewCount(User user) {
+        return recreationRepository.findTop9ByOrderByWeeklyViewCountDesc(
+                PageRequest.of(0, 9), user);
     }
 
     @Transactional

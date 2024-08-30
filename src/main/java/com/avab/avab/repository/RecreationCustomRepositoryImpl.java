@@ -429,4 +429,24 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                 .where(recreation.id.eq(recreationId))
                 .execute();
     }
+
+    public Page<Recreation> findTop9ByOrderByWeeklyViewCountDesc(Pageable pageable, User user) {
+        long totalCount =
+                queryFactory
+                        .selectFrom(recreation)
+                        .where(notReportedRecreationByUser(user), notSoftDeletedRecreation())
+                        .fetch()
+                        .size();
+
+        List<Recreation> filteredRecreations =
+                queryFactory
+                        .selectFrom(recreation)
+                        .where(notReportedRecreationByUser(user), notSoftDeletedRecreation())
+                        .orderBy(recreation.weeklyViewCount.desc())
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .fetch();
+
+        return new PageImpl<>(filteredRecreations, pageable, totalCount);
+    }
 }
