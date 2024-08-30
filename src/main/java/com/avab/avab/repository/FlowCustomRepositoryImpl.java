@@ -1,5 +1,8 @@
 package com.avab.avab.repository;
 
+import static com.avab.avab.domain.QFlow.flow;
+import static com.avab.avab.domain.QReport.report;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -12,12 +15,16 @@ import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.QFlow;
 import com.avab.avab.domain.QFlowAge;
 import com.avab.avab.domain.QFlowGender;
+import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
+import com.avab.avab.domain.enums.ReportType;
 import com.avab.avab.domain.mapping.QFlowRecreationKeyword;
 import com.avab.avab.domain.mapping.QFlowRecreationPurpose;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +34,21 @@ import lombok.RequiredArgsConstructor;
 public class FlowCustomRepositoryImpl implements FlowCustomRepository {
     private final JPAQueryFactory queryFactory;
 
+    private BooleanExpression notSoftDeletedFlow() {
+        return flow.deletedAt.isNull();
+    }
+
+    private BooleanExpression notReportedFlowByUser(User user) {
+        if (user == null) {
+            return null;
+        }
+
+        return flow.id.notIn(
+                JPAExpressions.select(report.targetFlow.id)
+                        .from(report)
+                        .where(report.reportType.eq(ReportType.FLOW), report.reporter.eq(user)));
+    }
+
     @Override
     public List<Flow> recommendFlows(
             List<Keyword> keyword,
@@ -34,7 +56,8 @@ public class FlowCustomRepositoryImpl implements FlowCustomRepository {
             Integer totalPlayTime,
             List<Purpose> purpose,
             List<Gender> gender,
-            List<Age> age) {
+            List<Age> age,
+            User user) {
         QFlow flow = QFlow.flow;
         QFlowRecreationPurpose flowRecreationPurpose = QFlowRecreationPurpose.flowRecreationPurpose;
         QFlowRecreationKeyword flowRecreationKeyword = QFlowRecreationKeyword.flowRecreationKeyword;
@@ -42,7 +65,12 @@ public class FlowCustomRepositoryImpl implements FlowCustomRepository {
         QFlowGender flowGender = QFlowGender.flowGender;
 
         ArrayList<Triple<Flow, Double, Double>> flowList = new ArrayList<>();
-        List<Long> flows = queryFactory.select(flow.id).from(flow).fetch();
+        List<Long> flows =
+                queryFactory
+                        .select(flow.id)
+                        .from(flow)
+                        .where(notSoftDeletedFlow(), notReportedFlowByUser(user))
+                        .fetch();
 
         for (Long flowId : flows) {
             Flow nowFlow = queryFactory.selectFrom(flow).where(flow.id.eq(flowId)).fetchOne();

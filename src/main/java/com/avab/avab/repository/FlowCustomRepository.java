@@ -3,6 +3,7 @@ package com.avab.avab.repository;
 import java.util.List;
 
 import com.avab.avab.domain.Flow;
+import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
@@ -15,5 +16,6 @@ public interface FlowCustomRepository {
             Integer playTime,
             List<Purpose> purposes,
             List<Gender> genders,
-            List<Age> ages);
+            List<Age> ages,
+            User user);
 }
