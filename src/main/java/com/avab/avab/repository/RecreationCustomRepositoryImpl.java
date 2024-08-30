@@ -262,6 +262,10 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
         return flow.deletedAt.isNull();
     }
 
+    private BooleanExpression notSoftDeletedRecreation() {
+        return recreation.deletedAt.isNull();
+    }
+
     private BooleanExpression notReportedFlowByUser(User user) {
         if (user == null) {
             return null;
@@ -273,6 +277,17 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                         .where(report.reportType.eq(ReportType.FLOW), report.reporter.eq(user)));
     }
 
+    private BooleanExpression notReportedRecreationByUser(User user) {
+        if (user == null) throw new RecreationException(ErrorStatus.USER_NOT_FOUND);
+
+        return recreation.id.notIn(
+                JPAExpressions.select(report.targetRecreation.id)
+                        .from(report)
+                        .where(
+                                report.reportType.eq(ReportType.RECREATION),
+                                report.reporter.eq(user)));
+    }
+
     // 목적, 시간, 나머지는 연관 레크레이션과 같음 (키워드, 인원, 연령대, 성별)
     @Override
     public List<Recreation> recommendRecreations(
@@ -281,7 +296,9 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             List<Gender> gender,
             List<Age> age,
             Integer maxParticipant,
-            Integer playTime) {
+            Integer playTime,
+            User user) {
+
         QRecreation recreation = QRecreation.recreation;
 
         QRecreationRecreationPurpose recreationPurpose =
@@ -293,7 +310,12 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
 
         ArrayList<Triple<Recreation, Double, Double>> recreationList = new ArrayList<>();
 
-        List<Long> recreations = queryFactory.select(recreation.id).from(recreation).fetch();
+        List<Long> recreations =
+                queryFactory
+                        .select(recreation.id)
+                        .from(recreation)
+                        .where(notReportedRecreationByUser(user), notSoftDeletedRecreation())
+                        .fetch();
 
         for (Long recreationId : recreations) {
 

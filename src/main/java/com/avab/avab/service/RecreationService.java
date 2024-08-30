@@ -59,7 +59,8 @@ public interface RecreationService {
             Integer playTime,
             List<Purpose> purposes,
             List<Gender> genders,
-            List<Age> ages);
+            List<Age> ages,
+            User user);
 
     Page<Recreation> getRecentRecreation(Integer page);
 

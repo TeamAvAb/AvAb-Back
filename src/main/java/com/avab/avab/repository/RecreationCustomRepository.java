@@ -43,7 +43,8 @@ public interface RecreationCustomRepository {
             List<Gender> genders,
             List<Age> ages,
             Integer participants,
-            Integer playTime);
+            Integer playTime,
+            User user);
 
     void updateTotalStars(Long recreationId);
 }

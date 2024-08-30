@@ -245,7 +245,7 @@ public class RecreationController {
 
         List<Recreation> recommendRecreations =
                 recreationService.recommendRecreations(
-                        keywords, participants, playTime, purposes, genders, ages);
+                        keywords, participants, playTime, purposes, genders, ages, user);
 
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationRecommendListDTO(recommendRecreations, user));

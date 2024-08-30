@@ -282,9 +282,10 @@ public class RecreationServiceImpl implements RecreationService {
             Integer playTime,
             List<Purpose> purposes,
             List<Gender> genders,
-            List<Age> ages) {
+            List<Age> ages,
+            User user) {
         return recreationRepository.recommendRecreations(
-                purposes, keywords, genders, ages, participants, playTime);
+                purposes, keywords, genders, ages, participants, playTime, user);
     }
 
     @Override
