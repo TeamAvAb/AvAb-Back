@@ -3,7 +3,6 @@ package com.avab.avab.repository;
 import static com.avab.avab.domain.QFlow.flow;
 import static com.avab.avab.domain.QRecreation.recreation;
 import static com.avab.avab.domain.QRecreationReview.recreationReview;
-import static com.avab.avab.domain.QReport.report;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -246,9 +245,9 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                 .select(flow)
                 .from(flow)
                 .where(
-                        notSoftDeletedFlow(),
+                        MaskingPredicates.notSoftDeletedFlow(),
                         isRecreationUsedInFlow(recreationId),
-                        notReportedFlowByUser(user))
+                        MaskingPredicates.notReportedFlowByUser(user))
                 .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
                 .limit(2)
                 .fetch();
@@ -256,36 +255,6 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
 
     private BooleanExpression isRecreationUsedInFlow(Long recreationId) {
         return flow.flowRecreationList.any().recreation.id.eq(recreationId);
-    }
-
-    private BooleanExpression notSoftDeletedFlow() {
-        return flow.deletedAt.isNull();
-    }
-
-    private BooleanExpression notSoftDeletedRecreation() {
-        return recreation.deletedAt.isNull();
-    }
-
-    private BooleanExpression notReportedFlowByUser(User user) {
-        if (user == null) {
-            return null;
-        }
-
-        return flow.id.notIn(
-                JPAExpressions.select(report.targetFlow.id)
-                        .from(report)
-                        .where(report.reportType.eq(ReportType.FLOW), report.reporter.eq(user)));
-    }
-
-    private BooleanExpression notReportedRecreationByUser(User user) {
-        if (user == null) throw new RecreationException(ErrorStatus.USER_NOT_FOUND);
-
-        return recreation.id.notIn(
-                JPAExpressions.select(report.targetRecreation.id)
-                        .from(report)
-                        .where(
-                                report.reportType.eq(ReportType.RECREATION),
-                                report.reporter.eq(user)));
     }
 
     // 목적, 시간, 나머지는 연관 레크레이션과 같음 (키워드, 인원, 연령대, 성별)
@@ -314,7 +283,9 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                 queryFactory
                         .select(recreation.id)
                         .from(recreation)
-                        .where(notReportedRecreationByUser(user), notSoftDeletedRecreation())
+                        .where(
+                                MaskingPredicates.notReportedRecreationByUser(user),
+                                MaskingPredicates.notSoftDeletedRecreation())
                         .fetch();
 
         for (Long recreationId : recreations) {
@@ -434,14 +405,18 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
         long totalCount =
                 queryFactory
                         .selectFrom(recreation)
-                        .where(notReportedRecreationByUser(user), notSoftDeletedRecreation())
+                        .where(
+                                MaskingPredicates.notReportedRecreationByUser(user),
+                                MaskingPredicates.notSoftDeletedRecreation())
                         .fetch()
                         .size();
 
         List<Recreation> filteredRecreations =
                 queryFactory
                         .selectFrom(recreation)
-                        .where(notReportedRecreationByUser(user), notSoftDeletedRecreation())
+                        .where(
+                                MaskingPredicates.notReportedRecreationByUser(user),
+                                MaskingPredicates.notSoftDeletedRecreation())
                         .orderBy(recreation.weeklyViewCount.desc())
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())

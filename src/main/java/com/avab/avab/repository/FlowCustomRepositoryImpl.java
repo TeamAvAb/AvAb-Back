@@ -1,8 +1,5 @@
 package com.avab.avab.repository;
 
-import static com.avab.avab.domain.QFlow.flow;
-import static com.avab.avab.domain.QReport.report;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -20,11 +17,8 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
-import com.avab.avab.domain.enums.ReportType;
 import com.avab.avab.domain.mapping.QFlowRecreationKeyword;
 import com.avab.avab.domain.mapping.QFlowRecreationPurpose;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -33,21 +27,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FlowCustomRepositoryImpl implements FlowCustomRepository {
     private final JPAQueryFactory queryFactory;
-
-    private BooleanExpression notSoftDeletedFlow() {
-        return flow.deletedAt.isNull();
-    }
-
-    private BooleanExpression notReportedFlowByUser(User user) {
-        if (user == null) {
-            return null;
-        }
-
-        return flow.id.notIn(
-                JPAExpressions.select(report.targetFlow.id)
-                        .from(report)
-                        .where(report.reportType.eq(ReportType.FLOW), report.reporter.eq(user)));
-    }
 
     @Override
     public List<Flow> recommendFlows(
@@ -69,7 +48,9 @@ public class FlowCustomRepositoryImpl implements FlowCustomRepository {
                 queryFactory
                         .select(flow.id)
                         .from(flow)
-                        .where(notSoftDeletedFlow(), notReportedFlowByUser(user))
+                        .where(
+                                MaskingPredicates.notSoftDeletedFlow(),
+                                MaskingPredicates.notReportedFlowByUser(user))
                         .fetch();
 
         for (Long flowId : flows) {
