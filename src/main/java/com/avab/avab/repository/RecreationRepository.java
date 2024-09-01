@@ -1,5 +1,6 @@
 package com.avab.avab.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -32,4 +33,7 @@ public interface RecreationRepository
 
     Optional<Recreation> findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
             Long id, UserStatus userStatus);
+
+    Optional<Recreation> findByIdAndDeletedAtIsNullAndIdNotInAndAuthor_UserStatusNot(
+            Long recreationId, List<Long> reportedRecreationIds, UserStatus userStatus);
 }
