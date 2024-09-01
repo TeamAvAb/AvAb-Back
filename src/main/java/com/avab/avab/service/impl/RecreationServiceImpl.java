@@ -202,6 +202,7 @@ public class RecreationServiceImpl implements RecreationService {
 
         return recreationRepository.findRelatedRecreations(
                 recreationId,
+                user,
                 recreation.getRecreationRecreationKeywordList().stream()
                         .map(RecreationRecreationKeyword::getKeyword)
                         .map(RecreationKeyword::getKeyword)

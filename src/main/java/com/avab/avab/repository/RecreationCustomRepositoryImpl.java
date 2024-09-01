@@ -150,6 +150,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
     @Override
     public List<Recreation> findRelatedRecreations(
             Long recreationId,
+            User user,
             List<Keyword> keyword,
             List<Purpose> purpose,
             Integer maxParticipants,
@@ -167,7 +168,10 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                 queryFactory
                         .select(recreation.id)
                         .from(recreation)
-                        .where(recreation.id.ne(recreationId))
+                        .where(
+                                recreation.id.ne(recreationId),
+                                notReportedByUser(user),
+                                notSoftDeleted())
                         .fetch();
 
         // 다른 레크레이션들과 비교
