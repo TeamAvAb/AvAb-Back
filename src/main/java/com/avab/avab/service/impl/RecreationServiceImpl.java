@@ -154,10 +154,10 @@ public class RecreationServiceImpl implements RecreationService {
         Sort.TypedSort<Recreation> recreationSort = Sort.sort(Recreation.class);
         Sort sort;
         switch (sortCondition) {
-            case SCRAP -> sort = recreationSort.by(Recreation::getTotalStars).descending();
             case VIEW -> sort = recreationSort.by(Recreation::getViewCountLast7Days).descending();
             case RECENT -> sort = recreationSort.by(Recreation::getCreatedAt).descending();
-            default -> throw new FlowException(ErrorStatus.INVALID_SORT_CONDITION);
+            case LIKE -> sort = recreationSort.by(Recreation::getTotalStars).descending();
+            default -> throw new RecreationException(ErrorStatus.INVALID_SORT_CONDITION);
         }
 
         return recreationRepository.searchRecreations(
