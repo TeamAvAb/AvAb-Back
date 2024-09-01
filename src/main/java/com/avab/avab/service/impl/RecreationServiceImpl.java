@@ -68,10 +68,11 @@ public class RecreationServiceImpl implements RecreationService {
     }
 
     @Transactional
-    public Recreation getRecreationDescription(Long recreationId) {
+    public Recreation getRecreationDescription(Long recreationId, User user) {
         Recreation recreation =
                 recreationRepository
-                        .findById(recreationId)
+                        .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                                recreationId, user.getUserStatus())
                         .orElseThrow(
                                 () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
 

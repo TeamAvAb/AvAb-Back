@@ -35,7 +35,7 @@ public interface RecreationService {
             Integer page,
             SortCondition sortCondition);
 
-    Recreation getRecreationDescription(Long recreationId);
+    Recreation getRecreationDescription(Long recreationId, User user);
 
     Boolean toggleFavoriteRecreation(Long recreationId, User user);
 
