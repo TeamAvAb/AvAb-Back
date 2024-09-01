@@ -41,7 +41,7 @@ public interface RecreationService {
 
     RecreationReview createReview(User user, Long recreationId, PostRecreationReviewDTO request);
 
-    Page<RecreationReview> getRecreationReviews(Long recreationId, Integer page);
+    Page<RecreationReview> getRecreationReviews(Long recreationId, User user, Integer page);
 
     List<Recreation> findRelatedRecreations(User user, Long recreationId);
 

@@ -173,7 +173,7 @@ public class RecreationController {
                     Integer page) {
 
         Page<RecreationReview> reviewPage =
-                recreationService.getRecreationReviews(recreationId, page);
+                recreationService.getRecreationReviews(recreationId, user, page);
 
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationReviewPageDTO(reviewPage, user));

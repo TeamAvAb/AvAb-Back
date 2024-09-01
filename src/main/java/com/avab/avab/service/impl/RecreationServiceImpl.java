@@ -131,15 +131,56 @@ public class RecreationServiceImpl implements RecreationService {
     }
 
     @Override
-    public Page<RecreationReview> getRecreationReviews(Long recreationId, Integer page) {
-        Recreation recreation =
-                recreationRepository
-                        .findById(recreationId)
-                        .orElseThrow(
-                                () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
+    public Page<RecreationReview> getRecreationReviews(Long recreationId, User user, Integer page) {
+        List<Long> reportedRecreationIds = new ArrayList<>();
+        List<Long> reportedRecreationReviewIds = new ArrayList<>();
+        if (user != null) {
+            reportedRecreationIds =
+                    user.getReportList().stream()
+                            .filter(report -> report.getReportType() == ReportType.RECREATION)
+                            .map(Report::getTargetRecreation)
+                            .map(Recreation::getId)
+                            .toList();
 
-        return recreationReviewRepository.findByRecreation(
-                recreation, PageRequest.of(page, REVIEW_PAGE_SIZE));
+            reportedRecreationReviewIds =
+                    user.getReportList().stream()
+                            .filter(
+                                    report ->
+                                            report.getReportType() == ReportType.RECREATION_REVIEW)
+                            .map(Report::getTargetRecreationReview)
+                            .map(RecreationReview::getId)
+                            .toList();
+        }
+
+        Recreation recreation =
+                reportedRecreationIds.isEmpty()
+                        ? recreationRepository
+                                .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                                        recreationId, UserStatus.DELETED)
+                                .orElseThrow(
+                                        () ->
+                                                new RecreationException(
+                                                        ErrorStatus.RECREATION_NOT_FOUND))
+                        : recreationRepository
+                                .findByIdAndDeletedAtIsNullAndIdNotInAndAuthor_UserStatusNot(
+                                        recreationId, reportedRecreationIds, UserStatus.DELETED)
+                                .orElseThrow(
+                                        () ->
+                                                new RecreationException(
+                                                        ErrorStatus.RECREATION_NOT_FOUND));
+
+        return reportedRecreationReviewIds.isEmpty()
+                ? recreationReviewRepository
+                        .findAllByRecreationAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                                recreation,
+                                UserStatus.DELETED,
+                                PageRequest.of(page, REVIEW_PAGE_SIZE))
+                : recreationReviewRepository
+                        .findAllByRecreationAndIdNotInAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                                recreation,
+                                reportedRecreationReviewIds,
+                                UserStatus.DELETED,
+                                PageRequest.of(page, REVIEW_PAGE_SIZE));
     }
 
     @Override
