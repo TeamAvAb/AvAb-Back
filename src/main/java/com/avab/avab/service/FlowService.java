@@ -37,7 +37,8 @@ public interface FlowService {
             Integer totalPlayTime,
             List<Purpose> purposes,
             List<Gender> genders,
-            List<Age> ages);
+            List<Age> ages,
+            User user);
 
     Flow updateFlow(PostFlowDTO request, User user, Long flowId);
 

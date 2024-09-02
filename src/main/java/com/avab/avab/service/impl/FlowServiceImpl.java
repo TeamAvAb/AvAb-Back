@@ -261,9 +261,10 @@ public class FlowServiceImpl implements FlowService {
             Integer totalPlayTime,
             List<Purpose> purposes,
             List<Gender> genders,
-            List<Age> ages) {
+            List<Age> ages,
+            User user) {
         return flowRepository.recommendFlows(
-                keywords, participants, totalPlayTime, purposes, genders, ages);
+                keywords, participants, totalPlayTime, purposes, genders, ages, user);
     }
 
     @Override

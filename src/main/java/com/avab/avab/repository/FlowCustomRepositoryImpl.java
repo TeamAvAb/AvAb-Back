@@ -12,6 +12,7 @@ import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.QFlow;
 import com.avab.avab.domain.QFlowAge;
 import com.avab.avab.domain.QFlowGender;
+import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
@@ -34,7 +35,8 @@ public class FlowCustomRepositoryImpl implements FlowCustomRepository {
             Integer totalPlayTime,
             List<Purpose> purpose,
             List<Gender> gender,
-            List<Age> age) {
+            List<Age> age,
+            User user) {
         QFlow flow = QFlow.flow;
         QFlowRecreationPurpose flowRecreationPurpose = QFlowRecreationPurpose.flowRecreationPurpose;
         QFlowRecreationKeyword flowRecreationKeyword = QFlowRecreationKeyword.flowRecreationKeyword;
@@ -42,7 +44,14 @@ public class FlowCustomRepositoryImpl implements FlowCustomRepository {
         QFlowGender flowGender = QFlowGender.flowGender;
 
         ArrayList<Triple<Flow, Double, Double>> flowList = new ArrayList<>();
-        List<Long> flows = queryFactory.select(flow.id).from(flow).fetch();
+        List<Long> flows =
+                queryFactory
+                        .select(flow.id)
+                        .from(flow)
+                        .where(
+                                MaskingPredicates.notSoftDeletedFlow(),
+                                MaskingPredicates.notReportedFlowByUser(user))
+                        .fetch();
 
         for (Long flowId : flows) {
             Flow nowFlow = queryFactory.selectFrom(flow).where(flow.id.eq(flowId)).fetchOne();

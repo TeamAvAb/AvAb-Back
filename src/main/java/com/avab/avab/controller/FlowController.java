@@ -143,7 +143,7 @@ public class FlowController {
             @RequestParam(name = "age", required = false) List<Age> ages) {
         List<Flow> recommendFlows =
                 flowService.recommendFlows(
-                        keywords, participants, totalPlayTime, purposes, genders, ages);
+                        keywords, participants, totalPlayTime, purposes, genders, ages, user);
 
         return BaseResponse.onSuccess(FlowConverter.toFlowDetailListDTO(recommendFlows, user));
     }

@@ -20,7 +20,7 @@ import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 
 public interface RecreationService {
 
-    Page<Recreation> getTop9RecreationsByWeeklyViewCount();
+    Page<Recreation> getTop9RecreationsByWeeklyViewCount(User user);
 
     Page<Recreation> searchRecreations(
             User user,
@@ -59,7 +59,8 @@ public interface RecreationService {
             Integer playTime,
             List<Purpose> purposes,
             List<Gender> genders,
-            List<Age> ages);
+            List<Age> ages,
+            User user);
 
     Page<Recreation> getRecentRecreation(Integer page);
 
