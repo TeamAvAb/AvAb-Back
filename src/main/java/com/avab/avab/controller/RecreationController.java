@@ -92,7 +92,7 @@ public class RecreationController {
     public BaseResponse<DescriptionDTO> getRecreationDescription(
             @AuthUser User user,
             @ExistRecreation @PathVariable(name = "recreationId") Long recreationId) {
-        Recreation recreation = recreationService.getRecreationDescription(recreationId);
+        Recreation recreation = recreationService.getRecreationDescription(recreationId, user);
         return BaseResponse.onSuccess(RecreationConverter.toDescriptionDTO(recreation, user));
     }
 
@@ -173,7 +173,7 @@ public class RecreationController {
                     Integer page) {
 
         Page<RecreationReview> reviewPage =
-                recreationService.getRecreationReviews(recreationId, page);
+                recreationService.getRecreationReviews(recreationId, user, page);
 
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationReviewPageDTO(reviewPage, user));

@@ -1,5 +1,8 @@
 package com.avab.avab.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.avab.avab.domain.Recreation;
+import com.avab.avab.domain.enums.UserStatus;
 
 public interface RecreationRepository
         extends JpaRepository<Recreation, Long>, RecreationCustomRepository {
@@ -26,4 +30,10 @@ public interface RecreationRepository
     @Modifying
     @Query("UPDATE Recreation r SET r.viewCountLast7Days = :viewCount WHERE r.id = :id")
     void updateViewCountLast7DaysById(@Param("id") Long id, @Param("viewCount") Long viewCount);
+
+    Optional<Recreation> findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
+            Long id, UserStatus userStatus);
+
+    Optional<Recreation> findByIdAndDeletedAtIsNullAndIdNotInAndAuthor_UserStatusNot(
+            Long recreationId, List<Long> reportedRecreationIds, UserStatus userStatus);
 }

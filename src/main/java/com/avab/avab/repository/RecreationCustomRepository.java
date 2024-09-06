@@ -30,6 +30,7 @@ public interface RecreationCustomRepository {
 
     List<Recreation> findRelatedRecreations(
             Long recreationId,
+            User user,
             List<Keyword> keyword,
             List<Purpose> purpose,
             Integer maxParticipants,

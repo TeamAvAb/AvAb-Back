@@ -35,13 +35,13 @@ public interface RecreationService {
             Integer page,
             SortCondition sortCondition);
 
-    Recreation getRecreationDescription(Long recreationId);
+    Recreation getRecreationDescription(Long recreationId, User user);
 
     Boolean toggleFavoriteRecreation(Long recreationId, User user);
 
     RecreationReview createReview(User user, Long recreationId, PostRecreationReviewDTO request);
 
-    Page<RecreationReview> getRecreationReviews(Long recreationId, Integer page);
+    Page<RecreationReview> getRecreationReviews(Long recreationId, User user, Integer page);
 
     List<Recreation> findRelatedRecreations(User user, Long recreationId);
 
