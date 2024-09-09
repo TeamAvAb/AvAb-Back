@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.avab.avab.feign.kakao.dto.response.KakaoOAuthResponseDTO.KakaoOAuthProfile;
 import com.avab.avab.feign.kakao.dto.response.KakaoOAuthResponseDTO.KakaoOAuthToken;
+import com.avab.avab.feign.kakao.service.KakaoApiClient;
 import com.avab.avab.feign.kakao.service.KakaoOAuthClient;
 
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KakaoAuthProvider {
     private final KakaoOAuthClient kakaoOAuthClient;
+    private final KakaoApiClient kakaoApiClient;
 
     @Value("${kakao.auth.client}")
     private String client;
@@ -35,6 +37,6 @@ public class KakaoAuthProvider {
 
     // Token으로 정보 요청하기
     public KakaoOAuthProfile requestKakaoProfile(String token) {
-        return kakaoOAuthClient.requestKakaoProfile("Bearer " + token);
+        return kakaoApiClient.requestKakaoProfile("Bearer " + token);
     }
 }
