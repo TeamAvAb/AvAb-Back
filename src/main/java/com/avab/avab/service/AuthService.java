@@ -8,6 +8,8 @@ public interface AuthService {
 
     OAuthResponse kakaoLogin(String code);
 
+    OAuthResponse kakaoLoginLocal(String code);
+
     TokenRefreshResponse refresh(String refreshToken);
 
     void logout(Long userId);
