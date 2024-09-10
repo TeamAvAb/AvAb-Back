@@ -2,17 +2,17 @@ package com.avab.avab.converter;
 
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.SocialType;
-import com.avab.avab.dto.KakaoProfile;
 import com.avab.avab.dto.response.AuthResponseDTO.OAuthResponse;
 import com.avab.avab.dto.response.AuthResponseDTO.TokenRefreshResponse;
+import com.avab.avab.feign.kakao.dto.response.KakaoOAuthResponseDTO.KakaoOAuthProfile;
 
 public class AuthConverter {
 
-    public static User toUser(KakaoProfile kakaoProfile, String username) {
+    public static User toUser(KakaoOAuthProfile kakaoProfile, String username) {
         return User.builder()
                 .username(username)
-                .name(kakaoProfile.getKakao_account().getName())
-                .email(kakaoProfile.getKakao_account().getEmail())
+                .name(kakaoProfile.getKakaoAccount().getName())
+                .email(kakaoProfile.getKakaoAccount().getEmail())
                 .socialType(SocialType.KAKAO)
                 .build();
     }

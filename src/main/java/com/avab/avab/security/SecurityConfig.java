@@ -46,6 +46,7 @@ public class SecurityConfig {
         "/api/recreations/{recreationId}/related/recreations",
         "/api/recreations/popular",
         "/api/auth/login/kakao",
+        "/api/auth/login/kakao/local",
         "/api/auth/refresh",
         "/api/users/scrap",
         "/api/recreations/recommended",
