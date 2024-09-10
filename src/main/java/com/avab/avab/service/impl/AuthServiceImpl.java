@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.AuthException;
+import com.avab.avab.apiPayload.exception.UserException;
 import com.avab.avab.converter.AuthConverter;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.SocialType;
@@ -48,6 +49,9 @@ public class AuthServiceImpl implements AuthService {
         // 가입자 혹은 비가입자 체크해서 로그인 처리
         if (queryUser.isPresent()) {
             User user = queryUser.get();
+            if (user.isDeleted()) {
+                throw new UserException(ErrorStatus.USER_NOT_FOUND);
+            }
             if (user.isDisabled()) {
                 if (user.isCanBeEnabled()) {
                     user.enableUser();
@@ -84,6 +88,9 @@ public class AuthServiceImpl implements AuthService {
         // 가입자 혹은 비가입자 체크해서 로그인 처리
         if (queryUser.isPresent()) {
             User user = queryUser.get();
+            if (user.isDeleted()) {
+                throw new UserException(ErrorStatus.USER_NOT_FOUND);
+            }
             if (user.isDisabled()) {
                 if (user.isCanBeEnabled()) {
                     user.enableUser();
