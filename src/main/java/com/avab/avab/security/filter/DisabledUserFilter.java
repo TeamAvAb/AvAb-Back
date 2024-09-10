@@ -1,12 +1,16 @@
 package com.avab.avab.security.filter;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.data.util.Pair;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +33,15 @@ public class DisabledUserFilter extends OncePerRequestFilter {
 
     private final UserService userService;
     private final AuthService authService;
+    private final List<Pair<HttpMethod, Pattern>> notPermittedRequests =
+            List.of(
+                    Pair.of(HttpMethod.POST, Pattern.compile("/api/flows")),
+                    Pair.of(HttpMethod.PATCH, Pattern.compile("/api/flows/\\d+")),
+                    Pair.of(HttpMethod.POST, Pattern.compile("/api/recreations")),
+                    Pair.of(HttpMethod.POST, Pattern.compile("/api/recreations/\\d+/reviews")),
+                    Pair.of(
+                            HttpMethod.POST,
+                            Pattern.compile("/api/recreation-reviews/\\d+/recommendations")));
 
     @Override
     protected void doFilterInternal(
@@ -49,15 +62,26 @@ public class DisabledUserFilter extends OncePerRequestFilter {
             User user = userService.findUserById(userId);
             if (user.isDisabled()) {
                 if (user.isCanBeEnabled()) {
-                    log.debug("Enable user: {}", user.getEmail());
                     authService.enableUser(user);
                 } else {
-                    log.debug("User is disabled: {}", user.getEmail());
-                    throw new AuthException(ErrorStatus.USER_DISABLED);
+                    if (isNotPermittedRequest(request)) {
+                        throw new AuthException(ErrorStatus.USER_DISABLED);
+                    }
                 }
             }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private Boolean isNotPermittedRequest(HttpServletRequest request) {
+        return notPermittedRequests.stream()
+                .anyMatch(
+                        pair -> {
+                            String method = pair.getFirst().name();
+                            Pattern urlMatcher = pair.getSecond();
+                            return method.equals(request.getMethod())
+                                    && urlMatcher.matcher(request.getRequestURI()).matches();
+                        });
     }
 }
