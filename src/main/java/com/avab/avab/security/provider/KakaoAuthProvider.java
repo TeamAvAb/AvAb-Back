@@ -31,7 +31,7 @@ public class KakaoAuthProvider {
         return kakaoOAuthClient.requestToken(
                 "authorization_code",
                 client,
-                "http://localhost:3000/AvAb-Front/api/auth/login/kakao",
+                "http://localhost:3000/api/auth/login/kakao",
                 code);
     }
 
