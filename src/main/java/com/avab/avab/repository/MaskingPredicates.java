@@ -4,8 +4,6 @@ import static com.avab.avab.domain.QFlow.flow;
 import static com.avab.avab.domain.QRecreation.recreation;
 import static com.avab.avab.domain.QReport.report;
 
-import com.avab.avab.apiPayload.code.status.ErrorStatus;
-import com.avab.avab.apiPayload.exception.RecreationException;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.ReportType;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -33,7 +31,9 @@ class MaskingPredicates {
     }
 
     static BooleanExpression notReportedRecreationByUser(User user) {
-        if (user == null) throw new RecreationException(ErrorStatus.USER_NOT_FOUND);
+        if (user == null) {
+            return null;
+        }
 
         return recreation.id.notIn(
                 JPAExpressions.select(report.targetRecreation.id)
