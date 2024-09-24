@@ -52,7 +52,15 @@ public class RecreationViewCountRepositoryImpl implements RecreationViewCountRep
             }
         }
 
-        return keys.stream().map(Long::parseLong).toList();
+        return keys.stream().map(this::extractRecreationId).toList();
+    }
+
+    @Override
+    public List<Long> getViewCountsByIds(List<Long> recreationIds) {
+        List<String> redisKeys = recreationIds.stream().map(this::createViewCountRedisKey).toList();
+        return redisTemplate.opsForValue().multiGet(redisKeys).stream()
+                .map(viewCount -> viewCount != null ? Long.parseLong(viewCount) : 0L)
+                .toList();
     }
 
     @Override
@@ -100,11 +108,7 @@ public class RecreationViewCountRepositoryImpl implements RecreationViewCountRep
         return VIEW_COUNT_PREFIX + ":" + recreationId.toString();
     }
 
-    @Override
-    public List<Long> getViewCountsByIds(List<Long> recreationIds) {
-        List<String> redisKeys = recreationIds.stream().map(this::createViewCountRedisKey).toList();
-        return redisTemplate.opsForValue().multiGet(redisKeys).stream()
-                .map(viewCount -> viewCount != null ? Long.parseLong(viewCount) : 0L)
-                .toList();
+    private Long extractRecreationId(String redisKey) {
+        return Long.parseLong(redisKey.split(":")[1]);
     }
 }
