@@ -7,21 +7,19 @@ import org.joda.time.LocalDate;
 
 public interface FlowViewCountRepository {
 
-    void incrementViewCount(String key);
+    void incrementViewCountById(Long flowId);
 
-    void createViewCount(String key);
+    void createViewCountById(Long flowId);
+
+    List<Long> getAllFlowIds();
+
+    List<Long> getViewCountsByIds(List<Long> keys);
 
     void incrementViewCountLast7Days(String key);
 
     void createViewCountLast7Days(String key);
 
-    Optional<String> getViewCount(String key);
-
     Optional<String> getViewCountLast7Days(String key, LocalDate date);
 
-    List<String> getAllFlowIds();
-
     List<String> getAllFlowIdsToUpdateViewCountLast7Days();
-
-    String createViewCountLast7DaysRedisKey(String key, LocalDate date);
 }

@@ -23,9 +23,7 @@ public interface FlowService {
 
     Boolean existsByFlowId(Long flowId);
 
-    List<Long> getUpdateTargetFlowIds(List<Long> flowIdList);
-
-    void updateFlowViewCount(Long flowId, Long viewCount);
+    void incrementViewCountById(Long flowId, Long viewCount);
 
     Boolean toggleScrapeFlow(User user, Long flowId);
 

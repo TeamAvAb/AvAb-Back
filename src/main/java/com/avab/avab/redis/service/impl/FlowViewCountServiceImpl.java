@@ -1,6 +1,8 @@
 package com.avab.avab.redis.service.impl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.joda.time.LocalDate;
@@ -18,28 +20,9 @@ public class FlowViewCountServiceImpl implements FlowViewCountService {
     private final FlowViewCountRepository flowViewCountRepository;
 
     @Override
-    public void incrementViewCount(Long id) {
-        String flowId = id.toString();
-
-        if (flowViewCountRepository.getViewCount(flowId).isEmpty()) {
-            flowViewCountRepository.createViewCount(flowId);
-        }
-
-        flowViewCountRepository.incrementViewCount(flowId);
-    }
-
-    @Override
-    public Long getViewCount(Long id) {
-        String flowId = id.toString();
-
-        String viewCount = flowViewCountRepository.getViewCount(flowId).orElse(null);
-
-        return viewCount != null ? Long.valueOf(viewCount) : null;
-    }
-
-    @Override
-    public List<Long> getAllFlowIds() {
-        return flowViewCountRepository.getAllFlowIds().stream().map(Long::valueOf).toList();
+    public void incrementViewCount(Long flowId) {
+        flowViewCountRepository.createViewCountById(flowId);
+        flowViewCountRepository.incrementViewCountById(flowId);
     }
 
     @Override
@@ -70,5 +53,15 @@ public class FlowViewCountServiceImpl implements FlowViewCountService {
         return flowViewCountRepository.getAllFlowIdsToUpdateViewCountLast7Days().stream()
                 .map(Long::valueOf)
                 .toList();
+    }
+
+    @Override
+    public Map<Long, Long> getTargetFlowsViewCounts() {
+        List<Long> targetFlowIds = flowViewCountRepository.getAllFlowIds();
+        List<Long> viewCounts = flowViewCountRepository.getViewCountsByIds(targetFlowIds);
+
+        return IntStream.range(0, targetFlowIds.size())
+                .boxed()
+                .collect(Collectors.toMap(targetFlowIds::get, viewCounts::get));
     }
 }

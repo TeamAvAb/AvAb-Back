@@ -52,17 +52,15 @@ public class SchedulerConfig {
     public void updateFlowViewCount() {
         log.info("플로우 조회수 업데이트 시작");
 
-        List<Long> flowIdList = flowViewCountService.getAllFlowIds();
-        List<Long> targetFlowIdList = flowService.getUpdateTargetFlowIds(flowIdList);
+        Map<Long, Long> viewCountsMap = flowViewCountService.getTargetFlowsViewCounts();
+
         log.info(
                 "업데이트 대상 플로우: {}",
-                targetFlowIdList.stream().map(Object::toString).collect(Collectors.joining(", ")));
+                viewCountsMap.keySet().stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(", ")));
 
-        targetFlowIdList.forEach(
-                id -> {
-                    Long viewCount = flowViewCountService.getViewCount(id);
-                    flowService.updateFlowViewCount(id, viewCount);
-                });
+        viewCountsMap.forEach(flowService::incrementViewCountById);
 
         log.info("플로우 조회수 업데이트 완료");
     }

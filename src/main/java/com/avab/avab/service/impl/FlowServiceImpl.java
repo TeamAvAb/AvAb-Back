@@ -142,13 +142,8 @@ public class FlowServiceImpl implements FlowService {
     }
 
     @Override
-    public List<Long> getUpdateTargetFlowIds(List<Long> flowIdList) {
-        return flowRepository.findAllByIdIn(flowIdList).stream().map(Flow::getId).toList();
-    }
-
-    @Override
     @Transactional
-    public void updateFlowViewCount(Long flowId, Long viewCount) {
+    public void incrementViewCountById(Long flowId, Long viewCount) {
         flowRepository.incrementViewCountById(flowId, viewCount);
     }
 

@@ -28,13 +28,41 @@ public class FlowViewCountRepositoryImpl implements FlowViewCountRepository {
     private final String DATE_FORMAT = "yyyy-MM-dd";
 
     @Override
-    public void incrementViewCount(String key) {
-        redisTemplate.opsForValue().increment(VIEW_COUNT_PREFIX + ":" + key);
+    public void incrementViewCountById(Long flowId) {
+        redisTemplate
+                .opsForValue()
+                .setIfAbsent(createViewCountRedisKey(flowId), "0", 30, TimeUnit.MINUTES);
     }
 
     @Override
-    public void createViewCount(String key) {
-        redisTemplate.opsForValue().set(VIEW_COUNT_PREFIX + ":" + key, "0", 30, TimeUnit.MINUTES);
+    public void createViewCountById(Long flowId) {
+        redisTemplate
+                .opsForValue()
+                .setIfAbsent(createViewCountRedisKey(flowId), "0", 30, TimeUnit.MINUTES);
+    }
+
+    @Override
+    public List<Long> getAllFlowIds() {
+        ScanOptions scanOptions =
+                ScanOptions.scanOptions().match(VIEW_COUNT_PREFIX + ":" + "*").count(100).build();
+        List<String> keys;
+
+        try (Cursor<String> cursor = redisTemplate.scan(scanOptions)) {
+            keys = new ArrayList<>();
+            while (cursor.hasNext()) {
+                keys.add(cursor.next());
+            }
+        }
+
+        return keys.stream().map(this::extractFlowId).toList();
+    }
+
+    @Override
+    public List<Long> getViewCountsByIds(List<Long> flowIds) {
+        List<String> redisKeys = flowIds.stream().map(this::createViewCountRedisKey).toList();
+        return redisTemplate.opsForValue().multiGet(redisKeys).stream()
+                .map(viewCount -> viewCount != null ? Long.parseLong(viewCount) : 0L)
+                .toList();
     }
 
     @Override
@@ -51,30 +79,9 @@ public class FlowViewCountRepositoryImpl implements FlowViewCountRepository {
     }
 
     @Override
-    public Optional<String> getViewCount(String key) {
-        return Optional.ofNullable(redisTemplate.opsForValue().get(VIEW_COUNT_PREFIX + ":" + key));
-    }
-
-    @Override
     public Optional<String> getViewCountLast7Days(String key, LocalDate date) {
         String redisKey = createViewCountLast7DaysRedisKey(key, date);
         return Optional.ofNullable(redisTemplate.opsForValue().get(redisKey));
-    }
-
-    @Override
-    public List<String> getAllFlowIds() {
-        ScanOptions scanOptions =
-                ScanOptions.scanOptions().match(VIEW_COUNT_PREFIX + ":" + "*").count(100).build();
-        List<String> keys;
-
-        try (Cursor<String> cursor = redisTemplate.scan(scanOptions)) {
-            keys = new ArrayList<>();
-            while (cursor.hasNext()) {
-                keys.add(cursor.next());
-            }
-        }
-
-        return keys.stream().map(key -> key.split(":")[1]).toList();
     }
 
     @Override
@@ -95,8 +102,15 @@ public class FlowViewCountRepositoryImpl implements FlowViewCountRepository {
         return keys.stream().map(key -> key.split(":")[1]).toList();
     }
 
-    @Override
-    public String createViewCountLast7DaysRedisKey(String key, LocalDate date) {
+    private String createViewCountRedisKey(Long flowId) {
+        return VIEW_COUNT_PREFIX + ":" + flowId;
+    }
+
+    private String createViewCountLast7DaysRedisKey(String key, LocalDate date) {
         return VIEW_COUNT_LAST_7_DAYS_PREFIX + ":" + key + ":" + date.toString(DATE_FORMAT);
+    }
+
+    private Long extractFlowId(String redisKey) {
+        return Long.parseLong(redisKey.split(":")[1]);
     }
 }
