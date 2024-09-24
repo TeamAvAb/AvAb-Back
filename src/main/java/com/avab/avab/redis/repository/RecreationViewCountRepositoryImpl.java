@@ -55,7 +55,7 @@ public class RecreationViewCountRepositoryImpl implements RecreationViewCountRep
             }
         }
 
-        return keys.stream().map(key -> key.split(":")[1]).toList();
+        return keys.stream().toList();
     }
 
     @Override

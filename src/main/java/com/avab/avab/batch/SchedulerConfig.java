@@ -35,15 +35,14 @@ public class SchedulerConfig {
     public void updateRecreationViewCount() {
         log.info("레크레이션 조회수 업데이트 시작");
 
-        List<Long> targetRecreationIds = recreationViewCountService.getAllRecreationIds();
+        Map<Long, Long> viewCountsMap = recreationViewCountService.getTargetRecreationsViewCounts();
+
         log.info(
                 "업데이트 대상 레크레이션: {}",
-                targetRecreationIds.stream()
+                viewCountsMap.keySet().stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(", ")));
 
-        Map<Long, Long> viewCountsMap =
-                recreationViewCountService.getViewCountsByIds(targetRecreationIds);
         viewCountsMap.forEach(recreationService::incrementViewCountById);
 
         log.info("레크레이션 조회수 업데이트 완료");

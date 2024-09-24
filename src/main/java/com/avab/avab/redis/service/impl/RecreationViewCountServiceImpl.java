@@ -43,24 +43,19 @@ public class RecreationViewCountServiceImpl implements RecreationViewCountServic
     }
 
     @Override
-    public Map<Long, Long> getViewCountsByIds(List<Long> recreationIds) {
+    public Map<Long, Long> getTargetRecreationsViewCounts() {
+        List<String> targetRecreationIds = recreationViewCountRepository.getAllRecreationIds();
         List<Long> viewCounts =
-                recreationViewCountRepository
-                        .getViewCountsByIds(recreationIds.stream().map(Object::toString).toList())
-                        .stream()
+                recreationViewCountRepository.getViewCountsByIds(targetRecreationIds).stream()
                         .map(viewCount -> viewCount != null ? Long.parseLong(viewCount) : 0L)
                         .toList();
 
-        return IntStream.range(0, recreationIds.size())
+        return IntStream.range(0, targetRecreationIds.size())
                 .boxed()
-                .collect(Collectors.toMap(recreationIds::get, viewCounts::get));
-    }
-
-    @Override
-    public List<Long> getAllRecreationIds() {
-        return recreationViewCountRepository.getAllRecreationIds().stream()
-                .map(Long::valueOf)
-                .toList();
+                .collect(
+                        Collectors.toMap(
+                                index -> extractRecreationId(targetRecreationIds.get(index)),
+                                viewCounts::get));
     }
 
     @Override
@@ -91,5 +86,9 @@ public class RecreationViewCountServiceImpl implements RecreationViewCountServic
         return recreationViewCountRepository.getAllFlowIdsToUpdateViewCountLast7Days().stream()
                 .map(Long::valueOf)
                 .toList();
+    }
+
+    private Long extractRecreationId(String redisKey) {
+        return Long.parseLong(redisKey.split(":")[1]);
     }
 }
