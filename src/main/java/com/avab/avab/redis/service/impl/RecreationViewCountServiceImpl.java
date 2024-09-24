@@ -23,39 +23,20 @@ public class RecreationViewCountServiceImpl implements RecreationViewCountServic
 
     @Override
     @Transactional
-    public void incrementViewCount(Long id) {
-        String recreationId = id.toString();
-
-        if (recreationViewCountRepository.getViewCount(recreationId) == null) {
-            recreationViewCountRepository.createViewCount(recreationId);
-        }
-
-        recreationViewCountRepository.incrementViewCount(recreationId);
-    }
-
-    @Override
-    public Long getViewCount(Long id) {
-        String recreationId = id.toString();
-
-        String viewCount = recreationViewCountRepository.getViewCount(recreationId);
-
-        return viewCount != null ? Long.valueOf(viewCount) : null;
+    public void incrementViewCount(Long recreationId) {
+        recreationViewCountRepository.createViewCountById(recreationId);
+        recreationViewCountRepository.incrementViewCountById(recreationId);
     }
 
     @Override
     public Map<Long, Long> getTargetRecreationsViewCounts() {
-        List<String> targetRecreationIds = recreationViewCountRepository.getAllRecreationIds();
+        List<Long> targetRecreationIds = recreationViewCountRepository.getAllRecreationKeys();
         List<Long> viewCounts =
-                recreationViewCountRepository.getViewCountsByIds(targetRecreationIds).stream()
-                        .map(viewCount -> viewCount != null ? Long.parseLong(viewCount) : 0L)
-                        .toList();
+                recreationViewCountRepository.getViewCountsByIds(targetRecreationIds);
 
         return IntStream.range(0, targetRecreationIds.size())
                 .boxed()
-                .collect(
-                        Collectors.toMap(
-                                index -> extractRecreationId(targetRecreationIds.get(index)),
-                                viewCounts::get));
+                .collect(Collectors.toMap(targetRecreationIds::get, viewCounts::get));
     }
 
     @Override
@@ -86,9 +67,5 @@ public class RecreationViewCountServiceImpl implements RecreationViewCountServic
         return recreationViewCountRepository.getAllFlowIdsToUpdateViewCountLast7Days().stream()
                 .map(Long::valueOf)
                 .toList();
-    }
-
-    private Long extractRecreationId(String redisKey) {
-        return Long.parseLong(redisKey.split(":")[1]);
     }
 }

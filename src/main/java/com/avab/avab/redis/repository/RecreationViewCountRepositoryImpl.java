@@ -29,22 +29,19 @@ public class RecreationViewCountRepositoryImpl implements RecreationViewCountRep
     private final String DATE_FORMAT = "yyyy-MM-dd";
 
     @Override
-    public void incrementViewCount(String key) {
-        redisTemplate.opsForValue().increment(VIEW_COUNT_PREFIX + ":" + key);
+    public void incrementViewCountById(Long recreationId) {
+        String redisKey = createViewCountRedisKey(recreationId);
+        redisTemplate.opsForValue().increment(redisKey);
     }
 
     @Override
-    public void createViewCount(String key) {
-        redisTemplate.opsForValue().set(VIEW_COUNT_PREFIX + ":" + key, "0", 30, TimeUnit.MINUTES);
+    public void createViewCountById(Long recreationId) {
+        String redisKey = createViewCountRedisKey(recreationId);
+        redisTemplate.opsForValue().setIfAbsent(redisKey, "0", 30, TimeUnit.MINUTES);
     }
 
     @Override
-    public String getViewCount(String key) {
-        return redisTemplate.opsForValue().get(VIEW_COUNT_PREFIX + ":" + key);
-    }
-
-    @Override
-    public List<String> getAllRecreationIds() {
+    public List<Long> getAllRecreationKeys() {
         ScanOptions scanOptions =
                 ScanOptions.scanOptions().match(VIEW_COUNT_PREFIX + ":" + "*").count(100).build();
 
@@ -55,7 +52,7 @@ public class RecreationViewCountRepositoryImpl implements RecreationViewCountRep
             }
         }
 
-        return keys.stream().toList();
+        return keys.stream().map(Long::parseLong).toList();
     }
 
     @Override
@@ -99,13 +96,15 @@ public class RecreationViewCountRepositoryImpl implements RecreationViewCountRep
         return VIEW_COUNT_LAST_7_DAYS_PREFIX + ":" + key + ":" + date.toString(DATE_FORMAT);
     }
 
-    private String createViewCountRedisKey(String key) {
-        return VIEW_COUNT_PREFIX + ":" + key;
+    private String createViewCountRedisKey(Long recreationId) {
+        return VIEW_COUNT_PREFIX + ":" + recreationId.toString();
     }
 
     @Override
-    public List<String> getViewCountsByIds(List<String> recreationIds) {
+    public List<Long> getViewCountsByIds(List<Long> recreationIds) {
         List<String> redisKeys = recreationIds.stream().map(this::createViewCountRedisKey).toList();
-        return redisTemplate.opsForValue().multiGet(redisKeys);
+        return redisTemplate.opsForValue().multiGet(redisKeys).stream()
+                .map(viewCount -> viewCount != null ? Long.parseLong(viewCount) : 0L)
+                .toList();
     }
 }

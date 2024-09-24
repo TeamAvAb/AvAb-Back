@@ -7,8 +7,6 @@ public interface RecreationViewCountService {
 
     void incrementViewCount(Long recreationId);
 
-    Long getViewCount(Long recreationId);
-
     Map<Long, Long> getTargetRecreationsViewCounts();
 
     void incrementViewCountLast7Days(Long id);

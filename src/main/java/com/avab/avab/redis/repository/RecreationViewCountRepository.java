@@ -7,13 +7,13 @@ import org.joda.time.LocalDate;
 
 public interface RecreationViewCountRepository {
 
-    void incrementViewCount(String key);
+    void incrementViewCountById(Long recreationId);
 
-    void createViewCount(String key);
+    void createViewCountById(Long recreationId);
 
-    String getViewCount(String key);
+    List<Long> getAllRecreationKeys();
 
-    List<String> getAllRecreationIds();
+    List<Long> getViewCountsByIds(List<Long> recreationIds);
 
     void incrementViewCountLast7Days(String key);
 
@@ -22,6 +22,4 @@ public interface RecreationViewCountRepository {
     Optional<String> getViewCountLast7Days(String key, LocalDate date);
 
     List<String> getAllFlowIdsToUpdateViewCountLast7Days();
-
-    List<String> getViewCountsByIds(List<String> recreationIds);
 }
