@@ -40,5 +40,5 @@ public interface FlowService {
 
     Flow updateFlow(PostFlowDTO request, User user, Long flowId);
 
-    void updateFlowViewCountLast7Days(Long flowId, Long viewCount);
+    void incrementViewCountLast7Days(Long flowId, Long viewCount);
 }

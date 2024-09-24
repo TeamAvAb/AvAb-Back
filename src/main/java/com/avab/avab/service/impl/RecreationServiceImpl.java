@@ -23,6 +23,7 @@ import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.domain.mapping.RecreationRecreationPurpose;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.CreateRecreationDTO;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
+import com.avab.avab.redis.service.RecreationViewCountLast7DaysService;
 import com.avab.avab.redis.service.RecreationViewCountService;
 import com.avab.avab.repository.RecreationFavoriteRepository;
 import com.avab.avab.repository.RecreationKeywordRepository;
@@ -38,10 +39,12 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class RecreationServiceImpl implements RecreationService {
 
-    private final RecreationRepository recreationRepository;
-    private final RecreationFavoriteRepository recreationFavoriteRepository;
     private final RecreationReviewRepository recreationReviewRepository;
     private final RecreationViewCountService recreationViewCountService;
+    private final RecreationViewCountLast7DaysService recreationViewCountLast7DaysService;
+
+    private final RecreationRepository recreationRepository;
+    private final RecreationFavoriteRepository recreationFavoriteRepository;
     private final RecreationKeywordRepository recreationKeywordRepository;
     private final RecreationPurposeRepository recreationPurposeRepository;
     private final AmazonS3Manager s3Manager;
@@ -83,7 +86,7 @@ public class RecreationServiceImpl implements RecreationService {
                                                         ErrorStatus.RECREATION_NOT_FOUND));
 
         recreationViewCountService.incrementViewCount(recreationId);
-        recreationViewCountService.incrementViewCountLast7Days(recreationId);
+        recreationViewCountLast7DaysService.incrementViewCount(recreationId);
 
         return recreation;
     }
@@ -340,7 +343,7 @@ public class RecreationServiceImpl implements RecreationService {
 
     @Override
     @Transactional
-    public void updateFlowViewCountLast7Days(Long flowId, Long viewCount) {
+    public void incrementViewCountLast7DaysById(Long flowId, Long viewCount) {
         recreationRepository.updateViewCountLast7DaysById(flowId, viewCount);
     }
 

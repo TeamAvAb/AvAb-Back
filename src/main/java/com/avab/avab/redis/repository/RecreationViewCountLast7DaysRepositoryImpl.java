@@ -1,8 +1,10 @@
 package com.avab.avab.redis.repository;
 
 import java.time.Duration;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;
@@ -13,12 +15,12 @@ import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
-public class FlowViewCountRepositoryImpl extends BaseRedisRepository<Long>
-        implements FlowViewCountRepository {
+public class RecreationViewCountLast7DaysRepositoryImpl extends BaseRedisRepository<Long>
+        implements RecreationViewCountLast7DaysRepository {
 
     private final StringRedisTemplate redisTemplate;
 
-    private final String VIEW_COUNT_PREFIX = "flowViewCount";
+    private final String VIEW_COUNT_LAST_7_DAYS_PREFIX = "recreationViewCountLast7Days";
 
     @Override
     public void incrementViewCountById(Long flowId) {
@@ -27,17 +29,21 @@ public class FlowViewCountRepositoryImpl extends BaseRedisRepository<Long>
 
     @Override
     public void createViewCountById(Long flowId) {
-        redisTemplate.opsForValue().setIfAbsent(createKey(flowId), "0", Duration.ofMinutes(40));
+        redisTemplate
+                .opsForValue()
+                .setIfAbsent(createKey(flowId), "0", Duration.ofDays(7).plusHours(1));
     }
 
     @Override
     public List<Long> getAllTargetIds() {
         ScanOptions scanOptions =
-                ScanOptions.scanOptions().match(VIEW_COUNT_PREFIX + ":" + "*").count(100).build();
-        List<String> keys;
+                ScanOptions.scanOptions()
+                        .match(VIEW_COUNT_LAST_7_DAYS_PREFIX + ":" + "*")
+                        .count(100)
+                        .build();
+        Set<String> keys = new HashSet<>();
 
         try (Cursor<String> cursor = redisTemplate.scan(scanOptions)) {
-            keys = new ArrayList<>();
             while (cursor.hasNext()) {
                 keys.add(cursor.next());
             }
@@ -47,8 +53,8 @@ public class FlowViewCountRepositoryImpl extends BaseRedisRepository<Long>
     }
 
     @Override
-    public List<Long> getViewCountsByIds(List<Long> flowIds) {
-        List<String> redisKeys = flowIds.stream().map(this::createKey).toList();
+    public List<Long> getViewCountsByIds(List<Long> recreationIds) {
+        List<String> redisKeys = recreationIds.stream().map(this::createKey).toList();
         return redisTemplate.opsForValue().multiGet(redisKeys).stream()
                 .map(viewCount -> viewCount != null ? Long.parseLong(viewCount) : 0L)
                 .toList();
@@ -56,7 +62,7 @@ public class FlowViewCountRepositoryImpl extends BaseRedisRepository<Long>
 
     @Override
     protected String createKey(Long flowId) {
-        return VIEW_COUNT_PREFIX + ":" + flowId;
+        return VIEW_COUNT_LAST_7_DAYS_PREFIX + ":" + flowId + ":" + LocalDate.now();
     }
 
     @Override
