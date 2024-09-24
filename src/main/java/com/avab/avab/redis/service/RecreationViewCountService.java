@@ -1,12 +1,15 @@
 package com.avab.avab.redis.service;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RecreationViewCountService {
 
     void incrementViewCount(Long recreationId);
 
     Long getViewCount(Long recreationId);
+
+    Map<Long, Long> getViewCountsByIds(List<Long> recreationIds);
 
     List<Long> getAllRecreationIds();
 

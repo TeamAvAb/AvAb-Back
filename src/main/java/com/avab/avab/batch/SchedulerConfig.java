@@ -1,18 +1,10 @@
 package com.avab.avab.batch;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -32,9 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SchedulerConfig {
 
-    private final JobLauncher jobLauncher;
-    private final Job updateRecreationViewCountJob;
-
     private final FlowViewCountService flowViewCountService;
     private final RecreationViewCountService recreationViewCountService;
     private final FlowService flowService;
@@ -43,16 +32,21 @@ public class SchedulerConfig {
 
     // 매 30분 마다 수행
     @Scheduled(cron = "0 */30 * * * *")
-    public void updateRecreationViewCount()
-            throws JobInstanceAlreadyCompleteException,
-                    JobExecutionAlreadyRunningException,
-                    JobParametersInvalidException,
-                    JobRestartException {
-        JobParameters jobParameters =
-                new JobParametersBuilder()
-                        .addLocalDateTime("TIMESTAMP", LocalDateTime.now())
-                        .toJobParameters();
-        jobLauncher.run(updateRecreationViewCountJob, jobParameters);
+    public void updateRecreationViewCount() {
+        log.info("레크레이션 조회수 업데이트 시작");
+
+        List<Long> targetRecreationIds = recreationViewCountService.getAllRecreationIds();
+        log.info(
+                "업데이트 대상 레크레이션: {}",
+                targetRecreationIds.stream()
+                        .map(Object::toString)
+                        .collect(Collectors.joining(", ")));
+
+        Map<Long, Long> viewCountsMap =
+                recreationViewCountService.getViewCountsByIds(targetRecreationIds);
+        viewCountsMap.forEach(recreationService::incrementViewCountById);
+
+        log.info("레크레이션 조회수 업데이트 완료");
     }
 
     @Scheduled(cron = "0 */30 * * * *")

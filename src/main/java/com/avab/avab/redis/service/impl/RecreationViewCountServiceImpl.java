@@ -1,6 +1,8 @@
 package com.avab.avab.redis.service.impl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.joda.time.LocalDate;
@@ -38,6 +40,20 @@ public class RecreationViewCountServiceImpl implements RecreationViewCountServic
         String viewCount = recreationViewCountRepository.getViewCount(recreationId);
 
         return viewCount != null ? Long.valueOf(viewCount) : null;
+    }
+
+    @Override
+    public Map<Long, Long> getViewCountsByIds(List<Long> recreationIds) {
+        List<Long> viewCounts =
+                recreationViewCountRepository
+                        .getViewCountsByIds(recreationIds.stream().map(Object::toString).toList())
+                        .stream()
+                        .map(viewCount -> viewCount != null ? Long.parseLong(viewCount) : 0L)
+                        .toList();
+
+        return IntStream.range(0, recreationIds.size())
+                .boxed()
+                .collect(Collectors.toMap(recreationIds::get, viewCounts::get));
     }
 
     @Override

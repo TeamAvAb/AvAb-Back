@@ -343,4 +343,9 @@ public class RecreationServiceImpl implements RecreationService {
     public void updateFlowViewCountLast7Days(Long flowId, Long viewCount) {
         recreationRepository.updateViewCountLast7DaysById(flowId, viewCount);
     }
+
+    @Override
+    public void incrementViewCountById(Long id, Long viewCount) {
+        recreationRepository.incrementViewCountById(id, viewCount);
+    }
 }

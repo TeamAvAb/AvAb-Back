@@ -1,6 +1,5 @@
 package com.avab.avab.redis.repository;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -49,9 +48,8 @@ public class RecreationViewCountRepositoryImpl implements RecreationViewCountRep
         ScanOptions scanOptions =
                 ScanOptions.scanOptions().match(VIEW_COUNT_PREFIX + ":" + "*").count(100).build();
 
-        List<String> keys;
+        Set<String> keys = new HashSet<>();
         try (Cursor<String> cursor = redisTemplate.scan(scanOptions)) {
-            keys = new ArrayList<>();
             while (cursor.hasNext()) {
                 keys.add(cursor.next());
             }
@@ -97,8 +95,17 @@ public class RecreationViewCountRepositoryImpl implements RecreationViewCountRep
         return keys.stream().map(key -> key.split(":")[1]).toList();
     }
 
-    @Override
-    public String createViewCountLast7DaysRedisKey(String key, LocalDate date) {
+    private String createViewCountLast7DaysRedisKey(String key, LocalDate date) {
         return VIEW_COUNT_LAST_7_DAYS_PREFIX + ":" + key + ":" + date.toString(DATE_FORMAT);
+    }
+
+    private String createViewCountRedisKey(String key) {
+        return VIEW_COUNT_PREFIX + ":" + key;
+    }
+
+    @Override
+    public List<String> getViewCountsByIds(List<String> recreationIds) {
+        List<String> redisKeys = recreationIds.stream().map(this::createViewCountRedisKey).toList();
+        return redisTemplate.opsForValue().multiGet(redisKeys);
     }
 }

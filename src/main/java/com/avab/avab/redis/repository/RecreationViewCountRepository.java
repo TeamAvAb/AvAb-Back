@@ -23,5 +23,5 @@ public interface RecreationViewCountRepository {
 
     List<String> getAllFlowIdsToUpdateViewCountLast7Days();
 
-    String createViewCountLast7DaysRedisKey(String key, LocalDate date);
+    List<String> getViewCountsByIds(List<String> recreationIds);
 }
