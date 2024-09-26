@@ -36,9 +36,6 @@ spring:
     redis:
       host: localhost
       port: 6379
-  batch:
-    jdbc:
-      initialize-schema: always
 # S3
 cloud:
   aws:
@@ -91,9 +88,6 @@ spring:
     redis:
       host: ${REDIS_URL}
       port: 6379
-  batch:
-    jdbc:
-      initialize-schema: always
 # S3
 cloud:
   aws:
