@@ -75,45 +75,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public OAuthResponse kakaoLoginLocal(String code) {
-        KakaoOAuthToken oAuthToken = kakaoAuthProvider.requestTokenLocal(code);
-        KakaoOAuthProfile kakaoProfile =
-                kakaoAuthProvider.requestKakaoProfile(oAuthToken.getAccessToken());
-
-        // 유저 정보 받기
-        Optional<User> queryUser =
-                userRepository.findByEmailAndSocialType(
-                        kakaoProfile.getKakaoAccount().getEmail(), SocialType.KAKAO);
-
-        // 가입자 혹은 비가입자 체크해서 로그인 처리
-        if (queryUser.isPresent()) {
-            User user = queryUser.get();
-            if (user.isDeleted()) {
-                throw new UserException(ErrorStatus.USER_NOT_FOUND);
-            }
-            if (user.isDisabled()) {
-                if (user.isCanBeEnabled()) {
-                    user.enableUser();
-                } else {
-                    throw new AuthException(ErrorStatus.USER_DISABLED);
-                }
-            }
-            String accessToken = jwtTokenProvider.createAccessToken(user.getId());
-            String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
-            refreshTokenService.saveToken(refreshToken);
-            return AuthConverter.toOAuthResponse(accessToken, refreshToken, true, user);
-        } else {
-            User user =
-                    userRepository.save(
-                            AuthConverter.toUser(kakaoProfile, randomUsername.generate()));
-            String accessToken = jwtTokenProvider.createAccessToken(user.getId());
-            String refreshToken = jwtTokenProvider.createRefreshToken(user.getId());
-            refreshTokenService.saveToken(refreshToken);
-            return AuthConverter.toOAuthResponse(accessToken, refreshToken, false, user);
-        }
-    }
-
-    @Override
     @Transactional
     public TokenRefreshResponse refresh(String refreshToken) {
         jwtTokenProvider.isTokenValid(refreshToken);
