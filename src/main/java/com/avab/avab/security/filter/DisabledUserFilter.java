@@ -64,9 +64,7 @@ public class DisabledUserFilter extends OncePerRequestFilter {
                 if (user.isCanBeEnabled()) {
                     authService.enableUser(user);
                 } else {
-                    if (isNotPermittedRequest(request)) {
-                        throw new AuthException(ErrorStatus.USER_DISABLED);
-                    }
+                    throw new AuthException(ErrorStatus.USER_DISABLED);
                 }
             }
         }
@@ -74,9 +72,14 @@ public class DisabledUserFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private Boolean isNotPermittedRequest(HttpServletRequest request) {
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return isPermittedRequest(request);
+    }
+
+    private Boolean isPermittedRequest(HttpServletRequest request) {
         return notPermittedRequests.stream()
-                .anyMatch(
+                .noneMatch(
                         pair -> {
                             String method = pair.getFirst().name();
                             Pattern urlMatcher = pair.getSecond();
