@@ -64,6 +64,8 @@ kakao:
     redirect-uri: ${REDIRECT_URI}
 ---
 # Dev Profile
+server:
+  shutdown: graceful
 spring:
   config:
     activate:
