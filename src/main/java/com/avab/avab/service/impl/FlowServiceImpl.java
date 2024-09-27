@@ -34,6 +34,7 @@ import com.avab.avab.domain.enums.ReportType;
 import com.avab.avab.domain.enums.UserStatus;
 import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
+import com.avab.avab.redis.service.FlowViewCountLast7DaysService;
 import com.avab.avab.redis.service.FlowViewCountService;
 import com.avab.avab.repository.CustomRecreationRepository;
 import com.avab.avab.repository.FlowAgeRepository;
@@ -55,9 +56,11 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class FlowServiceImpl implements FlowService {
 
+    private final FlowViewCountService flowViewCountService;
+    private final FlowViewCountLast7DaysService flowViewCountLast7DaysService;
+
     private final FlowRepository flowRepository;
     private final FlowFavoriteRepository flowFavoriteRepository;
-    private final FlowViewCountService flowViewCountService;
     private final RecreationRepository recreationRepository;
     private final RecreationPurposeRepository recreationPurposeRepository;
     private final RecreationKeywordRepository recreationKeywordRepository;
@@ -131,7 +134,7 @@ public class FlowServiceImpl implements FlowService {
                                 .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
 
         flowViewCountService.incrementViewCount(flowId);
-        flowViewCountService.incrementViewCountLast7Days(flowId);
+        flowViewCountLast7DaysService.incrementViewCount(flowId);
 
         return flow;
     }
@@ -142,13 +145,8 @@ public class FlowServiceImpl implements FlowService {
     }
 
     @Override
-    public List<Long> getUpdateTargetFlowIds(List<Long> flowIdList) {
-        return flowRepository.findAllByIdIn(flowIdList).stream().map(Flow::getId).toList();
-    }
-
-    @Override
     @Transactional
-    public void updateFlowViewCount(Long flowId, Long viewCount) {
+    public void incrementViewCountById(Long flowId, Long viewCount) {
         flowRepository.incrementViewCountById(flowId, viewCount);
     }
 
@@ -348,7 +346,7 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     @Transactional
-    public void updateFlowViewCountLast7Days(Long flowId, Long viewCount) {
+    public void incrementViewCountLast7Days(Long flowId, Long viewCount) {
         flowRepository.updateViewCountLast7DaysById(flowId, viewCount);
     }
 }

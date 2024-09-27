@@ -64,5 +64,7 @@ public interface RecreationService {
 
     Page<Recreation> getRecentRecreation(Integer page);
 
-    void updateFlowViewCountLast7Days(Long flowId, Long viewCount);
+    void incrementViewCountLast7DaysById(Long flowId, Long viewCount);
+
+    void incrementViewCountById(Long id, Long viewCount);
 }

@@ -23,9 +23,7 @@ public interface FlowService {
 
     Boolean existsByFlowId(Long flowId);
 
-    List<Long> getUpdateTargetFlowIds(List<Long> flowIdList);
-
-    void updateFlowViewCount(Long flowId, Long viewCount);
+    void incrementViewCountById(Long flowId, Long viewCount);
 
     Boolean toggleScrapeFlow(User user, Long flowId);
 
@@ -42,5 +40,5 @@ public interface FlowService {
 
     Flow updateFlow(PostFlowDTO request, User user, Long flowId);
 
-    void updateFlowViewCountLast7Days(Long flowId, Long viewCount);
+    void incrementViewCountLast7Days(Long flowId, Long viewCount);
 }
