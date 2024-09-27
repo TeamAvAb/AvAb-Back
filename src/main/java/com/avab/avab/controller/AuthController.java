@@ -1,6 +1,11 @@
 package com.avab.avab.controller;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.domain.User;
@@ -32,15 +37,6 @@ public class AuthController {
     @GetMapping("/login/kakao")
     public BaseResponse<OAuthResponse> kakaoLogin(@RequestParam("code") String code) {
         return BaseResponse.onSuccess(authService.kakaoLogin(code));
-    }
-
-    @Operation(summary = "카카오 로그인 로컬 테스트 API", description = "리다이렉트 URL이 로컬호스트인 카카오 로그인 _by 보노_")
-    @ApiResponses({
-        @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
-    })
-    @GetMapping("/login/kakao/local")
-    public BaseResponse<OAuthResponse> kakaoLoginLocal(@RequestParam("code") String code) {
-        return BaseResponse.onSuccess(authService.kakaoLoginLocal(code));
     }
 
     @Operation(

@@ -7,6 +7,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import com.avab.avab.security.handler.annotation.ExtractToken;
 import com.avab.avab.security.provider.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,8 @@ public class ExtractTokenArgumentResolver implements HandlerMethodArgumentResolv
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().equals(String.class);
+        return parameter.getParameterType().equals(String.class)
+                && parameter.hasParameterAnnotation(ExtractToken.class);
     }
 
     @Override
@@ -27,10 +29,10 @@ public class ExtractTokenArgumentResolver implements HandlerMethodArgumentResolv
             MethodParameter parameter,
             ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest,
-            WebDataBinderFactory binderFactory)
-            throws Exception {
+            WebDataBinderFactory binderFactory) {
 
         String refreshToken = webRequest.getHeader("Authorization");
+
         jwtTokenProvider.isTokenValid(refreshToken);
         return refreshToken;
     }
