@@ -1,11 +1,13 @@
 package com.avab.avab.security;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.environment.EnvironmentManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -44,29 +46,32 @@ public class SecurityConfig {
     private final AuthExceptionHandlingFilter authExceptionHandlingFilter;
     private final DisabledUserFilter disabledUserFilter;
 
-    @Value("${springdoc.swagger-ui.authentication.username}")
-    private String swaggerUsername;
+    @Value("${springdoc.swagger-ui.authentication.username:}")
+    private String SWAGGER_USERNAME;
 
-    @Value("${springdoc.swagger-ui.authentication.password}")
-    private String swaggerPassword;
+    @Value("${springdoc.swagger-ui.authentication.password:}")
+    private String SWAGGER_PASSWORD;
 
-    private final String[] allowedUrls = {
-        "/api/auth/login/test",
-        "/health",
-        "/error",
-        "/api/recreations/popular",
-        "/api/recreations/search",
-        "/api/recreations/{recreationId}",
-        "/api/recreations/{recreationId}/related/flows",
-        "/api/recreations/{recreationId}/related/recreations",
-        "/api/recreations/popular",
-        "/api/auth/login/kakao",
-        "/api/auth/login/kakao/local",
-        "/api/auth/refresh",
-        "/api/users/scrap",
-        "/api/recreations/recommended",
-        "/api/flows/recommended",
-    };
+    private final List<String> ALLOWED_APIS =
+            List.of(
+                    "/api/auth/login/test",
+                    "/health",
+                    "/error",
+                    "/api/recreations/popular",
+                    "/api/recreations/search",
+                    "/api/recreations/{recreationId}",
+                    "/api/recreations/{recreationId}/related/flows",
+                    "/api/recreations/{recreationId}/related/recreations",
+                    "/api/recreations/popular",
+                    "/api/auth/login/kakao",
+                    "/api/auth/login/kakao/local",
+                    "/api/auth/refresh",
+                    "/api/users/scrap",
+                    "/api/recreations/recommended",
+                    "/api/flows/recommended");
+
+    private final List<String> SWAGGER_URLS =
+            List.of("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/v3/api-docs");
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -74,9 +79,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(
-            HttpSecurity http, Environment environment, EnvironmentManager environmentManager)
-            throws Exception {
+    @Order(1)
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.formLogin(AbstractHttpConfigurer::disable);
@@ -98,7 +102,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(
                 (authorize) ->
                         authorize
-                                .requestMatchers(allowedUrls)
+                                .requestMatchers(ALLOWED_APIS.toArray(String[]::new))
                                 .permitAll()
                                 .requestMatchers(
                                         HttpMethod.GET, "/api/recreations/{recreationId}/reviews")
@@ -120,19 +124,27 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(1)
+    @Order(0)
     public SecurityFilterChain swaggerFilterChain(
             HttpSecurity http, EnvironmentHelper environmentHelper) throws Exception {
-        if (environmentHelper.isLocal()) {
-            return http.build();
-        }
+        //        if (environmentHelper.isLocal()) {
+        //            http.authorizeHttpRequests(
+        //                    (authorize) ->
+        //                            authorize
+        //                                    .requestMatchers(
+        //                                            "/swagger-ui/**",
+        //                                            "/swagger-resources/**",
+        //                                            "/v3/api-docs/**",
+        //                                            "/v3/api-docs")
+        //                                    .permitAll());
+        //
+        //            return http.build();
+        //        }
 
-        http.securityMatcher(
-                        "/swagger-ui/**",
-                        "/swagger-resources/**",
-                        "/v3/api-docs/**",
-                        "/v3/api-docs",
-                        "/login")
+        List<String> securedUrls = new ArrayList<>(SWAGGER_URLS);
+        securedUrls.add("/login");
+
+        http.securityMatcher(securedUrls.toArray(String[]::new))
                 .formLogin(
                         (formLogin) ->
                                 formLogin
@@ -144,12 +156,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(1)
+    @Profile({"dev", "prod"})
     public UserDetailsService swaggerUserDetailsService() {
         UserDetails swaggerUserDetails =
                 User.builder()
-                        .username(swaggerUsername)
-                        .password(passwordEncoder().encode(swaggerPassword))
+                        .username(SWAGGER_USERNAME)
+                        .password(passwordEncoder().encode(SWAGGER_PASSWORD))
                         .roles("DEVELOPER")
                         .build();
 
