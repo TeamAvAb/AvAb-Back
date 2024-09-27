@@ -29,10 +29,7 @@ public class KakaoAuthProvider {
 
     public KakaoOAuthToken requestTokenLocal(String code) {
         return kakaoOAuthClient.requestToken(
-                "authorization_code",
-                client,
-                "http://localhost:3000/api/auth/login/kakao",
-                code);
+                "authorization_code", client, "http://localhost:3000/api/auth/login/kakao", code);
     }
 
     // Token으로 정보 요청하기

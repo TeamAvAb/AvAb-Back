@@ -15,7 +15,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.AuthException;
-import com.avab.avab.security.principal.PrincipalDetailsService;
+import com.avab.avab.domain.User;
+import com.avab.avab.repository.UserRepository;
+import com.avab.avab.security.principal.PrincipalDetails;
 import com.avab.avab.security.provider.JwtTokenProvider;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final PrincipalDetailsService principalDetailsService;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(
@@ -39,18 +41,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             if (jwtTokenProvider.isTokenValid(token)) {
                 Long userId = jwtTokenProvider.getId(token);
-                UserDetails userDetails =
-                        principalDetailsService.loadUserByUsername(userId.toString());
+                User user =
+                        userRepository
+                                .findById(userId)
+                                .orElseThrow(() -> new AuthException(ErrorStatus.USER_NOT_FOUND));
+                UserDetails userDetails = new PrincipalDetails(user);
 
-                if (userDetails != null) {
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails, "", userDetails.getAuthorities());
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(usernamePasswordAuthenticationToken);
-                } else {
-                    throw new AuthException(ErrorStatus.USER_NOT_FOUND);
-                }
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails, "", userDetails.getAuthorities());
+                SecurityContextHolder.getContext()
+                        .setAuthentication(usernamePasswordAuthenticationToken);
             } else {
                 throw new AuthException(ErrorStatus.AUTH_INVALID_TOKEN);
             }

@@ -3,7 +3,6 @@ package com.avab.avab.apiPayload.exception;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 
 import org.springframework.beans.TypeMismatchException;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -33,6 +31,7 @@ import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.feign.discord.dto.DiscordMessage;
 import com.avab.avab.feign.discord.dto.DiscordMessage.Embed;
 import com.avab.avab.feign.discord.service.DiscordClient;
+import com.avab.avab.utils.EnvironmentHelper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     private final DiscordClient discordClient;
-    private final Environment environment;
+    private final EnvironmentHelper environmentHelper;
 
     @Override
     protected ResponseEntity<Object> handleTypeMismatch(
@@ -112,7 +111,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> exception(Exception e, WebRequest request) {
         e.printStackTrace();
 
-        if (!Arrays.asList(environment.getActiveProfiles()).contains("local")) {
+        if (environmentHelper.isLocal()) {
             sendDiscordAlarm(e, request);
         }
 
@@ -128,6 +127,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = GeneralException.class)
     public ResponseEntity onThrowException(
             GeneralException generalException, HttpServletRequest request) {
+
         ErrorReasonDTO errorReasonHttpStatus = generalException.getErrorReasonHttpStatus();
         return handleExceptionInternal(generalException, errorReasonHttpStatus, null, request);
     }
