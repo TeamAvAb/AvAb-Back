@@ -79,7 +79,24 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                         .offset(pageable.getOffset())
                         .fetch();
 
-        return new PageImpl<>(recreationList);
+        long total =
+                queryFactory
+                        .select(recreation)
+                        .from(recreation)
+                        .where(
+                                containsSearchKeyword(searchKeyword),
+                                inKeyword(keywords),
+                                betweenParticipants(participants),
+                                loePlayTime(playTime),
+                                inPlace(places),
+                                inPurpose(purposes),
+                                inGender(genders),
+                                inAge(ages),
+                                notReportedByUser(user),
+                                notSoftDeleted())
+                        .fetchCount();
+
+        return new PageImpl<>(recreationList, pageable, total);
     }
 
     private BooleanExpression containsSearchKeyword(String searchKeyword) {
