@@ -14,6 +14,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
@@ -79,24 +80,25 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                         .offset(pageable.getOffset())
                         .fetch();
 
-        long total =
-                queryFactory
-                        .select(recreation)
-                        .from(recreation)
-                        .where(
-                                containsSearchKeyword(searchKeyword),
-                                inKeyword(keywords),
-                                betweenParticipants(participants),
-                                loePlayTime(playTime),
-                                inPlace(places),
-                                inPurpose(purposes),
-                                inGender(genders),
-                                inAge(ages),
-                                notReportedByUser(user),
-                                notSoftDeleted())
-                        .fetchCount();
-
-        return new PageImpl<>(recreationList, pageable, total);
+        return PageableExecutionUtils.getPage(
+                recreationList,
+                pageable,
+                () ->
+                        queryFactory
+                                .select(recreation)
+                                .from(recreation)
+                                .where(
+                                        containsSearchKeyword(searchKeyword),
+                                        inKeyword(keywords),
+                                        betweenParticipants(participants),
+                                        loePlayTime(playTime),
+                                        inPlace(places),
+                                        inPurpose(purposes),
+                                        inGender(genders),
+                                        inAge(ages),
+                                        notReportedByUser(user),
+                                        notSoftDeleted())
+                                .fetchCount());
     }
 
     private BooleanExpression containsSearchKeyword(String searchKeyword) {
