@@ -62,6 +62,13 @@ public class RecreationReviewServiceImpl implements RecreationReviewService {
         recommendation = queryRecommendation.get();
         if (recommendation.getType().equals(request.getType())) {
             recreationReviewRecommendationRepository.delete(recommendation);
+
+            if (request.getType().equals(RecommendationType.GOOD)) {
+                review.decrementGoodCount();
+            } else {
+                review.decrementBadCount();
+            }
+
             return null;
         }
 
