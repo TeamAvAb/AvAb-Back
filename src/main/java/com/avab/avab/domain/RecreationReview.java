@@ -73,4 +73,20 @@ public class RecreationReview extends BaseEntity {
     public void softDelete() {
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void incrementGoodCount() {
+        this.goodCount++;
+    }
+
+    public void incrementBadCount() {
+        this.badCount++;
+    }
+
+    public void decrementGoodCount() {
+        this.goodCount--;
+    }
+
+    public void decrementBadCount() {
+        this.badCount--;
+    }
 }

@@ -127,19 +127,12 @@ public class SecurityConfig {
     @Order(0)
     public SecurityFilterChain swaggerFilterChain(
             HttpSecurity http, EnvironmentHelper environmentHelper) throws Exception {
-        //        if (environmentHelper.isLocal()) {
-        //            http.authorizeHttpRequests(
-        //                    (authorize) ->
-        //                            authorize
-        //                                    .requestMatchers(
-        //                                            "/swagger-ui/**",
-        //                                            "/swagger-resources/**",
-        //                                            "/v3/api-docs/**",
-        //                                            "/v3/api-docs")
-        //                                    .permitAll());
-        //
-        //            return http.build();
-        //        }
+        if (environmentHelper.isLocal()) {
+            http.securityMatcher(SWAGGER_URLS.toArray(String[]::new))
+                    .authorizeHttpRequests((authorize) -> authorize.anyRequest().permitAll());
+
+            return http.build();
+        }
 
         List<String> securedUrls = new ArrayList<>(SWAGGER_URLS);
         securedUrls.add("/login");
