@@ -10,6 +10,7 @@ import com.avab.avab.apiPayload.exception.RecreationReviewException;
 import com.avab.avab.converter.RecreationReviewConverter;
 import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.User;
+import com.avab.avab.domain.enums.RecommendationType;
 import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
 import com.avab.avab.dto.reqeust.RecreationReviewRequestDTO.ToggleRecommendationDTO;
 import com.avab.avab.repository.RecreationReviewRecommendationRepository;
@@ -40,13 +41,22 @@ public class RecreationReviewServiceImpl implements RecreationReviewService {
                 recreationReviewRecommendationRepository.findByRecreationReviewAndUser(
                         review, user);
 
-        RecreationReviewRecommendation recommendation = null;
+        RecreationReviewRecommendation recommendation;
 
         if (queryRecommendation.isEmpty()) {
             recommendation =
                     RecreationReviewConverter.toRecreationReviewRecommendation(
                             user, review, request);
-            return recreationReviewRecommendationRepository.save(recommendation);
+
+            recreationReviewRecommendationRepository.save(recommendation);
+
+            if (request.getType().equals(RecommendationType.GOOD)) {
+                review.incrementGoodCount();
+            } else {
+                review.incrementBadCount();
+            }
+
+            return recommendation;
         }
 
         recommendation = queryRecommendation.get();
@@ -58,7 +68,17 @@ public class RecreationReviewServiceImpl implements RecreationReviewService {
         recreationReviewRecommendationRepository.delete(recommendation);
         recommendation =
                 RecreationReviewConverter.toRecreationReviewRecommendation(user, review, request);
-        return recreationReviewRecommendationRepository.save(recommendation);
+        recreationReviewRecommendationRepository.save(recommendation);
+
+        if (request.getType().equals(RecommendationType.GOOD)) {
+            review.incrementGoodCount();
+            review.decrementBadCount();
+        } else {
+            review.incrementBadCount();
+            review.decrementGoodCount();
+        }
+
+        return recommendation;
     }
 
     @Override
