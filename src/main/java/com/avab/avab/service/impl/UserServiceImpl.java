@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<Flow> getMyFlows(User user, Integer page) {
-        return flowRepository.findAllByAuthorOrderByCreatedAtDesc(
+        return flowRepository.findAllByAuthorAndDeletedAtIsNullOrderByCreatedAtDesc(
                 user, PageRequest.of(page, FLOWS_PAGE_SIZE));
     }
 

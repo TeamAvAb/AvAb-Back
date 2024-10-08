@@ -96,10 +96,10 @@ public class RecreationController {
         return BaseResponse.onSuccess(RecreationConverter.toDescriptionDTO(recreation, user));
     }
 
-    @Operation(summary = "레크레이션 검색 API", description = "검색 키워드와 세부 필터를 이용해 레크레이션을 검색합니다. _by 보노_")
+    @Operation(summary = "레크레이션 조회 API", description = "검색 키워드와 세부 필터를 이용해 레크레이션을 조회합니다. _by 보노_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
-    @GetMapping("/search")
+    @GetMapping("")
     public BaseResponse<RecreationPreviewPageDTO> searchRecreations(
             @AuthUser User user,
             @RequestParam(name = "searchKeyword", required = false) String searchKeyword,
@@ -250,19 +250,5 @@ public class RecreationController {
 
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationRecommendListDTO(recommendRecreations, user));
-    }
-
-    @Operation(summary = "최신 레크레이션 API", description = "최신 레크레이션 목록을 가져옵니다. _by 수기_")
-    @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
-    @Parameter(name = "user", hidden = true)
-    @GetMapping("")
-    public BaseResponse<RecreationPreviewPageDTO> getRecentRecreation(
-            @AuthUser User user,
-            @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
-                    Integer page) {
-        Page<Recreation> recentRecreations = recreationService.getRecentRecreation(page);
-
-        return BaseResponse.onSuccess(
-                RecreationConverter.toRecreationPreviewPageDTO(recentRecreations, user));
     }
 }

@@ -28,13 +28,12 @@ public interface FlowRepository extends JpaRepository<Flow, Long>, FlowCustomRep
     Page<Flow> findAllByDeletedAtIsNullAndAuthor_UserStatusNot(
             UserStatus userStatus, Pageable pageable);
 
-    Page<Flow> findAllByAuthorOrderByCreatedAtDesc(User user, Pageable pageable);
+    Page<Flow> findAllByAuthorAndDeletedAtIsNullOrderByCreatedAtDesc(
+            User author, Pageable pageable);
 
     @Modifying
     @Query("UPDATE Flow f SET f.viewCount = f.viewCount + :viewCount WHERE f.id = :id")
     void incrementViewCountById(@Param("id") Long id, @Param("viewCount") Long viewCount);
-
-    List<Flow> findAllByIdIn(List<Long> id);
 
     @Modifying
     @Query("UPDATE Flow f SET f.scrapCount = f.scrapCount + 1 WHERE f.id = :id")

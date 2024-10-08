@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
+import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
@@ -50,4 +51,6 @@ public interface RecreationCustomRepository {
     void updateTotalStars(Long recreationId);
 
     Page<Recreation> findTop9ByOrderByWeeklyViewCountDesc(Pageable page, User user);
+
+    Page<RecreationReview> findReviews(Long recreationId, User user, Pageable page);
 }

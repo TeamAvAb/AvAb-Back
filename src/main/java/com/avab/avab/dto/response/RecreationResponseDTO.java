@@ -8,6 +8,7 @@ import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
 import com.avab.avab.domain.enums.Purpose;
+import com.avab.avab.dto.enums.MaskedReason;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationReviewDTO.AuthorDTO;
 import com.avab.avab.dto.response.RecreationReviewResponseDTO.RecommendationDTO;
 
@@ -160,6 +161,8 @@ public class RecreationResponseDTO {
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class RecreationFlowDTO {
         Long id;
+        Boolean isMasked;
+        MaskedReason maskedReason;
         String title;
         Integer playTime;
         List<Keyword> keywordList;
