@@ -20,8 +20,6 @@ import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
 
 public interface RecreationService {
 
-    Page<Recreation> getTop9RecreationsByWeeklyViewCount(User user);
-
     Page<Recreation> searchRecreations(
             User user,
             String searchKeyword,

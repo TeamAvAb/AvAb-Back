@@ -57,7 +57,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             List<Gender> genders,
             List<Age> ages,
             Pageable pageable) {
-        List<Recreation> recreationList =
+        JPQLQuery<Recreation> query =
                 queryFactory
                         .select(recreation)
                         .from(recreation)
@@ -72,8 +72,11 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                                 inAge(ages),
                                 MaskingPredicates.mask(recreation, user))
                         .limit(pageable.getPageSize())
-                        .offset(pageable.getOffset())
-                        .fetch();
+                        .offset(pageable.getOffset());
+
+        QueryDslUtil.orderByFromSort(pageable.getSort(), recreation).forEach(query::orderBy);
+
+        List<Recreation> recreationList = query.fetch();
 
         JPQLQuery<Long> countQuery =
                 queryFactory
