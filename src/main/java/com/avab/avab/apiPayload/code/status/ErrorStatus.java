@@ -41,6 +41,7 @@ public enum ErrorStatus implements BaseErrorCode {
     // Recreation 관련
     SEARCH_CONDITION_INVALID(HttpStatus.BAD_REQUEST, "RECR_001", "검색 조건이 하나라도 존재해야 합니다."),
     RECREATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RECR_002", "존재하지 않는 레크레이션입니다."),
+    REPORTED_RECREATION(HttpStatus.NO_CONTENT, "RECR_003", "신고된 레크레이션입니다."),
 
     // RecreationReview 관련
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REV_001", "존재하지 않는 리뷰입니다."),
@@ -48,6 +49,7 @@ public enum ErrorStatus implements BaseErrorCode {
     // Flow 관련
     FLOW_NOT_FOUND(HttpStatus.NOT_FOUND, "FLO_001", "존재하지 않는 플로우입니다."),
     FLOW_DELETE_UNAUTHORIZED(HttpStatus.FORBIDDEN, "FLOW_002", "삭제 권한이 없습니다."),
+    REPORTED_FLOW(HttpStatus.NO_CONTENT, "FLOW_003", "신고된 플로우입니다."),
 
     // Report 관련
     ALREADY_REPORTED(HttpStatus.BAD_REQUEST, "REP_001", "이미 신고되었습니다."),

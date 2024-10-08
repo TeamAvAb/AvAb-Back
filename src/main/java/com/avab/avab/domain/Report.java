@@ -62,4 +62,8 @@ public class Report extends BaseEntity {
 
     @Column(length = 300)
     private String extraReason;
+
+    public Boolean isReporter(User user) {
+        return this.reporter.equals(user);
+    }
 }

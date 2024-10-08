@@ -58,32 +58,20 @@ public class RecreationServiceImpl implements RecreationService {
 
     @Transactional
     public Recreation getRecreationDescription(Long recreationId, User user) {
-        List<Long> reportedRecreationIds = new ArrayList<>();
-        if (user != null) {
-            reportedRecreationIds =
-                    user.getReportList().stream()
-                            .filter(report -> report.getReportType() == ReportType.RECREATION)
-                            .map(Report::getTargetRecreation)
-                            .map(Recreation::getId)
-                            .toList();
-        }
-
         Recreation recreation =
-                reportedRecreationIds.isEmpty()
-                        ? recreationRepository
-                                .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
-                                        recreationId, UserStatus.DELETED)
-                                .orElseThrow(
-                                        () ->
-                                                new RecreationException(
-                                                        ErrorStatus.RECREATION_NOT_FOUND))
-                        : recreationRepository
-                                .findByIdAndDeletedAtIsNullAndIdNotInAndAuthor_UserStatusNot(
-                                        recreationId, reportedRecreationIds, UserStatus.DELETED)
-                                .orElseThrow(
-                                        () ->
-                                                new RecreationException(
-                                                        ErrorStatus.RECREATION_NOT_FOUND));
+                recreationRepository
+                        .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                                recreationId, UserStatus.DELETED)
+                        .orElseThrow(
+                                () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
+
+        if (user != null
+                && recreation.getReportList().stream()
+                        .map(Report::getReporter)
+                        .map(User::getId)
+                        .anyMatch(id -> id.equals(user.getId()))) {
+            throw new RecreationException(ErrorStatus.REPORTED_RECREATION);
+        }
 
         recreationViewCountService.incrementViewCount(recreationId);
         recreationViewCountLast7DaysService.incrementViewCount(recreationId);
@@ -121,9 +109,9 @@ public class RecreationServiceImpl implements RecreationService {
             User user, Long recreationId, PostRecreationReviewDTO request) {
         Recreation recreation =
                 recreationRepository
-                        .findById(recreationId)
-                        .orElseThrow(
-                                () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
+                        .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                                recreationId, UserStatus.DELETED)
+                        .orElseThrow(() -> new RecreationException(ErrorStatus.REVIEW_NOT_FOUND));
 
         RecreationReview review = RecreationConverter.toRecreationReview(user, recreation, request);
         recreationReviewRepository.save(review);
@@ -134,55 +122,8 @@ public class RecreationServiceImpl implements RecreationService {
 
     @Override
     public Page<RecreationReview> getRecreationReviews(Long recreationId, User user, Integer page) {
-        List<Long> reportedRecreationIds = new ArrayList<>();
-        List<Long> reportedRecreationReviewIds = new ArrayList<>();
-        if (user != null) {
-            reportedRecreationIds =
-                    user.getReportList().stream()
-                            .filter(report -> report.getReportType() == ReportType.RECREATION)
-                            .map(Report::getTargetRecreation)
-                            .map(Recreation::getId)
-                            .toList();
-
-            reportedRecreationReviewIds =
-                    user.getReportList().stream()
-                            .filter(
-                                    report ->
-                                            report.getReportType() == ReportType.RECREATION_REVIEW)
-                            .map(Report::getTargetRecreationReview)
-                            .map(RecreationReview::getId)
-                            .toList();
-        }
-
-        Recreation recreation =
-                reportedRecreationIds.isEmpty()
-                        ? recreationRepository
-                                .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
-                                        recreationId, UserStatus.DELETED)
-                                .orElseThrow(
-                                        () ->
-                                                new RecreationException(
-                                                        ErrorStatus.RECREATION_NOT_FOUND))
-                        : recreationRepository
-                                .findByIdAndDeletedAtIsNullAndIdNotInAndAuthor_UserStatusNot(
-                                        recreationId, reportedRecreationIds, UserStatus.DELETED)
-                                .orElseThrow(
-                                        () ->
-                                                new RecreationException(
-                                                        ErrorStatus.RECREATION_NOT_FOUND));
-
-        return reportedRecreationReviewIds.isEmpty()
-                ? recreationReviewRepository
-                        .findAllByRecreationAndDeletedAtIsNullAndAuthor_UserStatusNot(
-                                recreation,
-                                UserStatus.DELETED,
-                                PageRequest.of(page, REVIEW_PAGE_SIZE))
-                : recreationReviewRepository
-                        .findAllByRecreationAndIdNotInAndDeletedAtIsNullAndAuthor_UserStatusNot(
-                                recreation,
-                                reportedRecreationReviewIds,
-                                UserStatus.DELETED,
-                                PageRequest.of(page, REVIEW_PAGE_SIZE));
+        return recreationRepository.findReviews(
+                recreationId, user, PageRequest.of(page, REVIEW_PAGE_SIZE));
     }
 
     @Override
@@ -198,10 +139,6 @@ public class RecreationServiceImpl implements RecreationService {
             List<Age> ages,
             Integer page,
             SortCondition sortCondition) {
-        if (!isAtLeastOneConditionNotNull(
-                searchKeyword, keywords, participants, playTime, places, purposes, genders, ages)) {
-            throw new RecreationException(ErrorStatus.SEARCH_CONDITION_INVALID);
-        }
 
         Sort.TypedSort<Recreation> recreationSort = Sort.sort(Recreation.class);
         Sort sort;
@@ -223,25 +160,6 @@ public class RecreationServiceImpl implements RecreationService {
                 genders,
                 ages,
                 PageRequest.of(page, SEARCH_PAGE_SIZE, sort));
-    }
-
-    private Boolean isAtLeastOneConditionNotNull(
-            String searchKeyword,
-            List<Keyword> keyword,
-            Integer participants,
-            Integer playTime,
-            List<Place> place,
-            List<Purpose> purposes,
-            List<Gender> gender,
-            List<Age> age) {
-        return searchKeyword != null
-                || keyword != null
-                || participants != null
-                || playTime != null
-                || place != null
-                || purposes != null
-                || gender != null
-                || age != null;
     }
 
     public List<Recreation> findRelatedRecreations(User user, Long recreationId) {
@@ -315,12 +233,6 @@ public class RecreationServiceImpl implements RecreationService {
                         recreationPurposeList);
 
         return recreationRepository.save(recreation);
-    }
-
-    @Override
-    public Page<Recreation> getRecentRecreation(Integer page) {
-        return recreationRepository.findByOrderByCreatedAtDesc(
-                PageRequest.of(page, SEARCH_PAGE_SIZE));
     }
 
     @Override
