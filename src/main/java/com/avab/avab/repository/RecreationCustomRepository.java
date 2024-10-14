@@ -54,5 +54,5 @@ public interface RecreationCustomRepository {
 
     Page<RecreationReview> findReviews(Long recreationId, User user, Pageable page);
 
-    Page<Recreation> findFavoriteRecreations(User user, Pageable page);
+    Page<Recreation> findFavoriteRecreationsByUser(User user, Pageable page);
 }

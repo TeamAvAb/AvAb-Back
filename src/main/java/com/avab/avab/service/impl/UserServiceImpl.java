@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
 
     public Page<Recreation> getFavoriteRecreations(User user, Integer page) {
 
-        return recreationRepository.findFavoriteRecreations(
+        return recreationRepository.findFavoriteRecreationsByUser(
                 user, PageRequest.of(page, FAVORITE_SCRAP_PAGE_SIZE));
     }
 

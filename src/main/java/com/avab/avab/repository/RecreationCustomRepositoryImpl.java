@@ -423,7 +423,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
     }
 
     @Override
-    public Page<Recreation> findFavoriteRecreations(User user, Pageable page) {
+    public Page<Recreation> findFavoriteRecreationsByUser(User user, Pageable page) {
         List<Recreation> favoriteRecreations =
                 queryFactory
                         .select(recreation)
