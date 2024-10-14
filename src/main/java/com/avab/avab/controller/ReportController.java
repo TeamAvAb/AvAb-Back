@@ -57,7 +57,7 @@ public class ReportController {
     @Parameter(name = "user", hidden = true)
     @PostMapping("/flows")
     @ResponseStatus(code = HttpStatus.CREATED)
-    public BaseResponse<ReportCreatedResponseDTO> reportRecreation(
+    public BaseResponse<ReportCreatedResponseDTO> reportFlow(
             @AuthUser User user, @RequestBody @Valid ReportFlowRequestDTO request) {
 
         Report report = reportService.reportFlow(user, request);

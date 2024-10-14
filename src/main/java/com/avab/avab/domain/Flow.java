@@ -20,10 +20,10 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.avab.avab.domain.common.BaseEntity;
-import com.avab.avab.domain.mapping.FlowScrap;
 import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.FlowRecreationKeyword;
 import com.avab.avab.domain.mapping.FlowRecreationPurpose;
+import com.avab.avab.domain.mapping.FlowScrap;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

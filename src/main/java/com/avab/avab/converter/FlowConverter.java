@@ -1,6 +1,5 @@
 package com.avab.avab.converter;
 
-import com.avab.avab.domain.mapping.FlowScrap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,6 +22,7 @@ import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.FlowRecreationKeyword;
 import com.avab.avab.domain.mapping.FlowRecreationPurpose;
+import com.avab.avab.domain.mapping.FlowScrap;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.RecreationSpec;
@@ -52,11 +52,7 @@ public class FlowConverter {
     public static FlowPreviewDTO toFlowPreviewDTO(Flow flow, User user) {
         User author = flow.getAuthor();
 
-        Boolean isScraped =
-                user != null
-                        ? flow.getFlowScrapList().stream()
-                              .anyMatch((flowFavorite -> flowFavorite.getUser().equals(user)))
-                        : null;
+        Boolean isScraped = user != null ? user.isFlowScrapped(flow) : null;
 
         List<Purpose> purposeList =
                 flow.getFlowRecreationPurposeList().stream()
@@ -224,7 +220,7 @@ public class FlowConverter {
         Boolean isScraped =
                 user != null
                         ? flow.getFlowScrapList().stream()
-                              .anyMatch((flowFavorite -> flowFavorite.getUser().equals(user)))
+                                .anyMatch((flowScrap -> flowScrap.getUser().equals(user)))
                         : null;
 
         User author = flow.getAuthor();

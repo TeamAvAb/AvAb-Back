@@ -85,7 +85,7 @@ public class ReportServiceImpl implements ReportService {
         Report report = ReportConverter.toReport(user, request, targetFlow);
         reportRepository.save(report);
 
-        user.cancelScrapeFlow(targetFlow);
+        user.cancelScrapFlow(targetFlow);
 
         if (targetFlow.getReportCount().equals(SOFT_DELETE_THRESHOLD)) {
             targetFlow.softDelete();

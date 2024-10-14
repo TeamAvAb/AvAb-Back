@@ -1,6 +1,5 @@
 package com.avab.avab.service.impl;
 
-import com.avab.avab.domain.mapping.FlowScrap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,17 +32,18 @@ import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.domain.enums.ReportType;
 import com.avab.avab.domain.enums.UserStatus;
+import com.avab.avab.domain.mapping.FlowScrap;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.redis.service.FlowViewCountLast7DaysService;
 import com.avab.avab.redis.service.FlowViewCountService;
 import com.avab.avab.repository.CustomRecreationRepository;
 import com.avab.avab.repository.FlowAgeRepository;
-import com.avab.avab.repository.FlowScrapRepository;
 import com.avab.avab.repository.FlowGenderRepository;
 import com.avab.avab.repository.FlowRecreationKeywordRepository;
 import com.avab.avab.repository.FlowRecreationPurposeRepository;
 import com.avab.avab.repository.FlowRecreationRepository;
 import com.avab.avab.repository.FlowRepository;
+import com.avab.avab.repository.FlowScrapRepository;
 import com.avab.avab.repository.RecreationKeywordRepository;
 import com.avab.avab.repository.RecreationPurposeRepository;
 import com.avab.avab.repository.RecreationRepository;
