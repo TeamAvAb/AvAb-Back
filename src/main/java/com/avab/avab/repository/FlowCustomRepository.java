@@ -2,6 +2,9 @@ package com.avab.avab.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
@@ -18,4 +21,6 @@ public interface FlowCustomRepository {
             List<Gender> genders,
             List<Age> ages,
             User user);
+
+    Page<Flow> findScrapFlowsByUser(User user, Pageable pageable);
 }

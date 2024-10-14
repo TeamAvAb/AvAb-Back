@@ -56,7 +56,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<Flow> getScrapFlows(User user, Integer page) {
-        return flowRepository.findScrapFlowsByUser(user, PageRequest.of(page, FAVORITE_SCRAP_PAGE_SIZE));
+        return flowRepository.findScrapFlowsByUser(
+                user, PageRequest.of(page, FAVORITE_SCRAP_PAGE_SIZE));
     }
 
     @Override
@@ -73,7 +74,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<Flow> getMyFlows(User user, Integer page) {
         return flowRepository.findAllByAuthorAndDeletedAtIsNullOrderByCreatedAtDesc(
-                user, PageRequest.of(page, FLOWS_PAGE_SIZE));
+                user, PageRequest.of(page, FAVORITE_SCRAP_PAGE_SIZE));
     }
 
     @Override

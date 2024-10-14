@@ -67,7 +67,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Flow> flowList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecreationFavorite> recreationFavoriteList = new ArrayList<>();
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
@@ -77,7 +77,7 @@ public class User extends BaseEntity {
     private List<RecreationReviewRecommendation> recreationReviewRecommendationList =
             new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FlowScrap> flowScrapList = new ArrayList<>();
 
     @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL)
@@ -118,20 +118,19 @@ public class User extends BaseEntity {
     }
 
     public void cancelFavoriteRecreation(Recreation recreation) {
-        this.recreationFavoriteList.removeIf(
-                favorite -> favorite.getRecreation().getId().equals(recreation.getId()));
+        this.recreationFavoriteList.removeIf(it -> it.isTargetRecreation(recreation));
     }
 
-    public void cancelScrapeFlow(Flow flow) {
-        this.flowScrapList.removeIf(favorite -> favorite.getFlow().getId().equals(flow.getId()));
+    public void cancelScrapFlow(Flow flow) {
+        this.flowScrapList.removeIf(it -> it.isTargetFlow(flow));
     }
 
     public void cancelRecommendationRecreationReview(RecreationReview recreationReview) {
         this.recreationReviewRecommendationList.removeIf(
-                recommendation ->
-                        recommendation
-                                .getRecreationReview()
-                                .getId()
-                                .equals(recreationReview.getId()));
+                it -> it.isTargetRecreationReview(recreationReview));
+    }
+
+    public Boolean isFlowScrapped(Flow flow) {
+        return this.flowScrapList.stream().anyMatch(it -> it.isTargetFlow(flow));
     }
 }

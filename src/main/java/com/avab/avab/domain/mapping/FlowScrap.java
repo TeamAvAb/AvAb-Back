@@ -36,4 +36,8 @@ public class FlowScrap extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flow_id")
     private Flow flow;
+
+    public Boolean isTargetFlow(Flow flow) {
+        return this.flow.getId().equals(flow.getId());
+    }
 }
