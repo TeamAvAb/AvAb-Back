@@ -236,10 +236,11 @@ public class FlowServiceImpl implements FlowService {
                 flowRepository
                         .findById(flowId)
                         .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
-        if (!flow.getAuthor().getId().equals(user.getId())) {
+        if (!flow.isAuthoredBy(user)) {
             throw new FlowException(ErrorStatus.FLOW_DELETE_UNAUTHORIZED);
         }
-        flowRepository.delete(flow);
+
+        flow.softDelete();
     }
 
     @Override

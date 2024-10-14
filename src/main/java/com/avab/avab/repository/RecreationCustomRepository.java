@@ -53,4 +53,6 @@ public interface RecreationCustomRepository {
     Page<Recreation> findTop9ByOrderByWeeklyViewCountDesc(Pageable page, User user);
 
     Page<RecreationReview> findReviews(Long recreationId, User user, Pageable page);
+
+    Page<Recreation> findFavoriteRecreations(User user, Pageable page);
 }

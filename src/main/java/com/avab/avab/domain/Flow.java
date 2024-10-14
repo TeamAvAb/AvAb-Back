@@ -103,4 +103,8 @@ public class Flow extends BaseEntity {
     public Integer getReportCount() {
         return reportList.size();
     }
+
+    public Boolean isAuthoredBy(User user) {
+        return author.getId().equals(user.getId());
+    }
 }
