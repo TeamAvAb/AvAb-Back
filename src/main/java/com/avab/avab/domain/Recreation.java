@@ -127,7 +127,15 @@ public class Recreation extends BaseEntity {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public Integer getReportCount() {
-        return reportList.size();
+    public Boolean isDeleted() {
+        return this.deletedAt != null;
+    }
+
+    public Boolean isAuthorDeleted() {
+        return this.author.isDeleted();
+    }
+
+    public Boolean isReportedByUser(User user) {
+        return this.reportList.stream().anyMatch(report -> report.isReporter(user));
     }
 }

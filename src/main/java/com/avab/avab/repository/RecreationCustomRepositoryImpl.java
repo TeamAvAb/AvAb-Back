@@ -2,7 +2,11 @@ package com.avab.avab.repository;
 
 import static com.avab.avab.domain.QFlow.flow;
 import static com.avab.avab.domain.QRecreation.recreation;
+import static com.avab.avab.domain.QRecreationAge.recreationAge;
+import static com.avab.avab.domain.QRecreationGender.recreationGender;
 import static com.avab.avab.domain.QRecreationReview.recreationReview;
+import static com.avab.avab.domain.mapping.QRecreationRecreationKeyword.recreationRecreationKeyword;
+import static com.avab.avab.domain.mapping.QRecreationRecreationPurpose.recreationRecreationPurpose;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,23 +24,17 @@ import org.springframework.stereotype.Repository;
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.RecreationException;
 import com.avab.avab.domain.Flow;
-import com.avab.avab.domain.QRecreation;
-import com.avab.avab.domain.QRecreationAge;
-import com.avab.avab.domain.QRecreationGender;
-import com.avab.avab.domain.QReport;
 import com.avab.avab.domain.Recreation;
+import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Place;
 import com.avab.avab.domain.enums.Purpose;
-import com.avab.avab.domain.enums.ReportType;
-import com.avab.avab.domain.mapping.QRecreationRecreationKeyword;
-import com.avab.avab.domain.mapping.QRecreationRecreationPurpose;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -59,9 +57,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             List<Gender> genders,
             List<Age> ages,
             Pageable pageable) {
-        QRecreation recreation = QRecreation.recreation;
-
-        List<Recreation> recreationList =
+        JPQLQuery<Recreation> query =
                 queryFactory
                         .select(recreation)
                         .from(recreation)
@@ -74,31 +70,30 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                                 inPurpose(purposes),
                                 inGender(genders),
                                 inAge(ages),
-                                notReportedByUser(user),
-                                notSoftDeleted())
+                                MaskingPredicates.mask(recreation, user))
                         .limit(pageable.getPageSize())
-                        .offset(pageable.getOffset())
-                        .fetch();
+                        .offset(pageable.getOffset());
 
-        return PageableExecutionUtils.getPage(
-                recreationList,
-                pageable,
-                () ->
-                        queryFactory
-                                .select(recreation)
-                                .from(recreation)
-                                .where(
-                                        containsSearchKeyword(searchKeyword),
-                                        inKeyword(keywords),
-                                        betweenParticipants(participants),
-                                        loePlayTime(playTime),
-                                        inPlace(places),
-                                        inPurpose(purposes),
-                                        inGender(genders),
-                                        inAge(ages),
-                                        notReportedByUser(user),
-                                        notSoftDeleted())
-                                .fetchCount());
+        QueryDslUtil.orderByFromSort(pageable.getSort(), recreation).forEach(query::orderBy);
+
+        List<Recreation> recreationList = query.fetch();
+
+        JPQLQuery<Long> countQuery =
+                queryFactory
+                        .select(recreation.count())
+                        .from(recreation)
+                        .where(
+                                containsSearchKeyword(searchKeyword),
+                                inKeyword(keywords),
+                                betweenParticipants(participants),
+                                loePlayTime(playTime),
+                                inPlace(places),
+                                inPurpose(purposes),
+                                inGender(genders),
+                                inAge(ages),
+                                MaskingPredicates.mask(recreation, user));
+
+        return PageableExecutionUtils.getPage(recreationList, pageable, countQuery::fetchOne);
     }
 
     private BooleanExpression containsSearchKeyword(String searchKeyword) {
@@ -149,23 +144,6 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
         return ages != null ? recreation.recreationAgeList.any().age.in(ages) : null;
     }
 
-    private BooleanExpression notSoftDeleted() {
-        return recreation.deletedAt.isNull();
-    }
-
-    private BooleanExpression notReportedByUser(User user) {
-        QReport report = QReport.report;
-        if (user == null) {
-            return null;
-        }
-        return recreation.id.notIn(
-                JPAExpressions.select(report.targetRecreation.id)
-                        .from(report)
-                        .where(
-                                report.reportType.eq(ReportType.RECREATION),
-                                report.reporter.eq(user)));
-    }
-
     @Override
     public List<Recreation> findRelatedRecreations(
             Long recreationId,
@@ -174,12 +152,6 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             List<Purpose> purpose,
             Integer maxParticipants,
             List<Age> age) {
-        QRecreation recreation = QRecreation.recreation;
-        QRecreationRecreationPurpose recreationPurpose =
-                QRecreationRecreationPurpose.recreationRecreationPurpose;
-        QRecreationRecreationKeyword recreationKeyword =
-                QRecreationRecreationKeyword.recreationRecreationKeyword;
-        QRecreationAge recreationAge = QRecreationAge.recreationAge;
         List<Pair<Recreation, Double>> recreationList = new ArrayList<>();
 
         // 다른 Recreation id
@@ -189,8 +161,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                         .from(recreation)
                         .where(
                                 recreation.id.ne(recreationId),
-                                notReportedByUser(user),
-                                notSoftDeleted())
+                                MaskingPredicates.mask(recreation, user))
                         .fetch();
 
         // 다른 레크레이션들과 비교
@@ -207,9 +178,9 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             // 겹치는 목적 체크
             List<Purpose> purposesForComparison =
                     queryFactory
-                            .select(recreationPurpose.purpose.purpose)
-                            .from(recreationPurpose)
-                            .where(recreationPurpose.recreation.id.eq(otherRecreationId))
+                            .select(recreationRecreationPurpose.purpose.purpose)
+                            .from(recreationRecreationPurpose)
+                            .where(recreationRecreationPurpose.recreation.id.eq(otherRecreationId))
                             .fetch();
 
             long purposeMatchSize =
@@ -218,9 +189,9 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             // 겹치는 키워드 체크
             List<Keyword> keywordsForComparison =
                     queryFactory
-                            .select(recreationKeyword.keyword.keyword)
-                            .from(recreationKeyword)
-                            .where(recreationKeyword.recreation.id.eq(otherRecreationId))
+                            .select(recreationRecreationKeyword.keyword.keyword)
+                            .from(recreationRecreationKeyword)
+                            .where(recreationRecreationKeyword.recreation.id.eq(otherRecreationId))
                             .fetch();
 
             long keywordMatchSize =
@@ -267,10 +238,7 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
         return queryFactory
                 .select(flow)
                 .from(flow)
-                .where(
-                        MaskingPredicates.notSoftDeletedFlow(),
-                        isRecreationUsedInFlow(recreationId),
-                        MaskingPredicates.notReportedFlowByUser(user))
+                .where(MaskingPredicates.mask(flow, user), isRecreationUsedInFlow(recreationId))
                 .orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
                 .limit(2)
                 .fetch();
@@ -291,24 +259,13 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             Integer playTime,
             User user) {
 
-        QRecreation recreation = QRecreation.recreation;
-
-        QRecreationRecreationPurpose recreationPurpose =
-                QRecreationRecreationPurpose.recreationRecreationPurpose;
-        QRecreationRecreationKeyword recreationKeyword =
-                QRecreationRecreationKeyword.recreationRecreationKeyword;
-        QRecreationAge recreationAge = QRecreationAge.recreationAge;
-        QRecreationGender recreationGender = QRecreationGender.recreationGender;
-
         ArrayList<Triple<Recreation, Double, Double>> recreationList = new ArrayList<>();
 
         List<Long> recreations =
                 queryFactory
                         .select(recreation.id)
                         .from(recreation)
-                        .where(
-                                MaskingPredicates.notReportedRecreationByUser(user),
-                                MaskingPredicates.notSoftDeletedRecreation())
+                        .where(MaskingPredicates.mask(recreation, user))
                         .fetch();
 
         for (Long recreationId : recreations) {
@@ -322,9 +279,9 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             // 겹치는 목적 체크
             List<Purpose> purposesForComparison =
                     queryFactory
-                            .select(recreationPurpose.purpose.purpose)
-                            .from(recreationPurpose)
-                            .where(recreationPurpose.recreation.id.eq(recreationId))
+                            .select(recreationRecreationPurpose.purpose.purpose)
+                            .from(recreationRecreationPurpose)
+                            .where(recreationRecreationPurpose.recreation.id.eq(recreationId))
                             .fetch();
 
             long purposeMatchSize =
@@ -339,9 +296,9 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
             // 겹치는 키워드 체크
             List<Keyword> keywordsForComparison =
                     queryFactory
-                            .select(recreationKeyword.keyword.keyword)
-                            .from(recreationKeyword)
-                            .where(recreationKeyword.recreation.id.eq(recreationId))
+                            .select(recreationRecreationKeyword.keyword.keyword)
+                            .from(recreationRecreationKeyword)
+                            .where(recreationRecreationKeyword.recreation.id.eq(recreationId))
                             .fetch();
 
             long keywordMatchSize =
@@ -428,23 +385,43 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
         long totalCount =
                 queryFactory
                         .selectFrom(recreation)
-                        .where(
-                                MaskingPredicates.notReportedRecreationByUser(user),
-                                MaskingPredicates.notSoftDeletedRecreation())
+                        .where(MaskingPredicates.mask(recreation, user))
                         .fetch()
                         .size();
 
         List<Recreation> filteredRecreations =
                 queryFactory
                         .selectFrom(recreation)
-                        .where(
-                                MaskingPredicates.notReportedRecreationByUser(user),
-                                MaskingPredicates.notSoftDeletedRecreation())
+                        .where(MaskingPredicates.mask(recreation, user))
                         .orderBy(recreation.weeklyViewCount.desc())
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
                         .fetch();
 
         return new PageImpl<>(filteredRecreations, pageable, totalCount);
+    }
+
+    @Override
+    public Page<RecreationReview> findReviews(Long recreationId, User user, Pageable page) {
+        List<RecreationReview> reviews =
+                queryFactory
+                        .selectFrom(recreationReview)
+                        .where(
+                                recreationReview.recreation.id.eq(recreationId),
+                                MaskingPredicates.mask(recreationReview, user))
+                        .orderBy(recreationReview.createdAt.desc())
+                        .offset(page.getOffset())
+                        .limit(page.getPageSize())
+                        .fetch();
+
+        JPQLQuery<Long> countQuery =
+                queryFactory
+                        .select(recreationReview.count())
+                        .from(recreationReview)
+                        .where(
+                                recreationReview.recreation.id.eq(recreationId),
+                                MaskingPredicates.mask(recreationReview, user));
+
+        return PageableExecutionUtils.getPage(reviews, page, countQuery::fetchOne);
     }
 }

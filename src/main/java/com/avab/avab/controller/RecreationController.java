@@ -66,23 +66,6 @@ public class RecreationController {
 
     private final RecreationService recreationService;
 
-    @Operation(
-            summary = "인기 레크레이션 목록 조회 API",
-            description = "조회수를 기준으로 인기 레크레이션 목록을 조회합니다. _by 루아_")
-    @ApiResponses({
-        @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
-    })
-    @Parameter(name = "user", hidden = true)
-    @GetMapping("/popular")
-    public BaseResponse<RecreationPreviewPageDTO> getTop9RecreationsByWeeklyViewCount(
-            @AuthUser User user) {
-        Page<Recreation> topRecreations =
-                recreationService.getTop9RecreationsByWeeklyViewCount(user);
-
-        return BaseResponse.onSuccess(
-                RecreationConverter.toRecreationPreviewPageDTO(topRecreations, user));
-    }
-
     @Operation(summary = "레크레이션 상세설명 조회 API", description = "레크레이션 상세설명을 조회합니다. _by 수기_")
     @ApiResponses({
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
@@ -96,10 +79,10 @@ public class RecreationController {
         return BaseResponse.onSuccess(RecreationConverter.toDescriptionDTO(recreation, user));
     }
 
-    @Operation(summary = "레크레이션 검색 API", description = "검색 키워드와 세부 필터를 이용해 레크레이션을 검색합니다. _by 보노_")
+    @Operation(summary = "레크레이션 조회 API", description = "검색 키워드와 세부 필터를 이용해 레크레이션을 조회합니다. _by 보노_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
     @Parameter(name = "user", hidden = true)
-    @GetMapping("/search")
+    @GetMapping("")
     public BaseResponse<RecreationPreviewPageDTO> searchRecreations(
             @AuthUser User user,
             @RequestParam(name = "searchKeyword", required = false) String searchKeyword,
@@ -112,7 +95,7 @@ public class RecreationController {
             @RequestParam(name = "age", required = false) List<Age> ages,
             @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
                     Integer page,
-            @RequestParam(name = "sortBy", required = false, defaultValue = "recent")
+            @RequestParam(name = "sortBy", required = false, defaultValue = "RECENT")
                     SortCondition sortCondition) {
         Page<Recreation> recreationPage =
                 recreationService.searchRecreations(
@@ -250,19 +233,5 @@ public class RecreationController {
 
         return BaseResponse.onSuccess(
                 RecreationConverter.toRecreationRecommendListDTO(recommendRecreations, user));
-    }
-
-    @Operation(summary = "최신 레크레이션 API", description = "최신 레크레이션 목록을 가져옵니다. _by 수기_")
-    @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
-    @Parameter(name = "user", hidden = true)
-    @GetMapping("")
-    public BaseResponse<RecreationPreviewPageDTO> getRecentRecreation(
-            @AuthUser User user,
-            @RequestParam(name = "page", required = false, defaultValue = "0") @ValidatePage
-                    Integer page) {
-        Page<Recreation> recentRecreations = recreationService.getRecentRecreation(page);
-
-        return BaseResponse.onSuccess(
-                RecreationConverter.toRecreationPreviewPageDTO(recentRecreations, user));
     }
 }

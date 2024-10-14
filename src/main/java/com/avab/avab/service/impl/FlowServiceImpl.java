@@ -112,29 +112,19 @@ public class FlowServiceImpl implements FlowService {
     }
 
     public Flow getFlowDetail(User user, Long flowId) {
-        List<Long> reportedFlowIds = new ArrayList<>();
-        if (user != null) {
-            reportedFlowIds =
-                    user.getReportList().stream()
-                            .filter(report -> report.getReportType() == ReportType.FLOW)
-                            .map(Report::getTargetFlow)
-                            .map(Flow::getId)
-                            .toList();
-        }
-
         Flow flow =
-                reportedFlowIds.isEmpty()
-                        ? flowRepository
-                                .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
-                                        flowId, UserStatus.DELETED)
-                                .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND))
-                        : flowRepository
-                                .findByIdAndDeletedAtIsNullAndIdNotInAndAuthor_UserStatusNot(
-                                        flowId, reportedFlowIds, UserStatus.DELETED)
-                                .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
+                flowRepository
+                        .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                                flowId, UserStatus.DELETED)
+                        .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
 
-        flowViewCountService.incrementViewCount(flowId);
-        flowViewCountLast7DaysService.incrementViewCount(flowId);
+        if (user != null
+                && flow.getReportList().stream()
+                        .map(Report::getReporter)
+                        .map(User::getId)
+                        .anyMatch(id -> id.equals(user.getId()))) {
+            throw new FlowException(ErrorStatus.REPORTED_FLOW);
+        }
 
         return flow;
     }
