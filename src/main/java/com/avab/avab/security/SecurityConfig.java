@@ -68,7 +68,8 @@ public class SecurityConfig {
                     "/api/auth/refresh",
                     "/api/users/scrap",
                     "/api/recreations/recommended",
-                    "/api/flows/recommended");
+                    "/api/flows/recommended",
+                    "/actuator/prometheus");
 
     private final List<String> SWAGGER_URLS =
             List.of("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/v3/api-docs");
