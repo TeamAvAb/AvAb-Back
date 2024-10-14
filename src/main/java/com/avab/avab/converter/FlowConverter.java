@@ -1,5 +1,6 @@
 package com.avab.avab.converter;
 
+import com.avab.avab.domain.mapping.FlowScrap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,7 +20,6 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
-import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.FlowRecreationKeyword;
 import com.avab.avab.domain.mapping.FlowRecreationPurpose;
@@ -54,8 +54,8 @@ public class FlowConverter {
 
         Boolean isScraped =
                 user != null
-                        ? flow.getFlowFavoriteList().stream()
-                                .anyMatch((flowFavorite -> flowFavorite.getUser().equals(user)))
+                        ? flow.getFlowScrapList().stream()
+                              .anyMatch((flowFavorite -> flowFavorite.getUser().equals(user)))
                         : null;
 
         List<Purpose> purposeList =
@@ -223,13 +223,13 @@ public class FlowConverter {
 
         Boolean isScraped =
                 user != null
-                        ? flow.getFlowFavoriteList().stream()
-                                .anyMatch((flowFavorite -> flowFavorite.getUser().equals(user)))
+                        ? flow.getFlowScrapList().stream()
+                              .anyMatch((flowFavorite -> flowFavorite.getUser().equals(user)))
                         : null;
 
         User author = flow.getAuthor();
 
-        Integer scrapCount = flow.getFlowFavoriteList().size();
+        Integer scrapCount = flow.getFlowScrapList().size();
 
         FlowDetailPageDTO flowDetailPageDTO =
                 FlowDetailPageDTO.builder()
@@ -267,8 +267,8 @@ public class FlowConverter {
         return FlowScrapDTO.builder().isScraped(isScraped).build();
     }
 
-    public static FlowFavorite toFlowFavorite(Flow flow, User user) {
-        return FlowFavorite.builder().flow(flow).user(user).build();
+    public static FlowScrap toFlowFavorite(Flow flow, User user) {
+        return FlowScrap.builder().flow(flow).user(user).build();
     }
 
     public static DeletedFlowDTO toDeletedFlowDTO(Long flowId) {

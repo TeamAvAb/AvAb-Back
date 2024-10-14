@@ -1,5 +1,6 @@
 package com.avab.avab.service.impl;
 
+import com.avab.avab.domain.mapping.FlowScrap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,13 +33,12 @@ import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
 import com.avab.avab.domain.enums.ReportType;
 import com.avab.avab.domain.enums.UserStatus;
-import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.redis.service.FlowViewCountLast7DaysService;
 import com.avab.avab.redis.service.FlowViewCountService;
 import com.avab.avab.repository.CustomRecreationRepository;
 import com.avab.avab.repository.FlowAgeRepository;
-import com.avab.avab.repository.FlowFavoriteRepository;
+import com.avab.avab.repository.FlowScrapRepository;
 import com.avab.avab.repository.FlowGenderRepository;
 import com.avab.avab.repository.FlowRecreationKeywordRepository;
 import com.avab.avab.repository.FlowRecreationPurposeRepository;
@@ -60,7 +60,7 @@ public class FlowServiceImpl implements FlowService {
     private final FlowViewCountLast7DaysService flowViewCountLast7DaysService;
 
     private final FlowRepository flowRepository;
-    private final FlowFavoriteRepository flowFavoriteRepository;
+    private final FlowScrapRepository flowScrapRepository;
     private final RecreationRepository recreationRepository;
     private final RecreationPurposeRepository recreationPurposeRepository;
     private final RecreationKeywordRepository recreationKeywordRepository;
@@ -147,17 +147,17 @@ public class FlowServiceImpl implements FlowService {
                 flowRepository
                         .findById(flowId)
                         .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
-        Optional<FlowFavorite> flowFavorite = flowFavoriteRepository.findByFlowAndUser(flow, user);
+        Optional<FlowScrap> flowFavorite = flowScrapRepository.findByFlowAndUser(flow, user);
 
         if (flowFavorite.isPresent()) {
-            flowFavoriteRepository.delete(flowFavorite.get());
+            flowScrapRepository.delete(flowFavorite.get());
             flowRepository.decrementScrapCountById(flow.getId());
 
             return false;
         }
 
-        FlowFavorite favorite = FlowConverter.toFlowFavorite(flow, user);
-        flowFavoriteRepository.save(favorite);
+        FlowScrap favorite = FlowConverter.toFlowFavorite(flow, user);
+        flowScrapRepository.save(favorite);
         flowRepository.incrementScrapCountById(flow.getId());
 
         return true;

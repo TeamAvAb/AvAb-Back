@@ -14,7 +14,7 @@ import com.avab.avab.constant.UserConstant;
 import com.avab.avab.domain.common.BaseEntity;
 import com.avab.avab.domain.enums.SocialType;
 import com.avab.avab.domain.enums.UserStatus;
-import com.avab.avab.domain.mapping.FlowFavorite;
+import com.avab.avab.domain.mapping.FlowScrap;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
 
@@ -78,7 +78,7 @@ public class User extends BaseEntity {
             new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<FlowFavorite> flowFavoriteList = new ArrayList<>();
+    private List<FlowScrap> flowScrapList = new ArrayList<>();
 
     @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL)
     private List<Report> reportList = new ArrayList<>();
@@ -123,7 +123,7 @@ public class User extends BaseEntity {
     }
 
     public void cancelScrapeFlow(Flow flow) {
-        this.flowFavoriteList.removeIf(favorite -> favorite.getFlow().getId().equals(flow.getId()));
+        this.flowScrapList.removeIf(favorite -> favorite.getFlow().getId().equals(flow.getId()));
     }
 
     public void cancelRecommendationRecreationReview(RecreationReview recreationReview) {

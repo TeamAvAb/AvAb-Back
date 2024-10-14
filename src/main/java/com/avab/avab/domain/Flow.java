@@ -20,7 +20,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.avab.avab.domain.common.BaseEntity;
-import com.avab.avab.domain.mapping.FlowFavorite;
+import com.avab.avab.domain.mapping.FlowScrap;
 import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.FlowRecreationKeyword;
 import com.avab.avab.domain.mapping.FlowRecreationPurpose;
@@ -90,7 +90,7 @@ public class Flow extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL)
-    private List<FlowFavorite> flowFavoriteList = new ArrayList<>();
+    private List<FlowScrap> flowScrapList = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "targetFlow", cascade = CascadeType.ALL)

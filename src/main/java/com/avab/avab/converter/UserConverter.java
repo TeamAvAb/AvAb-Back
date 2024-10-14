@@ -42,8 +42,8 @@ public class UserConverter {
 
         Boolean isScraped =
                 user != null
-                        ? flow.getFlowFavoriteList().stream()
-                                .anyMatch((flowFavorite -> flowFavorite.getUser().equals(user)))
+                        ? flow.getFlowScrapList().stream()
+                              .anyMatch((flowFavorite -> flowFavorite.getUser().equals(user)))
                         : null;
 
         List<Purpose> purposeList =
