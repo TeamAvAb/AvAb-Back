@@ -19,10 +19,10 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
-import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.FlowRecreationKeyword;
 import com.avab.avab.domain.mapping.FlowRecreationPurpose;
+import com.avab.avab.domain.mapping.FlowScrap;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.PostFlowDTO;
 import com.avab.avab.dto.reqeust.FlowRequestDTO.RecreationSpec;
@@ -52,11 +52,7 @@ public class FlowConverter {
     public static FlowPreviewDTO toFlowPreviewDTO(Flow flow, User user) {
         User author = flow.getAuthor();
 
-        Boolean isScraped =
-                user != null
-                        ? flow.getFlowFavoriteList().stream()
-                                .anyMatch((flowFavorite -> flowFavorite.getUser().equals(user)))
-                        : null;
+        Boolean isScraped = user != null ? user.isFlowScrapped(flow) : null;
 
         List<Purpose> purposeList =
                 flow.getFlowRecreationPurposeList().stream()
@@ -223,13 +219,13 @@ public class FlowConverter {
 
         Boolean isScraped =
                 user != null
-                        ? flow.getFlowFavoriteList().stream()
-                                .anyMatch((flowFavorite -> flowFavorite.getUser().equals(user)))
+                        ? flow.getFlowScrapList().stream()
+                                .anyMatch((flowScrap -> flowScrap.getUser().equals(user)))
                         : null;
 
         User author = flow.getAuthor();
 
-        Integer scrapCount = flow.getFlowFavoriteList().size();
+        Integer scrapCount = flow.getFlowScrapList().size();
 
         FlowDetailPageDTO flowDetailPageDTO =
                 FlowDetailPageDTO.builder()
@@ -267,8 +263,8 @@ public class FlowConverter {
         return FlowScrapDTO.builder().isScraped(isScraped).build();
     }
 
-    public static FlowFavorite toFlowFavorite(Flow flow, User user) {
-        return FlowFavorite.builder().flow(flow).user(user).build();
+    public static FlowScrap toFlowFavorite(Flow flow, User user) {
+        return FlowScrap.builder().flow(flow).user(user).build();
     }
 
     public static DeletedFlowDTO toDeletedFlowDTO(Long flowId) {

@@ -36,4 +36,8 @@ public class RecreationFavorite extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recreation_id")
     private Recreation recreation;
+
+    public Boolean isTargetRecreation(Recreation recreation) {
+        return this.recreation.getId().equals(recreation.getId());
+    }
 }

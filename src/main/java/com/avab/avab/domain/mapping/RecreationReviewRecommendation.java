@@ -45,10 +45,7 @@ public class RecreationReviewRecommendation extends BaseEntity {
     @JoinColumn(name = "recreation_review_id")
     private RecreationReview recreationReview;
 
-    public void toggleType() {
-        this.type =
-                this.type == RecommendationType.GOOD
-                        ? RecommendationType.BAD
-                        : RecommendationType.GOOD;
+    public Boolean isTargetRecreationReview(RecreationReview recreationReview) {
+        return this.recreationReview.getId().equals(recreationReview.getId());
     }
 }

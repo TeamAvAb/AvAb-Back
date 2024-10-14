@@ -62,8 +62,6 @@ public interface RecreationService {
             List<Age> ages,
             User user);
 
-    Page<Recreation> getRecentRecreation(Integer page);
-
     void incrementViewCountLast7DaysById(Long flowId, Long viewCount);
 
     void incrementViewCountById(Long id, Long viewCount);
