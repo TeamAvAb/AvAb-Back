@@ -59,6 +59,9 @@ public class SecurityConfig {
     @Value("${management.security.http-basic.password}")
     private String ACTUATOR_PASSWORD;
 
+    @Value("${management.endpoints.web.base-path}")
+    private String ACTUATOR_BASE_PATH;
+
     private final List<String> ALLOWED_APIS =
             List.of(
                     "/api/auth/login/test",
@@ -158,7 +161,7 @@ public class SecurityConfig {
     @Bean
     @Order(0)
     public SecurityFilterChain actuatorFilterChain(HttpSecurity http) throws Exception {
-        http.securityMatcher("/actuator/**")
+        http.securityMatcher(ACTUATOR_BASE_PATH + "/**")
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated());
 
