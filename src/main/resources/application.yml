@@ -9,6 +9,18 @@ springdoc:
     tags-sorter: alpha
     operations-sorter: method
   use-fqn: true
+
+# spring actuator 관련 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"
+  server:
+    port: ${ACTUATOR_PORT}
+  security:
+    username: ${ACTUATOR_USERNAME}
+    password: ${ACTUATOR_PASSWORD}
 ---
 # Local Profile
 spring:
@@ -36,12 +48,6 @@ spring:
     redis:
       host: localhost
       port: 6379
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
 # S3
 cloud:
   aws:
