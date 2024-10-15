@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -51,6 +52,15 @@ public class SecurityConfig {
 
     @Value("${springdoc.swagger-ui.authentication.password:}")
     private String SWAGGER_PASSWORD;
+
+    @Value("${management.security.http-basic.username}")
+    private String ACTUATOR_USERNAME;
+
+    @Value("${management.security.http-basic.password}")
+    private String ACTUATOR_PASSWORD;
+
+    @Value("${management.endpoints.web.base-path}")
+    private String ACTUATOR_BASE_PATH;
 
     private final List<String> ALLOWED_APIS =
             List.of(
@@ -149,6 +159,16 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(0)
+    public SecurityFilterChain actuatorFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher(ACTUATOR_BASE_PATH + "/**")
+                .httpBasic(Customizer.withDefaults())
+                .authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated());
+
+        return http.build();
+    }
+
+    @Bean
     @Profile({"dev", "prod"})
     public UserDetailsService swaggerUserDetailsService() {
         UserDetails swaggerUserDetails =
@@ -159,5 +179,17 @@ public class SecurityConfig {
                         .build();
 
         return new InMemoryUserDetailsManager(swaggerUserDetails);
+    }
+
+    @Bean
+    public UserDetailsService actuatorUserDetailsService() {
+        UserDetails actuatorUserDetails =
+                User.builder()
+                        .username(ACTUATOR_USERNAME)
+                        .password(passwordEncoder().encode(ACTUATOR_PASSWORD))
+                        .roles("DEVELOPER")
+                        .build();
+
+        return new InMemoryUserDetailsManager(actuatorUserDetails);
     }
 }
