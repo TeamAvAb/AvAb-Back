@@ -53,10 +53,10 @@ public class SecurityConfig {
     @Value("${springdoc.swagger-ui.authentication.password:}")
     private String SWAGGER_PASSWORD;
 
-    @Value("${management.security.username}")
+    @Value("${management.security.http-basic.username}")
     private String ACTUATOR_USERNAME;
 
-    @Value("${management.security.password}")
+    @Value("${management.security.http-basic.password}")
     private String ACTUATOR_PASSWORD;
 
     private final List<String> ALLOWED_APIS =

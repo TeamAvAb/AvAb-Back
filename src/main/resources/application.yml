@@ -15,12 +15,21 @@ management:
   endpoints:
     web:
       exposure:
-        include: "prometheus"
+        include: "prometheus" # 프로메테우스만 웹 접근 허용
+      base-path: ${ACTUATOR_BASE_PATH} # 기본 경로 랜덤 문자열로 설정
+    enabled-by-default: false # 기본적으로 모든 액츄에이터 비활성화
+    jmx:
+      exposure:
+        exclude: "*" # JMX 방식 접근 전부 비활성화 (JMX는 사용하지 않음)
+  endpoint:
+    prometheus:
+      enabled: true # 프로메테우스 액츄에이터는 활성화
   server:
-    port: ${ACTUATOR_PORT}
+    port: ${ACTUATOR_PORT} # 액츄에이터 포트 설정 (서비스 서버 포트와는 다르게 해야함)
   security:
-    username: ${ACTUATOR_USERNAME}
-    password: ${ACTUATOR_PASSWORD}
+    http-basic:
+      username: ${ACTUATOR_USERNAME} # 액츄에이터 http basic 인증 사용자 이름
+      password: ${ACTUATOR_PASSWORD} # 액츄에이터 http basic 인증 비밀번호
 ---
 # Local Profile
 spring:
