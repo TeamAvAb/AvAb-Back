@@ -12,6 +12,7 @@ import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.Report;
 import com.avab.avab.domain.User;
+import com.avab.avab.domain.enums.UserStatus;
 import com.avab.avab.dto.reqeust.ReportRequestDTO.ReportFlowRequestDTO;
 import com.avab.avab.dto.reqeust.ReportRequestDTO.ReportRecreationRequestDTO;
 import com.avab.avab.dto.reqeust.ReportRequestDTO.ReportRecreationReviewDTO;
@@ -41,7 +42,8 @@ public class ReportServiceImpl implements ReportService {
     public Report reportRecreation(User user, ReportRecreationRequestDTO request) {
         Recreation targetRecreation =
                 recreationRepository
-                        .findById(request.getRecreationId())
+                        .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                                request.getRecreationId(), UserStatus.DELETED)
                         .orElseThrow(
                                 () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
 
@@ -51,6 +53,8 @@ public class ReportServiceImpl implements ReportService {
 
         Report report = ReportConverter.toReport(user, request, targetRecreation);
         reportRepository.save(report);
+
+        user.cancelFavoriteRecreation(targetRecreation);
 
         if (targetRecreation.getReportList().size() == SOFT_DELETE_THRESHOLD) {
             targetRecreation.softDelete();
@@ -70,7 +74,8 @@ public class ReportServiceImpl implements ReportService {
     public Report reportFlow(User user, ReportFlowRequestDTO request) {
         Flow targetFlow =
                 flowRepository
-                        .findById(request.getFlowId())
+                        .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                                request.getFlowId(), UserStatus.DELETED)
                         .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
 
         if (reportRepository.existsByReporterAndTargetFlow(user, targetFlow)) {
@@ -79,6 +84,8 @@ public class ReportServiceImpl implements ReportService {
 
         Report report = ReportConverter.toReport(user, request, targetFlow);
         reportRepository.save(report);
+
+        user.cancelScrapeFlow(targetFlow);
 
         if (targetFlow.getReportCount().equals(SOFT_DELETE_THRESHOLD)) {
             targetFlow.softDelete();
@@ -98,7 +105,8 @@ public class ReportServiceImpl implements ReportService {
     public Report reportRecreationReview(User user, ReportRecreationReviewDTO request) {
         RecreationReview targetRecreationReview =
                 recreationReviewRepository
-                        .findById(request.getRecreationReviewId())
+                        .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
+                                request.getRecreationReviewId(), UserStatus.DELETED)
                         .orElseThrow(() -> new RecreationException(ErrorStatus.REVIEW_NOT_FOUND));
 
         if (reportRepository.existsByReporterAndTargetRecreationReview(
@@ -108,6 +116,8 @@ public class ReportServiceImpl implements ReportService {
 
         Report report = ReportConverter.toReport(user, request, targetRecreationReview);
         reportRepository.save(report);
+
+        user.cancelRecommendationRecreationReview(targetRecreationReview);
 
         if (targetRecreationReview.getReportCount().equals(SOFT_DELETE_THRESHOLD)) {
             targetRecreationReview.softDelete();

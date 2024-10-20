@@ -116,4 +116,22 @@ public class User extends BaseEntity {
     public Boolean isDeleted() {
         return this.userStatus == UserStatus.DELETED;
     }
+
+    public void cancelFavoriteRecreation(Recreation recreation) {
+        this.recreationFavoriteList.removeIf(
+                favorite -> favorite.getRecreation().getId().equals(recreation.getId()));
+    }
+
+    public void cancelScrapeFlow(Flow flow) {
+        this.flowFavoriteList.removeIf(favorite -> favorite.getFlow().getId().equals(flow.getId()));
+    }
+
+    public void cancelRecommendationRecreationReview(RecreationReview recreationReview) {
+        this.recreationReviewRecommendationList.removeIf(
+                recommendation ->
+                        recommendation
+                                .getRecreationReview()
+                                .getId()
+                                .equals(recreationReview.getId()));
+    }
 }

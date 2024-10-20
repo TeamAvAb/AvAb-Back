@@ -29,6 +29,7 @@ import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.domain.mapping.RecreationRecreationPurpose;
 import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
+import com.avab.avab.dto.enums.MaskedReason;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.CreateRecreationDTO;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.CreateRecreationWayDTO;
 import com.avab.avab.dto.reqeust.RecreationRequestDTO.PostRecreationReviewDTO;
@@ -61,6 +62,23 @@ public class RecreationConverter {
 
     public static RecreationFlowDTO toRecreationFlowDTO(FlowRecreation flowRecreation, User user) {
         Recreation recreation = flowRecreation.getRecreation();
+
+        if (recreation.isDeleted() || recreation.isAuthorDeleted()) {
+            return RecreationFlowDTO.builder()
+                    .id(recreation.getId())
+                    .isMasked(true)
+                    .maskedReason(MaskedReason.DELETED)
+                    .build();
+        }
+
+        if (recreation.isReportedByUser(user)) {
+            return RecreationFlowDTO.builder()
+                    .id(recreation.getId())
+                    .isMasked(true)
+                    .maskedReason(MaskedReason.REPORTED)
+                    .build();
+        }
+
         Integer playTime =
                 (flowRecreation.getCustomPlayTime() != null)
                         ? flowRecreation.getCustomPlayTime()
