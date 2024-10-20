@@ -12,6 +12,7 @@ import com.avab.avab.domain.Recreation;
 import com.avab.avab.domain.RecreationReview;
 import com.avab.avab.domain.Report;
 import com.avab.avab.domain.User;
+import com.avab.avab.domain.enums.UserStatus;
 import com.avab.avab.dto.reqeust.ReportRequestDTO.ReportFlowRequestDTO;
 import com.avab.avab.dto.reqeust.ReportRequestDTO.ReportRecreationRequestDTO;
 import com.avab.avab.dto.reqeust.ReportRequestDTO.ReportRecreationReviewDTO;
