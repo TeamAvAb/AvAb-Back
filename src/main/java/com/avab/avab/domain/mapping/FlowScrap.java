@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FlowFavorite extends BaseEntity {
+public class FlowScrap extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +36,8 @@ public class FlowFavorite extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flow_id")
     private Flow flow;
+
+    public Boolean isTargetFlow(Flow flow) {
+        return this.flow.getId().equals(flow.getId());
+    }
 }

@@ -424,4 +424,28 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
 
         return PageableExecutionUtils.getPage(reviews, page, countQuery::fetchOne);
     }
+
+    @Override
+    public Page<Recreation> findFavoriteRecreationsByUser(User user, Pageable page) {
+        List<Recreation> favoriteRecreations =
+                queryFactory
+                        .select(recreation)
+                        .from(recreation)
+                        .where(
+                                recreation.recreationFavoriteList.any().user.eq(user),
+                                MaskingPredicates.mask(recreation, user))
+                        .offset(page.getOffset())
+                        .limit(page.getPageSize())
+                        .fetch();
+
+        JPQLQuery<Long> countQuery =
+                queryFactory
+                        .select(recreation.count())
+                        .from(recreation)
+                        .where(
+                                recreation.recreationFavoriteList.any().user.eq(user),
+                                MaskingPredicates.mask(recreation, user));
+
+        return PageableExecutionUtils.getPage(favoriteRecreations, page, countQuery::fetchOne);
+    }
 }

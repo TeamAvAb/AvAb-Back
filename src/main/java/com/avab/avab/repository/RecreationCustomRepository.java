@@ -50,7 +50,7 @@ public interface RecreationCustomRepository {
 
     void updateTotalStars(Long recreationId);
 
-    Page<Recreation> findTop9ByOrderByWeeklyViewCountDesc(Pageable page, User user);
-
     Page<RecreationReview> findReviews(Long recreationId, User user, Pageable page);
+
+    Page<Recreation> findFavoriteRecreationsByUser(User user, Pageable page);
 }

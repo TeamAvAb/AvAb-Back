@@ -20,10 +20,10 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.avab.avab.domain.common.BaseEntity;
-import com.avab.avab.domain.mapping.FlowFavorite;
 import com.avab.avab.domain.mapping.FlowRecreation;
 import com.avab.avab.domain.mapping.FlowRecreationKeyword;
 import com.avab.avab.domain.mapping.FlowRecreationPurpose;
+import com.avab.avab.domain.mapping.FlowScrap;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -90,7 +90,7 @@ public class Flow extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "flow", cascade = CascadeType.ALL)
-    private List<FlowFavorite> flowFavoriteList = new ArrayList<>();
+    private List<FlowScrap> flowScrapList = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "targetFlow", cascade = CascadeType.ALL)
@@ -102,5 +102,9 @@ public class Flow extends BaseEntity {
 
     public Integer getReportCount() {
         return reportList.size();
+    }
+
+    public Boolean isAuthoredBy(User user) {
+        return author.getId().equals(user.getId());
     }
 }

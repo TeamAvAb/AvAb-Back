@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.tuple.Triple;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import com.avab.avab.domain.Flow;
@@ -20,6 +23,7 @@ import com.avab.avab.domain.enums.Age;
 import com.avab.avab.domain.enums.Gender;
 import com.avab.avab.domain.enums.Keyword;
 import com.avab.avab.domain.enums.Purpose;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -125,5 +129,25 @@ public class FlowCustomRepositoryImpl implements FlowCustomRepository {
 
         // 최대 가중치를 가지는 2개의 플로우 리턴
         return flowList.stream().map(Triple::getLeft).limit(2).collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<Flow> findScrapFlowsByUser(User user, Pageable pageable) {
+        List<Flow> scrapFlows =
+                queryFactory
+                        .selectFrom(flow)
+                        .where(
+                                flow.flowScrapList.any().user.eq(user),
+                                MaskingPredicates.mask(flow, user))
+                        .fetch();
+
+        JPQLQuery<Flow> countQuery =
+                queryFactory
+                        .selectFrom(flow)
+                        .where(
+                                flow.flowScrapList.any().user.eq(user),
+                                MaskingPredicates.mask(flow, user));
+
+        return PageableExecutionUtils.getPage(scrapFlows, pageable, countQuery::fetchCount);
     }
 }
