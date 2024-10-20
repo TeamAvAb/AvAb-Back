@@ -106,7 +106,8 @@ public class RecreationServiceImpl implements RecreationService {
                 recreationRepository
                         .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
                                 recreationId, UserStatus.DELETED)
-                        .orElseThrow(() -> new RecreationException(ErrorStatus.REVIEW_NOT_FOUND));
+                        .orElseThrow(
+                                () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
 
         RecreationReview review = RecreationConverter.toRecreationReview(user, recreation, request);
         recreationReviewRepository.save(review);
