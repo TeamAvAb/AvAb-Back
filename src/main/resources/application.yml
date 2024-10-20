@@ -16,7 +16,7 @@ management:
     web:
       exposure:
         include: "prometheus" # 프로메테우스만 웹 접근 허용
-      base-path: "/avab" # 기본 경로 랜덤 문자열로 설정
+      base-path: ${ACTUATOR_BASE_PATH} # 기본 경로 랜덤 문자열로 설정
     enabled-by-default: false # 기본적으로 모든 액츄에이터 비활성화
     jmx:
       exposure:
