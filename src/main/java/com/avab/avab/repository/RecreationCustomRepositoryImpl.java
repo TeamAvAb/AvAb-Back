@@ -75,6 +75,8 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                         .offset(pageable.getOffset())
                         .fetch();
 
+        QueryDslUtil.orderByFromSort(pageable.getSort(), recreation).forEach(query::orderBy);
+
         JPQLQuery<Long> countQuery =
                 queryFactory
                         .select(recreation.count())

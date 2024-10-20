@@ -51,11 +51,6 @@ public class RecreationServiceImpl implements RecreationService {
     private final Integer SEARCH_PAGE_SIZE = 9;
     private final Integer REVIEW_PAGE_SIZE = 2;
 
-    public Page<Recreation> getTop9RecreationsByWeeklyViewCount(User user) {
-        return recreationRepository.findTop9ByOrderByWeeklyViewCountDesc(
-                PageRequest.of(0, 9), user);
-    }
-
     @Transactional
     public Recreation getRecreationDescription(Long recreationId, User user) {
         Recreation recreation =
@@ -111,7 +106,8 @@ public class RecreationServiceImpl implements RecreationService {
                 recreationRepository
                         .findByIdAndDeletedAtIsNullAndAuthor_UserStatusNot(
                                 recreationId, UserStatus.DELETED)
-                        .orElseThrow(() -> new RecreationException(ErrorStatus.REVIEW_NOT_FOUND));
+                        .orElseThrow(
+                                () -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
 
         RecreationReview review = RecreationConverter.toRecreationReview(user, recreation, request);
         recreationReviewRepository.save(review);
