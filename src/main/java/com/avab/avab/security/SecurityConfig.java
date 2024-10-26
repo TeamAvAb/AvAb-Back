@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
@@ -169,27 +168,29 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Profile({"dev", "prod"})
-    public UserDetailsService swaggerUserDetailsService() {
-        UserDetails swaggerUserDetails =
-                User.builder()
-                        .username(SWAGGER_USERNAME)
-                        .password(passwordEncoder().encode(SWAGGER_PASSWORD))
-                        .roles("DEVELOPER")
-                        .build();
+    public UserDetailsService inMemoryDevelopers(EnvironmentHelper environmentHelper) {
+        InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
 
-        return new InMemoryUserDetailsManager(swaggerUserDetails);
-    }
+        if (environmentHelper.isDev() || environmentHelper.isProd()) {
+            UserDetails swaggerUserDetails =
+                    User.builder()
+                            .username(SWAGGER_USERNAME)
+                            .password(passwordEncoder().encode(SWAGGER_PASSWORD))
+                            .roles("SWAGGER")
+                            .build();
 
-    @Bean
-    public UserDetailsService actuatorUserDetailsService() {
+            inMemoryUserDetailsManager.createUser(swaggerUserDetails);
+        }
+
         UserDetails actuatorUserDetails =
                 User.builder()
                         .username(ACTUATOR_USERNAME)
                         .password(passwordEncoder().encode(ACTUATOR_PASSWORD))
-                        .roles("DEVELOPER")
+                        .roles("ACTUATOR")
                         .build();
 
-        return new InMemoryUserDetailsManager(actuatorUserDetails);
+        inMemoryUserDetailsManager.createUser(actuatorUserDetails);
+
+        return inMemoryUserDetailsManager;
     }
 }
