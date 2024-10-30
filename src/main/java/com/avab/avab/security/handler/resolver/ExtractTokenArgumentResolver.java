@@ -33,6 +33,8 @@ public class ExtractTokenArgumentResolver implements HandlerMethodArgumentResolv
 
         String refreshToken = webRequest.getHeader("Authorization");
 
+        refreshToken = refreshToken.substring(7);
+
         jwtTokenProvider.isTokenValid(refreshToken);
         return refreshToken;
     }
