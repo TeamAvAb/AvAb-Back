@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
+import com.avab.avab.apiPayload.exception.AuthException;
 import com.avab.avab.apiPayload.exception.UserException;
 import com.avab.avab.domain.Flow;
 import com.avab.avab.domain.Recreation;
@@ -18,6 +19,7 @@ import com.avab.avab.dto.reqeust.UserRequestDTO.UpdateUserDTO;
 import com.avab.avab.repository.FlowRepository;
 import com.avab.avab.repository.RecreationRepository;
 import com.avab.avab.repository.UserRepository;
+import com.avab.avab.security.provider.JwtTokenProvider;
 import com.avab.avab.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RecreationRepository recreationRepository;
     private final FlowRepository flowRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     private final Integer FAVORITE_SCRAP_PAGE_SIZE = 6;
 
@@ -64,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User deleteUser(User user) {
         if (user.getUserStatus().equals(UserStatus.DELETED)) {
-            throw new UserException(ErrorStatus.USER_ALREADY_DELETE);
+            throw new UserException(ErrorStatus.USER_ALREADY_DELETED);
         }
 
         user.deleteUser();
@@ -84,5 +87,26 @@ public class UserServiceImpl implements UserService {
                 userRepository.findByUserStatusAndDeletedTimeLessThanEqual(
                         UserStatus.DELETED, threshold);
         userRepository.deleteAll(oldUsers);
+    }
+
+    @Override
+    @Transactional
+    public User restoreUserDeletion(String restoreToken) {
+        if (!jwtTokenProvider.isRestoreTokenValid(restoreToken)) {
+            throw new AuthException(ErrorStatus.AUTH_INVALID_TOKEN);
+        }
+
+        Long id = jwtTokenProvider.getId(restoreToken);
+        User user =
+                userRepository
+                        .findById(id)
+                        .orElseThrow(() -> new UserException(ErrorStatus.USER_NOT_FOUND));
+
+        if (!user.isDeleted()) {
+            throw new UserException(ErrorStatus.USER_NOT_DELETED);
+        }
+
+        user.enableUser();
+        return user;
     }
 }

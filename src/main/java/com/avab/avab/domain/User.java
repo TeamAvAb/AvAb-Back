@@ -133,4 +133,8 @@ public class User extends BaseEntity {
     public Boolean isFlowScrapped(Flow flow) {
         return this.flowScrapList.stream().anyMatch(it -> it.isTargetFlow(flow));
     }
+
+    public Boolean isEnabled() {
+        return this.userStatus == UserStatus.ENABLED;
+    }
 }
