@@ -23,6 +23,7 @@ public class AuthConverter {
                 .refreshToken(refreshToken)
                 .accessToken(accessToken)
                 .isLogin(isLogin)
+                .isDeleted(user.isDeleted())
                 .userId(user.getId())
                 .build();
     }

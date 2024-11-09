@@ -132,6 +132,7 @@ jwt:
   secret: ${JWT_SECRET_KEY}
   access-token-validity: ${JWT_ACCESS_TOKEN_TIME}
   refresh-token-validity: ${JWT_REFRESH_TOKEN_TIME}
+  restore-token-validity: ${JWT_RESTORE_TOKEN_TIME}
 #kakao
 kakao:
   auth:

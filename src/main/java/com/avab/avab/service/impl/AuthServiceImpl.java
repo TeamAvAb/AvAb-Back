@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
 import com.avab.avab.apiPayload.exception.AuthException;
-import com.avab.avab.apiPayload.exception.UserException;
 import com.avab.avab.converter.AuthConverter;
 import com.avab.avab.domain.User;
 import com.avab.avab.domain.enums.SocialType;
@@ -50,7 +49,8 @@ public class AuthServiceImpl implements AuthService {
         if (queryUser.isPresent()) {
             User user = queryUser.get();
             if (user.isDeleted()) {
-                throw new UserException(ErrorStatus.USER_NOT_FOUND);
+                return AuthConverter.toOAuthResponse(
+                        jwtTokenProvider.createRestoreToken(user.getId()), null, true, user);
             }
             if (user.isDisabled()) {
                 if (user.isCanBeEnabled()) {
