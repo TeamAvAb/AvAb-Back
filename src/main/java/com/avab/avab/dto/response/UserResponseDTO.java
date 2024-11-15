@@ -28,4 +28,15 @@ public class UserResponseDTO {
 
         private String profileImage;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    @AllArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class UserRestoreDeletionResponse {
+
+        private Long userId;
+
+        private Boolean isRestored;
+    }
 }

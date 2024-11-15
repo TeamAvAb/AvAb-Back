@@ -15,4 +15,12 @@ public class UserConverter {
                 .profileImage(user.getProfileImage())
                 .build();
     }
+
+    public static UserResponseDTO.UserRestoreDeletionResponse toUserRestoreDeletionResponse(
+            User user) {
+        return UserResponseDTO.UserRestoreDeletionResponse.builder()
+                .userId(user.getId())
+                .isRestored(user.isEnabled())
+                .build();
+    }
 }

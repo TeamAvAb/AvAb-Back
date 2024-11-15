@@ -46,8 +46,8 @@ public class AuthController {
         @ApiResponse(responseCode = "COMMON200", description = "OK, 성공"),
     })
     @PostMapping("/refresh")
-    @Parameter(name = "refreshToken", hidden = true)
-    public BaseResponse<TokenRefreshResponse> refresh(@ExtractToken String refreshToken) {
+    public BaseResponse<TokenRefreshResponse> refresh(
+            @Parameter(hidden = true) @ExtractToken String refreshToken) {
         return BaseResponse.onSuccess(authService.refresh(refreshToken));
     }
 

@@ -23,7 +23,9 @@ import com.avab.avab.dto.response.FlowResponseDTO.FlowPreviewPageDTO;
 import com.avab.avab.dto.response.RecreationResponseDTO.RecreationPreviewPageDTO;
 import com.avab.avab.dto.response.UserResponseDTO;
 import com.avab.avab.dto.response.UserResponseDTO.UserResponse;
+import com.avab.avab.dto.response.UserResponseDTO.UserRestoreDeletionResponse;
 import com.avab.avab.security.handler.annotation.AuthUser;
+import com.avab.avab.security.handler.annotation.ExtractToken;
 import com.avab.avab.service.UserService;
 import com.avab.avab.validation.annotation.ValidatePage;
 
@@ -111,5 +113,15 @@ public class UserController {
     public BaseResponse<UserResponseDTO.UserResponse> deleteUser(@AuthUser User user) {
         User deletedUser = userService.deleteUser(user);
         return BaseResponse.onSuccess(UserConverter.toUserResponse(deletedUser));
+    }
+
+    @Operation(summary = "회원 탈퇴 복구", description = "탈퇴한 회원의 계정을 복구합니다. _by 보노_")
+    @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
+    @Parameter(name = "user", hidden = true)
+    @PatchMapping("/me/deleted")
+    public BaseResponse<UserRestoreDeletionResponse> restoreUser(
+            @ExtractToken String restoreToken) {
+        User restoredUser = userService.restoreUserDeletion(restoreToken);
+        return BaseResponse.onSuccess(UserConverter.toUserRestoreDeletionResponse(restoredUser));
     }
 }
