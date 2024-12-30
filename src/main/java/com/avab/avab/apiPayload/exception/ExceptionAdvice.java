@@ -43,6 +43,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     private final DiscordClient discordClient;
     private final EnvironmentHelper environmentHelper;
+    private final ExceptionNotifier exceptionNotifier;
 
     @Override
     protected ResponseEntity<Object> handleTypeMismatch(
@@ -109,10 +110,11 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<Object> exception(Exception e, WebRequest request) {
-        e.printStackTrace();
+        log.error("알 수 없는 예외 발생", e);
 
-        if (environmentHelper.isLocal()) {
+        if (!environmentHelper.isLocal()) {
             sendDiscordAlarm(e, request);
+            exceptionNotifier.notify(e, request);
         }
 
         return handleExceptionInternalFalse(
