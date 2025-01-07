@@ -75,6 +75,11 @@ dependencies {
     // prometheus
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+
+    // slack
+    implementation("com.slack.api:bolt:1.44.2")
+    implementation("com.slack.api:bolt-servlet:1.44.2")
+    implementation("com.slack.api:bolt-jetty:1.44.2")
 }
 
 def querydslSrcDir = 'src/main/generated'
