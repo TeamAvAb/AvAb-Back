@@ -1,10 +1,6 @@
 package com.avab.avab.apiPayload.exception;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,8 +24,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.avab.avab.apiPayload.BaseResponse;
 import com.avab.avab.apiPayload.code.ErrorReasonDTO;
 import com.avab.avab.apiPayload.code.status.ErrorStatus;
-import com.avab.avab.feign.discord.dto.DiscordMessage;
-import com.avab.avab.feign.discord.dto.DiscordMessage.Embed;
 import com.avab.avab.feign.discord.service.DiscordClient;
 import com.avab.avab.utils.EnvironmentHelper;
 
@@ -113,7 +107,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         log.error("알 수 없는 예외 발생", e);
 
         if (!environmentHelper.isLocal()) {
-            sendDiscordAlarm(e, request);
+            //            sendDiscordAlarm(e, request);
             exceptionNotifier.notify(e, request);
         }
 
@@ -189,48 +183,48 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(
                 e, body, headers, errorStatus.getHttpStatus(), request);
     }
-
-    private void sendDiscordAlarm(Exception e, WebRequest request) {
-        discordClient.sendAlarm(createMessage(e, request));
-    }
-
-    private DiscordMessage createMessage(Exception e, WebRequest request) {
-        return DiscordMessage.builder()
-                .content("# 🚨 에러 발생 비이이이이사아아아앙")
-                .embeds(
-                        List.of(
-                                Embed.builder()
-                                        .title("ℹ️ 에러 정보")
-                                        .description(
-                                                "### 🕖 발생 시간\n"
-                                                        + LocalDateTime.now()
-                                                        + "\n"
-                                                        + "### 🔗 요청 URL\n"
-                                                        + createRequestFullPath(request)
-                                                        + "\n"
-                                                        + "### 📄 Stack Trace\n"
-                                                        + "```\n"
-                                                        + getStackTrace(e).substring(0, 1000)
-                                                        + "\n```")
-                                        .build()))
-                .build();
-    }
-
-    private String createRequestFullPath(WebRequest webRequest) {
-        HttpServletRequest request = ((ServletWebRequest) webRequest).getRequest();
-        String fullPath = request.getMethod() + " " + request.getRequestURL();
-
-        String queryString = request.getQueryString();
-        if (queryString != null) {
-            fullPath += "?" + queryString;
-        }
-
-        return fullPath;
-    }
-
-    private String getStackTrace(Exception e) {
-        StringWriter stringWriter = new StringWriter();
-        e.printStackTrace(new PrintWriter(stringWriter));
-        return stringWriter.toString();
-    }
+    //
+    //    private void sendDiscordAlarm(Exception e, WebRequest request) {
+    //        discordClient.sendAlarm(createMessage(e, request));
+    //    }
+    //
+    //    private DiscordMessage createMessage(Exception e, WebRequest request) {
+    //        return DiscordMessage.builder()
+    //                .content("# 🚨 에러 발생 비이이이이사아아아앙")
+    //                .embeds(
+    //                        List.of(
+    //                                Embed.builder()
+    //                                        .title("ℹ️ 에러 정보")
+    //                                        .description(
+    //                                                "### 🕖 발생 시간\n"
+    //                                                        + LocalDateTime.now()
+    //                                                        + "\n"
+    //                                                        + "### 🔗 요청 URL\n"
+    //                                                        + createRequestFullPath(request)
+    //                                                        + "\n"
+    //                                                        + "### 📄 Stack Trace\n"
+    //                                                        + "```\n"
+    //                                                        + getStackTrace(e).substring(0, 1000)
+    //                                                        + "\n```")
+    //                                        .build()))
+    //                .build();
+    //    }
+    //
+    //    private String createRequestFullPath(WebRequest webRequest) {
+    //        HttpServletRequest request = ((ServletWebRequest) webRequest).getRequest();
+    //        String fullPath = request.getMethod() + " " + request.getRequestURL();
+    //
+    //        String queryString = request.getQueryString();
+    //        if (queryString != null) {
+    //            fullPath += "?" + queryString;
+    //        }
+    //
+    //        return fullPath;
+    //    }
+    //
+    //    private String getStackTrace(Exception e) {
+    //        StringWriter stringWriter = new StringWriter();
+    //        e.printStackTrace(new PrintWriter(stringWriter));
+    //        return stringWriter.toString();
+    //    }
 }
