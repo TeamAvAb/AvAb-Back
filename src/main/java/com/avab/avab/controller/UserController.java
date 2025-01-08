@@ -117,7 +117,7 @@ public class UserController {
 
     @Operation(summary = "회원 탈퇴 복구", description = "탈퇴한 회원의 계정을 복구합니다. _by 보노_")
     @ApiResponses({@ApiResponse(responseCode = "COMMON200", description = "OK, 성공")})
-    @Parameter(name = "user", hidden = true)
+    @Parameter(name = "restoreToken", hidden = true)
     @PatchMapping("/me/deleted")
     public BaseResponse<UserRestoreDeletionResponse> restoreUser(
             @ExtractToken String restoreToken) {

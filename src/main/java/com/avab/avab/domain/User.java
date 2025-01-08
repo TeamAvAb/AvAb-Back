@@ -102,6 +102,11 @@ public class User extends BaseEntity {
         this.userStatus = UserStatus.ENABLED;
     }
 
+    public void restoreUser() {
+        this.deletedTime = null;
+        this.userStatus = UserStatus.ENABLED;
+    }
+
     public Boolean isDisabled() {
         return this.userStatus == UserStatus.DISABLED;
     }

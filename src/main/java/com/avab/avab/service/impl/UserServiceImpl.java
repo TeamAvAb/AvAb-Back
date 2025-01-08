@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
             throw new UserException(ErrorStatus.USER_NOT_DELETED);
         }
 
-        user.enableUser();
+        user.restoreUser();
         return user;
     }
 }
