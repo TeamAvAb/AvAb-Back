@@ -139,6 +139,8 @@ public class FlowCustomRepositoryImpl implements FlowCustomRepository {
                         .where(
                                 flow.flowScrapList.any().user.eq(user),
                                 MaskingPredicates.mask(flow, user))
+                        .limit(pageable.getPageSize())
+                        .offset(pageable.getOffset())
                         .fetch();
 
         JPQLQuery<Flow> countQuery =
