@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
@@ -379,26 +378,6 @@ public class RecreationCustomRepositoryImpl implements RecreationCustomRepositor
                 .set(recreation.totalStars, totalStars)
                 .where(recreation.id.eq(recreationId))
                 .execute();
-    }
-
-    public Page<Recreation> findTop9ByOrderByWeeklyViewCountDesc(Pageable pageable, User user) {
-        long totalCount =
-                queryFactory
-                        .selectFrom(recreation)
-                        .where(MaskingPredicates.mask(recreation, user))
-                        .fetch()
-                        .size();
-
-        List<Recreation> filteredRecreations =
-                queryFactory
-                        .selectFrom(recreation)
-                        .where(MaskingPredicates.mask(recreation, user))
-                        .orderBy(recreation.weeklyViewCount.desc())
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
-                        .fetch();
-
-        return new PageImpl<>(filteredRecreations, pageable, totalCount);
     }
 
     @Override
