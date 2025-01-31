@@ -209,7 +209,7 @@ public class RecreationConverter {
                 .minParticipants(recreation.getMinParticipants())
                 .maxParticipants(recreation.getMaxParticipants())
                 .playTime(recreation.getPlayTime())
-                .hashTagList(hashtagList)
+                .hashtagList(hashtagList)
                 .keywordList(keywordList)
                 .purposeList(purposeList)
                 .placeList(placeList)
