@@ -54,7 +54,7 @@ public class RecreationResponseDTO {
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class DescriptionDTO {
 
-        Long recreationId;
+        Long id;
         String title;
         String summary;
         Integer playTime;

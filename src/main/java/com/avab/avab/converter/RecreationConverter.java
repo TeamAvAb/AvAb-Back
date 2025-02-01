@@ -203,7 +203,7 @@ public class RecreationConverter {
                         .collect(Collectors.toList());
 
         return DescriptionDTO.builder()
-                .recreationId(recreation.getId())
+                .id(recreation.getId())
                 .title(recreation.getTitle())
                 .summary(recreation.getSummary())
                 .minParticipants(recreation.getMinParticipants())
