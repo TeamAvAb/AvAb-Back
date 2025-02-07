@@ -15,7 +15,6 @@ import com.avab.avab.domain.common.BaseEntity;
 import com.avab.avab.domain.enums.SocialType;
 import com.avab.avab.domain.enums.UserStatus;
 import com.avab.avab.domain.mapping.FlowScrap;
-import com.avab.avab.domain.mapping.RecreationBookmark;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
 
@@ -80,9 +79,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FlowScrap> flowScrapList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<RecreationBookmark> recreationBookmarkList = new ArrayList<>();
 
     @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL)
     private List<Report> reportList = new ArrayList<>();

@@ -21,7 +21,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.avab.avab.domain.common.BaseEntity;
 import com.avab.avab.domain.mapping.FlowRecreation;
-import com.avab.avab.domain.mapping.RecreationBookmark;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationRecreationKeyword;
 import com.avab.avab.domain.mapping.RecreationRecreationPurpose;
@@ -119,10 +118,6 @@ public class Recreation extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
     private List<FlowRecreation> flowRecreationList = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)
-    private List<RecreationBookmark> recreationBookmarkList = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "targetRecreation", cascade = CascadeType.ALL)
