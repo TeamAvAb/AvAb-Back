@@ -64,6 +64,7 @@ public class Recreation extends BaseEntity {
     private Long viewCount;
 
     private Long weeklyViewCount;
+    private Long bookmarkCount;
 
     @ColumnDefault("0")
     @Column(name = "view_count_last_7_days")
