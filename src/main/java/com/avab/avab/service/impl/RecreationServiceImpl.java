@@ -141,7 +141,7 @@ public class RecreationServiceImpl implements RecreationService {
         switch (sortCondition) {
             case VIEW -> sort = recreationSort.by(Recreation::getViewCountLast7Days).descending();
             case RECENT -> sort = recreationSort.by(Recreation::getCreatedAt).descending();
-            case LIKE -> sort = recreationSort.by(Recreation::getTotalStars).descending();
+            case LIKE -> sort = recreationSort.by(Recreation::getFavoriteCount).descending();
             default -> throw new RecreationException(ErrorStatus.INVALID_SORT_CONDITION);
         }
 
