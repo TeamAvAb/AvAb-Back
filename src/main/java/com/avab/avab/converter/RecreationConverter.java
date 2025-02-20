@@ -148,6 +148,7 @@ public class RecreationConverter {
                 .title(recreation.getTitle())
                 .totalStars(recreation.getTotalStars())
                 .summary(recreation.getSummary())
+                .playTime(recreation.getPlayTime())
                 .build();
     }
 

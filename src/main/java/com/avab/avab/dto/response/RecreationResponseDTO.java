@@ -33,6 +33,7 @@ public class RecreationResponseDTO {
         List<Keyword> keywordList;
         String imageUrl;
         String summary;
+        Integer playTime;
 
         @Schema(description = "즐겨찾기 여부, 미로그인시 null")
         Boolean isFavorite;
