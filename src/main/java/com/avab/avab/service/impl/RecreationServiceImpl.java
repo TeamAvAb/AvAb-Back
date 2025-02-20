@@ -87,12 +87,14 @@ public class RecreationServiceImpl implements RecreationService {
 
         if (recreationFavorite.isPresent()) {
             recreationFavoriteRepository.delete(recreationFavorite.get());
+            recreation.decrementFavoriteCount();
 
             return false;
         } else {
             RecreationFavorite favorite =
                     RecreationConverter.toRecreationFavorite(recreation, user);
             recreationFavoriteRepository.save(favorite);
+            recreation.incrementFavoriteCount();
 
             return true;
         }
