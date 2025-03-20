@@ -63,8 +63,6 @@ public class Recreation extends BaseEntity {
 
     private Long viewCount;
 
-    private Long weeklyViewCount;
-
     private Long favoriteCount;
 
     @ColumnDefault("0")
@@ -139,5 +137,13 @@ public class Recreation extends BaseEntity {
 
     public Boolean isReportedByUser(User user) {
         return this.reportList.stream().anyMatch(report -> report.isReporter(user));
+    }
+
+    public void incrementFavoriteCount() {
+        this.favoriteCount++;
+    }
+
+    public void decrementFavoriteCount() {
+        this.favoriteCount--;
     }
 }
