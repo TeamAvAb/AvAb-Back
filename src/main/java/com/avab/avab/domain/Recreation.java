@@ -50,7 +50,9 @@ public class Recreation extends BaseEntity {
     @Column(length = 300)
     private String imageUrl;
 
-    private Float totalStars;
+    @ColumnDefault("0")
+    @Builder.Default
+    private Float totalStars = 0.0f;
 
     @Column(length = 300)
     private String summary;
@@ -61,19 +63,26 @@ public class Recreation extends BaseEntity {
 
     private Integer playTime;
 
-    private Long viewCount;
+    @ColumnDefault("0")
+    @Builder.Default
+    private Long viewCount = 0L;
 
-    private Long favoriteCount;
+    @ColumnDefault("0")
+    @Builder.Default
+    private Long favoriteCount = 0L;
 
     @ColumnDefault("0")
     @Column(name = "view_count_last_7_days")
-    private Long viewCountLast7Days;
+    @Builder.Default
+    private Long viewCountLast7Days = 0L;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;
 
-    private LocalDateTime deletedAt;
+    @ColumnDefault("null")
+    @Builder.Default
+    private LocalDateTime deletedAt = null;
 
     @Builder.Default
     @OneToMany(mappedBy = "recreation", cascade = CascadeType.ALL)

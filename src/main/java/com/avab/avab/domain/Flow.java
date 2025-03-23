@@ -48,21 +48,29 @@ public class Flow extends BaseEntity {
 
     private Integer participants;
 
-    private Long viewCount;
+    @ColumnDefault("0")
+    @Builder.Default
+    private Long viewCount = 0L;
 
     @ColumnDefault("0")
     @Column(name = "view_count_last_7_days")
-    private Long viewCountLast7Days;
+    @Builder.Default
+    private Long viewCountLast7Days = 0L;
 
     @Column(length = 100)
     private String title;
 
-    private Long scrapCount;
+    @ColumnDefault("0")
+    @Builder.Default
+    private Long scrapCount = 0L;
 
     @Column(length = 300)
     private String imageUrl;
 
-    @Column private LocalDateTime deletedAt;
+    @Column
+    @ColumnDefault("null")
+    @Builder.Default
+    private LocalDateTime deletedAt = null;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")

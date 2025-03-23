@@ -263,7 +263,7 @@ public class FlowConverter {
         return FlowScrapDTO.builder().isScraped(isScraped).build();
     }
 
-    public static FlowScrap toFlowFavorite(Flow flow, User user) {
+    public static FlowScrap toFlowScrap(Flow flow, User user) {
         return FlowScrap.builder().flow(flow).user(user).build();
     }
 

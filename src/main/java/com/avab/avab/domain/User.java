@@ -5,7 +5,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -18,7 +26,12 @@ import com.avab.avab.domain.mapping.FlowScrap;
 import com.avab.avab.domain.mapping.RecreationFavorite;
 import com.avab.avab.domain.mapping.RecreationReviewRecommendation;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Builder
@@ -51,15 +64,19 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)")
-    private UserStatus userStatus;
+    private UserStatus userStatus = UserStatus.ENABLED;
 
     @ColumnDefault("null")
-    private LocalDate deletedTime;
+    @Builder.Default
+    private LocalDate deletedAt = null;
 
     @ColumnDefault("0")
-    private Integer reportCount;
+    @Builder.Default
+    private Integer reportCount = 0;
 
-    private LocalDateTime disabledAt;
+    @ColumnDefault("null")
+    @Builder.Default
+    private LocalDateTime disabledAt = null;
 
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Recreation> recreationList = new ArrayList<>();
@@ -84,7 +101,7 @@ public class User extends BaseEntity {
     private List<Report> reportList = new ArrayList<>();
 
     public void deleteUser() {
-        this.deletedTime = LocalDate.now();
+        this.deletedAt = LocalDate.now();
         this.userStatus = UserStatus.DELETED;
     }
 
@@ -99,11 +116,6 @@ public class User extends BaseEntity {
 
     public void enableUser() {
         this.disabledAt = null;
-        this.userStatus = UserStatus.ENABLED;
-    }
-
-    public void restoreUser() {
-        this.deletedTime = null;
         this.userStatus = UserStatus.ENABLED;
     }
 

@@ -32,7 +32,7 @@ public class RecreationRequestDTO {
 
         @Size(max = 500, message = "리뷰는 300자 이하여야 합니다.")
         @NotEmpty(message = "리뷰 내용은 필수입니다.")
-        private String contents;
+        private String content;
     }
 
     @Getter
@@ -87,7 +87,7 @@ public class RecreationRequestDTO {
 
         @NotBlank(message = "방법 내용은 비워둘 수 없습니다.")
         @Size(max = 300, message = "방법 내용은 300자를 넘을 수 없습니다.")
-        String contents;
+        String content;
 
         @Schema(description = "방법 순서, 0부터 시작")
         Integer seq;
