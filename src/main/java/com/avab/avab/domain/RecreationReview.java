@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -43,13 +44,19 @@ public class RecreationReview extends BaseEntity {
     private Integer stars;
 
     @Column(length = 500)
-    private String contents;
+    private String content;
 
-    private Integer goodCount;
+    @ColumnDefault("0")
+    @Builder.Default
+    private Integer goodCount = 0;
 
-    private Integer badCount;
+    @ColumnDefault("0")
+    @Builder.Default
+    private Integer badCount = 0;
 
-    private LocalDateTime deletedAt;
+    @ColumnDefault("null")
+    @Builder.Default
+    private LocalDateTime deletedAt = null;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recreation_id")

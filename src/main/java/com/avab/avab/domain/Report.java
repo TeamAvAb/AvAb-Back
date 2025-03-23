@@ -11,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.avab.avab.domain.common.BaseEntity;
 import com.avab.avab.domain.enums.ReportReason;
 import com.avab.avab.domain.enums.ReportType;
@@ -42,26 +44,32 @@ public class Report extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_user_id")
-    private User targetUser;
+    @Builder.Default
+    private User targetUser = null;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_recreation_id")
-    private Recreation targetRecreation;
+    @Builder.Default
+    private Recreation targetRecreation = null;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_recreation_review_id")
-    private RecreationReview targetRecreationReview;
+    @Builder.Default
+    private RecreationReview targetRecreationReview = null;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_flow_id")
-    private Flow targetFlow;
+    @Builder.Default
+    private Flow targetFlow = null;
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(20)")
     private ReportReason reason;
 
     @Column(length = 300)
-    private String extraReason;
+    @ColumnDefault("null")
+    @Builder.Default
+    private String extraReason = null;
 
     public Boolean isReporter(User user) {
         return this.reporter.equals(user);

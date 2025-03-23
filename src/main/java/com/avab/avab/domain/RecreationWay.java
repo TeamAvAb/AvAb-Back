@@ -27,7 +27,7 @@ public class RecreationWay {
     private Long id;
 
     @Column(length = 300)
-    private String contents;
+    private String content;
 
     @Column(length = 300)
     private String imageUrl;
