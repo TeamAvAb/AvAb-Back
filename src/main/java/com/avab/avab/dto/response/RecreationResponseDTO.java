@@ -83,7 +83,7 @@ public class RecreationResponseDTO {
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class WayDTO {
 
-        String contents;
+        String content;
         String imageUrl;
         Integer seq;
     }
@@ -117,7 +117,7 @@ public class RecreationResponseDTO {
         Integer stars;
         LocalDateTime createdAt;
         LocalDateTime updatedAt;
-        String contents;
+        String content;
         Integer goodCount;
         Integer badCount;
 
@@ -160,6 +160,7 @@ public class RecreationResponseDTO {
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     @AllArgsConstructor(access = AccessLevel.PROTECTED)
     public static class RecreationFlowDTO {
+
         Long id;
         Boolean isMasked;
         MaskedReason maskedReason;

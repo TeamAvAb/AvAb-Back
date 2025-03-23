@@ -84,8 +84,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void hardDeleteOldUser(LocalDate threshold) {
         List<User> oldUsers =
-                userRepository.findByUserStatusAndDeletedTimeLessThanEqual(
-                        UserStatus.DELETED, threshold);
+                userRepository.findByUserStatusAndDeletedAtBefore(UserStatus.DELETED, threshold);
         userRepository.deleteAll(oldUsers);
     }
 
@@ -106,7 +105,7 @@ public class UserServiceImpl implements UserService {
             throw new UserException(ErrorStatus.USER_NOT_DELETED);
         }
 
-        user.restoreUser();
+        user.enableUser();
         return user;
     }
 }

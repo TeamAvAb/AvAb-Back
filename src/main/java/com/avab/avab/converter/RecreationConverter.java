@@ -154,7 +154,7 @@ public class RecreationConverter {
 
     public static WayDTO toWayDTO(RecreationWay recreationWay) {
         return WayDTO.builder()
-                .contents(recreationWay.getContents())
+                .content(recreationWay.getContent())
                 .imageUrl(recreationWay.getImageUrl())
                 .seq(recreationWay.getSeq())
                 .build();
@@ -244,7 +244,7 @@ public class RecreationConverter {
         return RecreationReview.builder()
                 .recreation(recreation)
                 .author(user)
-                .contents(request.getContents())
+                .content(request.getContent())
                 .stars(request.getStars())
                 .build();
     }
@@ -283,7 +283,7 @@ public class RecreationConverter {
                                 .build())
                 .createdAt(review.getCreatedAt())
                 .updatedAt(review.getUpdatedAt())
-                .contents(review.getContents())
+                .content(review.getContent())
                 .goodCount(review.getGoodCount())
                 .badCount(review.getBadCount())
                 .recommendation(
@@ -419,7 +419,7 @@ public class RecreationConverter {
             CreateRecreationWayDTO request, String wayImageUrl, Recreation recreation) {
         return RecreationWay.builder()
                 .recreation(recreation)
-                .contents(request.getContents())
+                .content(request.getContent())
                 .seq(request.getSeq())
                 .imageUrl(wayImageUrl)
                 .build();

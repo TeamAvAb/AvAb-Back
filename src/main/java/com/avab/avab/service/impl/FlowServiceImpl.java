@@ -156,7 +156,7 @@ public class FlowServiceImpl implements FlowService {
             return false;
         }
 
-        FlowScrap favorite = FlowConverter.toFlowFavorite(flow, user);
+        FlowScrap favorite = FlowConverter.toFlowScrap(flow, user);
         flowScrapRepository.save(favorite);
         flowRepository.incrementScrapCountById(flow.getId());
 
