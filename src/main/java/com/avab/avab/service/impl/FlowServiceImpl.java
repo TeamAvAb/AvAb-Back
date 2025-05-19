@@ -126,6 +126,9 @@ public class FlowServiceImpl implements FlowService {
             throw new FlowException(ErrorStatus.REPORTED_FLOW);
         }
 
+        flowViewCountService.incrementViewCount(flowId);
+        flowViewCountLast7DaysService.incrementViewCount(flowId);
+
         return flow;
     }
 
