@@ -24,7 +24,7 @@ public class FlowRequestDTO {
         String title;
         List<RecreationSpec> recreationSpecList;
         Integer totalPlayTime;
-        Integer participants;
+        Integer participants = 0;
         List<Age> ageList;
         List<Purpose> purposeList;
         List<Keyword> keywordList;
