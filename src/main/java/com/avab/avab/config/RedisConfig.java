@@ -8,7 +8,12 @@ import org.springframework.data.redis.connection.lettuce.LettuceClientConfigurat
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
+import com.avab.avab.utils.EnvironmentHelper;
+
+import lombok.RequiredArgsConstructor;
+
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
 
     @Value("${spring.data.redis.host}")
@@ -17,12 +22,16 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
+    private final EnvironmentHelper environmentHelper;
+
     @Bean
     public LettuceConnectionFactory connectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(host, port);
 
         LettuceClientConfiguration clientConfig =
-                LettuceClientConfiguration.builder().useSsl().build();
+                !environmentHelper.isLocal()
+                        ? LettuceClientConfiguration.builder().useSsl().build()
+                        : LettuceClientConfiguration.builder().build();
 
         return new LettuceConnectionFactory(redisConfig, clientConfig);
     }
