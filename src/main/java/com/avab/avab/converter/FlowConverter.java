@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.avab.avab.domain.CustomRecreation;
 import com.avab.avab.domain.Flow;
+import com.avab.avab.domain.Flow.FlowBuilder;
 import com.avab.avab.domain.FlowAge;
 import com.avab.avab.domain.FlowGender;
 import com.avab.avab.domain.Recreation;
@@ -86,74 +87,15 @@ public class FlowConverter {
             List<RecreationKeyword> recreationKeywordList,
             List<RecreationPurpose> recreationPurposeList) {
 
-        Flow flow =
-                Flow.builder()
-                        .participants(request.getParticipants())
-                        .totalPlayTime(request.getTotalPlayTime())
-                        .title(request.getTitle())
-                        .imageUrl(imageUrl)
-                        .author(user)
-                        .build();
+        Flow flow = buildFlow(null, request, user, imageUrl);
 
-        List<FlowRecreation> flowRecreationList =
-                request.getRecreationSpecList().stream()
-                        .map(
-                                spec -> {
-                                    // Recreation에 대한 FlowRecreation 생성
-                                    if (recreationMap.containsKey(spec.getSeq())) {
-                                        return FlowRecreation.builder()
-                                                .flow(flow)
-                                                .recreation(recreationMap.get(spec.getSeq()))
-                                                .customPlayTime(spec.getCustomPlayTime())
-                                                .seq(spec.getSeq())
-                                                .build();
-                                    }
-                                    // CustomRecreation에 대한 FlowRecreation 생성
-                                    return FlowRecreation.builder()
-                                            .flow(flow)
-                                            .customRecreation(
-                                                    customRecreationMap.get(spec.getSeq()))
-                                            .customPlayTime(spec.getCustomPlayTime())
-                                            .seq(spec.getSeq())
-                                            .build();
-                                })
-                        .toList();
-
-        List<FlowRecreationKeyword> flowRecreationKeywordList =
-                recreationKeywordList.stream()
-                        .map(
-                                recreationKeyword ->
-                                        FlowRecreationKeyword.builder()
-                                                .flow(flow)
-                                                .keyword(recreationKeyword)
-                                                .build())
-                        .toList();
-
-        List<FlowRecreationPurpose> flowRecreationPurposeList =
-                recreationPurposeList.stream()
-                        .map(
-                                recreationPurpose ->
-                                        FlowRecreationPurpose.builder()
-                                                .flow(flow)
-                                                .purpose(recreationPurpose)
-                                                .build())
-                        .toList();
-
-        List<FlowAge> flowAgeList =
-                request.getAgeList().stream()
-                        .map(age -> FlowAge.builder().age(age).flow(flow).build())
-                        .toList();
-
-        List<FlowGender> flowGenderList =
-                request.getGenderList().stream()
-                        .map(gender -> FlowGender.builder().flow(flow).gender(gender).build())
-                        .toList();
-
-        flow.getFlowRecreationList().addAll(flowRecreationList);
-        flow.getFlowRecreationKeywordList().addAll(flowRecreationKeywordList);
-        flow.getFlowRecreationPurposeList().addAll(flowRecreationPurposeList);
-        flow.getAgeList().addAll(flowAgeList);
-        flow.getGenderList().addAll(flowGenderList);
+        populateFlowDetails(
+                request,
+                recreationMap,
+                customRecreationMap,
+                recreationKeywordList,
+                recreationPurposeList,
+                flow);
 
         return flow;
     }
@@ -284,76 +226,127 @@ public class FlowConverter {
             Map<Integer, CustomRecreation> customRecreationMap,
             List<RecreationKeyword> recreationKeywordList,
             List<RecreationPurpose> recreationPurposeList) {
-        Flow flow =
+        Flow flow = buildFlow(flowId, request, user, imageUrl);
+
+        populateFlowDetails(
+                request,
+                recreationMap,
+                customRecreationMap,
+                recreationKeywordList,
+                recreationPurposeList,
+                flow);
+
+        return flow;
+    }
+
+    private static Flow buildFlow(Long flowId, PostFlowDTO request, User user, String imageUrl) {
+        FlowBuilder builder =
                 Flow.builder()
-                        .id(flowId)
                         .participants(request.getParticipants())
                         .totalPlayTime(request.getTotalPlayTime())
-                        .imageUrl(imageUrl)
                         .title(request.getTitle())
-                        .author(user)
-                        .build();
+                        .imageUrl(imageUrl)
+                        .author(user);
 
-        List<FlowRecreation> flowRecreationList =
-                request.getRecreationSpecList().stream()
-                        .map(
-                                spec -> {
-                                    // Recreation에 대한 FlowRecreation 생성
-                                    if (recreationMap.containsKey(spec.getSeq())) {
-                                        return FlowRecreation.builder()
-                                                .flow(flow)
-                                                .recreation(recreationMap.get(spec.getSeq()))
-                                                .customPlayTime(spec.getCustomPlayTime())
-                                                .seq(spec.getSeq())
-                                                .build();
-                                    }
-                                    // CustomRecreation에 대한 FlowRecreation 생성
-                                    return FlowRecreation.builder()
-                                            .flow(flow)
-                                            .customRecreation(
-                                                    customRecreationMap.get(spec.getSeq()))
-                                            .customPlayTime(spec.getCustomPlayTime())
-                                            .seq(spec.getSeq())
-                                            .build();
-                                })
-                        .toList();
+        if (flowId != null) {
+            builder.id(flowId);
+        }
 
-        List<FlowRecreationKeyword> flowRecreationKeywordList =
-                recreationKeywordList.stream()
-                        .map(
-                                recreationKeyword ->
-                                        FlowRecreationKeyword.builder()
-                                                .flow(flow)
-                                                .keyword(recreationKeyword)
-                                                .build())
-                        .toList();
+        return builder.build();
+    }
 
-        List<FlowRecreationPurpose> flowRecreationPurposeList =
-                recreationPurposeList.stream()
-                        .map(
-                                recreationPurpose ->
-                                        FlowRecreationPurpose.builder()
-                                                .flow(flow)
-                                                .purpose(recreationPurpose)
-                                                .build())
-                        .toList();
+    private static void populateFlowDetails(
+            PostFlowDTO request,
+            Map<Integer, Recreation> recreationMap,
+            Map<Integer, CustomRecreation> customRecreationMap,
+            List<RecreationKeyword> recreationKeywordList,
+            List<RecreationPurpose> recreationPurposeList,
+            Flow flow) {
+        List<FlowRecreation> recreations =
+                getFlowRecreations(request, recreationMap, customRecreationMap, flow);
+        List<FlowRecreationKeyword> keywords =
+                getFlowRecreationKeywords(recreationKeywordList, flow);
+        List<FlowRecreationPurpose> purposes =
+                getFlowRecreationPurposes(recreationPurposeList, flow);
+        List<FlowAge> ages = getFlowAges(request.getAgeList(), flow);
+        List<FlowGender> genders = getFlowGenders(request.getGenderList(), flow);
 
-        List<FlowAge> flowAgeList =
-                request.getAgeList().stream()
-                        .map(age -> FlowAge.builder().age(age).flow(flow).build())
-                        .toList();
+        attachFlowDetails(flow, recreations, keywords, purposes, ages, genders);
+    }
 
-        List<FlowGender> flowGenderList =
-                request.getGenderList().stream()
-                        .map(gender -> FlowGender.builder().flow(flow).gender(gender).build())
-                        .toList();
-
+    private static void attachFlowDetails(
+            Flow flow,
+            List<FlowRecreation> flowRecreationList,
+            List<FlowRecreationKeyword> flowRecreationKeywordList,
+            List<FlowRecreationPurpose> flowRecreationPurposeList,
+            List<FlowAge> flowAgeList,
+            List<FlowGender> flowGenderList) {
         flow.getFlowRecreationList().addAll(flowRecreationList);
         flow.getFlowRecreationKeywordList().addAll(flowRecreationKeywordList);
         flow.getFlowRecreationPurposeList().addAll(flowRecreationPurposeList);
         flow.getAgeList().addAll(flowAgeList);
         flow.getGenderList().addAll(flowGenderList);
+    }
 
-        return flow;
+    private static List<FlowRecreation> getFlowRecreations(
+            PostFlowDTO request,
+            Map<Integer, Recreation> recreationMap,
+            Map<Integer, CustomRecreation> customRecreationMap,
+            Flow flow) {
+        return request.getRecreationSpecList().stream()
+                .map(
+                        spec -> {
+                            // Recreation에 대한 FlowRecreation 생성
+                            if (recreationMap.containsKey(spec.getSeq())) {
+                                return FlowRecreation.builder()
+                                        .flow(flow)
+                                        .recreation(recreationMap.get(spec.getSeq()))
+                                        .customPlayTime(spec.getCustomPlayTime())
+                                        .seq(spec.getSeq())
+                                        .build();
+                            }
+                            // CustomRecreation에 대한 FlowRecreation 생성
+                            return FlowRecreation.builder()
+                                    .flow(flow)
+                                    .customRecreation(customRecreationMap.get(spec.getSeq()))
+                                    .customPlayTime(spec.getCustomPlayTime())
+                                    .seq(spec.getSeq())
+                                    .build();
+                        })
+                .toList();
+    }
+
+    private static List<FlowRecreationKeyword> getFlowRecreationKeywords(
+            List<RecreationKeyword> recreationKeywordList, Flow flow) {
+        return recreationKeywordList.stream()
+                .map(
+                        recreationKeyword ->
+                                FlowRecreationKeyword.builder()
+                                        .flow(flow)
+                                        .keyword(recreationKeyword)
+                                        .build())
+                .toList();
+    }
+
+    private static List<FlowRecreationPurpose> getFlowRecreationPurposes(
+            List<RecreationPurpose> recreationPurposeList, Flow flow) {
+        return recreationPurposeList.stream()
+                .map(
+                        recreationPurpose ->
+                                FlowRecreationPurpose.builder()
+                                        .flow(flow)
+                                        .purpose(recreationPurpose)
+                                        .build())
+                .toList();
+    }
+
+    private static List<FlowAge> getFlowAges(List<Age> ages, Flow flow) {
+        return ages.stream().map(age -> FlowAge.builder().age(age).flow(flow).build()).toList();
+    }
+
+    private static List<FlowGender> getFlowGenders(List<Gender> genders, Flow flow) {
+        return genders.stream()
+                .map(gender -> FlowGender.builder().flow(flow).gender(gender).build())
+                .toList();
     }
 }
