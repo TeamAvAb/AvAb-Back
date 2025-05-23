@@ -163,6 +163,8 @@ public class FlowServiceImpl implements FlowService {
 
     @Transactional
     public Flow postFlow(PostFlowDTO request, User user) {
+        normalizeRequest(request);
+
         Map<Integer, Recreation> recreationMap = extractRecreationMap(request);
         Map<Integer, CustomRecreation> customRecreationMap = extractCustomRecreationMap(request);
 
@@ -179,6 +181,17 @@ public class FlowServiceImpl implements FlowService {
                 recreationKeywordList,
                 recreationPurposeList,
                 null);
+    }
+
+    private PostFlowDTO normalizeRequest(PostFlowDTO request) {
+        int normalizedParticipants = normalizeParticipants(request.getParticipants());
+        request.setParticipants(normalizedParticipants);
+
+        return request;
+    }
+
+    private int normalizeParticipants(Integer participants) {
+        return participants != null ? participants : 0;
     }
 
     @Transactional
