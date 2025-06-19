@@ -65,9 +65,10 @@ public class FlowCustomRepositoryImpl implements FlowCustomRepository {
                     purposesForComparison.stream().filter(purpose::contains).count();
 
             // 시간(필수) 비교
+            Integer nowTotalPlayTime = nowFlow.getTotalPlayTime();
             long loePlayTime =
-                    nowFlow.getTotalPlayTime() <= totalPlayTime
-                            ? -Math.abs(nowFlow.getTotalPlayTime() - totalPlayTime)
+                    (nowTotalPlayTime != null && nowTotalPlayTime <= totalPlayTime)
+                            ? -Math.abs(nowTotalPlayTime - totalPlayTime)
                             : -10000;
 
             // 겹치는 키워드 체크
@@ -84,9 +85,12 @@ public class FlowCustomRepositoryImpl implements FlowCustomRepository {
                             : 0L;
 
             // 인원
+            Integer nowParticipants = nowFlow.getParticipants();
             int participantsMatch =
-                    participant != null && participant > nowFlow.getParticipants()
-                            ? participant - nowFlow.getParticipants()
+                    (participant != null
+                                    && nowParticipants != null
+                                    && participant > nowParticipants)
+                            ? participant - nowParticipants
                             : 0;
 
             // 연령대 겹치는 개수 확인
