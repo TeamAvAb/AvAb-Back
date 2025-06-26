@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -146,10 +147,7 @@ public class FlowServiceImpl implements FlowService {
     @Override
     @Transactional
     public Boolean toggleScrapeFlow(User user, Long flowId) {
-        Flow flow =
-                flowRepository
-                        .findById(flowId)
-                        .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
+        Flow flow = getFlow(flowId);
         Optional<FlowScrap> flowFavorite = flowScrapRepository.findByFlowAndUser(flow, user);
 
         if (flowFavorite.isPresent()) {
@@ -168,77 +166,27 @@ public class FlowServiceImpl implements FlowService {
 
     @Transactional
     public Flow postFlow(PostFlowDTO request, User user) {
-        Map<Integer, Recreation> recreationMap = new HashMap<>();
-        Map<Integer, CustomRecreation> customRecreationMap = new HashMap<>();
-
-        request.getRecreationSpecList()
-                .forEach(
-                        spec -> {
-                            if (spec.getRecreationId() != null) {
-                                Recreation recreation =
-                                        recreationRepository
-                                                .findById(spec.getRecreationId())
-                                                .orElseThrow(
-                                                        () ->
-                                                                new RecreationException(
-                                                                        ErrorStatus
-                                                                                .RECREATION_NOT_FOUND));
-                                recreationMap.put(spec.getSeq(), recreation);
-                            } else {
-                                List<RecreationKeyword> customRecreationKeywordList =
-                                        new ArrayList<>();
-                                if (spec.getCustomKeywordList() != null) {
-                                    customRecreationKeywordList =
-                                            spec.getCustomKeywordList().stream()
-                                                    .map(
-                                                            keyword ->
-                                                                    recreationKeywordRepository
-                                                                            .findByKeyword(keyword)
-                                                                            .get())
-                                                    .toList();
-                                }
-
-                                CustomRecreation customRecreation =
-                                        FlowConverter.toCustomRecreation(
-                                                spec, customRecreationKeywordList);
-
-                                customRecreationRepository.save(customRecreation);
-                                customRecreationMap.put(spec.getSeq(), customRecreation);
-                            }
-                        });
+        Map<Integer, Recreation> recreationMap = extractRecreationMap(request);
+        Map<Integer, CustomRecreation> customRecreationMap = extractCustomRecreationMap(request);
 
         List<RecreationKeyword> recreationKeywordList =
-                request.getKeywordList().stream()
-                        .map(keyword -> recreationKeywordRepository.findByKeyword(keyword).get())
-                        .toList();
-
+                getRecreationKeywords(request.getKeywordList());
         List<RecreationPurpose> recreationPurposeList =
-                request.getPurposeList().stream()
-                        .map(purpose -> recreationPurposeRepository.findByPurpose(purpose).get())
-                        .toList();
+                getRecreationPurposes(request.getPurposeList());
 
-        int num = flowNumber.nextInt(4);
-        Flow flow =
-                FlowConverter.toFlow(
-                        request,
-                        user,
-                        flowImageUrl[num],
-                        recreationMap,
-                        customRecreationMap,
-                        recreationKeywordList,
-                        recreationPurposeList);
-
-        flowRepository.save(flow);
-
-        return flow;
+        return createOrUpdateFlow(
+                request,
+                user,
+                recreationMap,
+                customRecreationMap,
+                recreationKeywordList,
+                recreationPurposeList,
+                null);
     }
 
     @Transactional
     public void deleteFlow(Long flowId, User user) {
-        Flow flow =
-                flowRepository
-                        .findById(flowId)
-                        .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
+        Flow flow = getFlow(flowId);
         if (!flow.isAuthoredBy(user)) {
             throw new FlowException(ErrorStatus.FLOW_DELETE_UNAUTHORIZED);
         }
@@ -262,10 +210,7 @@ public class FlowServiceImpl implements FlowService {
     @Override
     @Transactional
     public Flow updateFlow(PostFlowDTO request, User user, Long flowId) {
-        Flow flow =
-                flowRepository
-                        .findById(flowId)
-                        .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
+        Flow flow = getFlow(flowId);
 
         // custom, ageList, purposeList, genderList, keywordList는 시작하자마자 삭제 (일단 모두 삭제로 구현)
         flowRecreationKeywordRepository.deleteAllByFlow(flow);
@@ -274,73 +219,115 @@ public class FlowServiceImpl implements FlowService {
         flowAgeRepository.deleteAllByFlow(flow);
         flowRecreationRepository.deleteAllByFlow(flow);
 
-        Map<Integer, Recreation> recreationMap = new HashMap<>();
-        Map<Integer, CustomRecreation> customRecreationMap = new HashMap<>();
-
-        request.getRecreationSpecList()
-                .forEach(
-                        spec -> {
-                            if (spec.getRecreationId() != null) {
-                                Recreation recreation =
-                                        recreationRepository
-                                                .findById(spec.getRecreationId())
-                                                .orElseThrow(
-                                                        () ->
-                                                                new RecreationException(
-                                                                        ErrorStatus
-                                                                                .RECREATION_NOT_FOUND));
-                                recreationMap.put(spec.getSeq(), recreation);
-                            } else {
-                                List<RecreationKeyword> customRecreationKeywordList =
-                                        new ArrayList<>();
-                                if (spec.getCustomKeywordList() != null) {
-                                    customRecreationKeywordList =
-                                            spec.getCustomKeywordList().stream()
-                                                    .map(
-                                                            keyword ->
-                                                                    recreationKeywordRepository
-                                                                            .findByKeyword(keyword)
-                                                                            .get())
-                                                    .toList();
-                                }
-
-                                CustomRecreation customRecreation =
-                                        FlowConverter.toCustomRecreation(
-                                                spec, customRecreationKeywordList);
-
-                                customRecreationRepository.save(customRecreation);
-                                customRecreationMap.put(spec.getSeq(), customRecreation);
-                            }
-                        });
+        Map<Integer, Recreation> recreationMap = extractRecreationMap(request);
+        Map<Integer, CustomRecreation> customRecreationMap = extractCustomRecreationMap(request);
 
         List<RecreationKeyword> recreationKeywordList =
-                request.getKeywordList().stream()
-                        .map(keyword -> recreationKeywordRepository.findByKeyword(keyword).get())
-                        .toList();
-
+                getRecreationKeywords(request.getKeywordList());
         List<RecreationPurpose> recreationPurposeList =
-                request.getPurposeList().stream()
-                        .map(purpose -> recreationPurposeRepository.findByPurpose(purpose).get())
-                        .toList();
+                getRecreationPurposes(request.getPurposeList());
 
-        int num = flowNumber.nextInt(4);
-        Flow updateFlow =
-                FlowConverter.toUpdateFlow(
-                        flowId,
-                        request,
-                        user,
-                        flowImageUrl[num],
-                        recreationMap,
-                        customRecreationMap,
-                        recreationKeywordList,
-                        recreationPurposeList);
-
-        return flowRepository.save(updateFlow);
+        return createOrUpdateFlow(
+                request,
+                user,
+                recreationMap,
+                customRecreationMap,
+                recreationKeywordList,
+                recreationPurposeList,
+                flowId);
     }
 
     @Override
     @Transactional
     public void incrementViewCountLast7Days(Long flowId, Long viewCount) {
         flowRepository.updateViewCountLast7DaysById(flowId, viewCount);
+    }
+
+    private Map<Integer, Recreation> extractRecreationMap(PostFlowDTO request) {
+        Map<Integer, Recreation> recreationMap = new HashMap<>();
+
+        for (var spec : request.getRecreationSpecList()) {
+            if (spec.getRecreationId() != null) {
+                Recreation recreation = getRecreation(spec.getRecreationId());
+                recreationMap.put(spec.getSeq(), recreation);
+            }
+        }
+
+        return recreationMap;
+    }
+
+    private Map<Integer, CustomRecreation> extractCustomRecreationMap(PostFlowDTO request) {
+        Map<Integer, CustomRecreation> customRecreationMap = new HashMap<>();
+
+        for (var spec : request.getRecreationSpecList()) {
+            if (spec.getRecreationId() == null) {
+                List<RecreationKeyword> keywords = new ArrayList<>();
+                if (spec.getCustomKeywordList() != null) {
+                    keywords = getRecreationKeywords(spec.getCustomKeywordList());
+                }
+                CustomRecreation customRecreation =
+                        FlowConverter.toCustomRecreation(spec, keywords);
+                customRecreationRepository.save(customRecreation);
+                customRecreationMap.put(spec.getSeq(), customRecreation);
+            }
+        }
+        return customRecreationMap;
+    }
+
+    private Flow createOrUpdateFlow(
+            PostFlowDTO request,
+            User user,
+            Map<Integer, Recreation> recreationMap,
+            Map<Integer, CustomRecreation> customRecreationMap,
+            List<RecreationKeyword> recreationKeywordList,
+            List<RecreationPurpose> recreationPurposeList,
+            @Nullable Long flowId) {
+        int num = flowNumber.nextInt(4);
+
+        Flow flow =
+                (flowId == null)
+                        ? FlowConverter.toFlow(
+                                request,
+                                user,
+                                flowImageUrl[num],
+                                recreationMap,
+                                customRecreationMap,
+                                recreationKeywordList,
+                                recreationPurposeList)
+                        : FlowConverter.toUpdateFlow(
+                                flowId,
+                                request,
+                                user,
+                                flowImageUrl[num],
+                                recreationMap,
+                                customRecreationMap,
+                                recreationKeywordList,
+                                recreationPurposeList);
+
+        return flowRepository.save(flow);
+    }
+
+    private Flow getFlow(Long flowId) {
+        return flowRepository
+                .findById(flowId)
+                .orElseThrow(() -> new FlowException(ErrorStatus.FLOW_NOT_FOUND));
+    }
+
+    private Recreation getRecreation(Long recreationId) {
+        return recreationRepository
+                .findById(recreationId)
+                .orElseThrow(() -> new RecreationException(ErrorStatus.RECREATION_NOT_FOUND));
+    }
+
+    private List<RecreationKeyword> getRecreationKeywords(List<Keyword> keywords) {
+        return keywords.stream()
+                .map(keyword -> recreationKeywordRepository.findByKeyword(keyword).get())
+                .toList();
+    }
+
+    private List<RecreationPurpose> getRecreationPurposes(List<Purpose> purposes) {
+        return purposes.stream()
+                .map(purpose -> recreationPurposeRepository.findByPurpose(purpose).get())
+                .toList();
     }
 }
