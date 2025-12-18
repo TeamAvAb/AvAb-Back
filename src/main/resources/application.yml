@@ -146,3 +146,49 @@ kakao:
     client: ${CLIENT_ID}
     redirect-uri: ${REDIRECT_URI}
 ---
+# Dev Profile
+server:
+  shutdown: graceful
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    url: ${DB_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: never
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        hbm2ddl:
+          auto: update
+        default_batch_fetch_size: 1000
+  data:
+    redis:
+      host: ${REDIS_URL}
+      port: 6379
+      ssl:
+        enabled: true
+springdoc:
+  swagger-ui:
+    authentication:
+      username: ${SWAGGER_USERNAME}
+      password: ${SWAGGER_PASSWORD}
+#jwt
+jwt:
+  secret: ${JWT_SECRET_KEY}
+  access-token-validity: ${JWT_ACCESS_TOKEN_TIME}
+  refresh-token-validity: ${JWT_REFRESH_TOKEN_TIME}
+  restore-token-validity: ${JWT_RESTORE_TOKEN_TIME}
+#kakao
+kakao:
+  auth:
+    client: ${CLIENT_ID}
+    redirect-uri: ${REDIRECT_URI}
