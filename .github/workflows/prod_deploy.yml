@@ -53,8 +53,8 @@ jobs:
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v21
         with:
-          aws_access_key: ${{ secrets.AWS_DEV_ACTION_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_DEV_ACTION_SECRET_ACCESS_KEY }}
+          aws_access_key: ${{ secrets.AWS_PROD_ACTION_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_PROD_ACTION_SECRET_ACCESS_KEY }}
           application_name: avab-prod
           environment_name: Avab-prod-env
           version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
