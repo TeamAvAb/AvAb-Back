@@ -73,10 +73,10 @@ public class FlowServiceImpl implements FlowService {
     private final FlowRecreationRepository flowRecreationRepository;
 
     private final String[] flowImageUrl = {
-        "https://avab-prod-bucket.s3.ap-northeast-2.amazonaws.com/flow/thumbnail/flow1.png",
-        "https://avab-prod-bucket.s3.ap-northeast-2.amazonaws.com/flow/thumbnail/flow2.png",
-        "https://avab-prod-bucket.s3.ap-northeast-2.amazonaws.com/flow/thumbnail/flow3.png",
-        "https://avab-prod-bucket.s3.ap-northeast-2.amazonaws.com/flow/thumbnail/flow4.png"
+        "https://d3m8d6r530ftey.cloudfront.net/flow/thumbnail/flow1.png",
+        "https://d3m8d6r530ftey.cloudfront.net/flow/thumbnail/flow2.png",
+        "https://d3m8d6r530ftey.cloudfront.net/flow/thumbnail/flow3.png",
+        "https://d3m8d6r530ftey.cloudfront.net/flow/thumbnail/flow4.png"
     };
     private final Random flowNumber = new Random();
 
