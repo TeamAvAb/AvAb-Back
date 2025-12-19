@@ -72,6 +72,7 @@ public class FlowServiceImpl implements FlowService {
     private final FlowGenderRepository flowGenderRepository;
     private final FlowRecreationRepository flowRecreationRepository;
 
+    // 이미지
     private final String[] flowImageUrl = {
         "https://d3m8d6r530ftey.cloudfront.net/flow/thumbnail/flow1.png",
         "https://d3m8d6r530ftey.cloudfront.net/flow/thumbnail/flow2.png",
