@@ -64,6 +64,7 @@ public class User extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "VARCHAR(10)")
+    @Builder.Default
     private UserStatus userStatus = UserStatus.ENABLED;
 
     @ColumnDefault("null")
