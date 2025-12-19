@@ -125,7 +125,7 @@ springdoc:
 cloud:
   aws:
     s3:
-      bucket: avab-bucket
+      bucket: ${S3_BUCKET}
     credentials:
       access-key: ${S3_ACCESS_KEY}
       secret-key: ${S3_SECRET_KEY}
@@ -146,7 +146,7 @@ kakao:
     client: ${CLIENT_ID}
     redirect-uri: ${REDIRECT_URI}
 ---
-# Dev Profile
+# Prod Profile
 server:
   shutdown: graceful
 spring:
@@ -168,7 +168,7 @@ spring:
         format_sql: true
         use_sql_comments: true
         hbm2ddl:
-          auto: update
+          auto: validate
         default_batch_fetch_size: 1000
   data:
     redis:
@@ -181,6 +181,19 @@ springdoc:
     authentication:
       username: ${SWAGGER_USERNAME}
       password: ${SWAGGER_PASSWORD}
+# S3
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET}
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    region:
+      static: ${REGION}
+      auto: false
+    stack:
+      auto: false
 #jwt
 jwt:
   secret: ${JWT_SECRET_KEY}
